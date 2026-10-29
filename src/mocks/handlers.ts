@@ -6,6 +6,7 @@ import { unknownEndpointHandler } from './handlers/fallback';
 import { networkConditionsHandler } from './handlers/network';
 import { nftHandlers } from './handlers/nfts';
 import { profileHandlers } from './handlers/profile';
+import { walletConnectionHandlers } from './handlers/wallet-connection';
 import { walletHandlers } from './handlers/wallets';
 
 /** Order matters: network conditions first, the unknown-endpoint fallback last. */
@@ -18,5 +19,6 @@ export const handlers = [
   ...checkoutHandlers,
   ...profileHandlers,
   ...walletHandlers,
+  ...walletConnectionHandlers,
   unknownEndpointHandler,
 ];

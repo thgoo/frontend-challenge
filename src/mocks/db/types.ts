@@ -3,7 +3,7 @@ import type { Nft } from '@/contracts/nft';
 import type { Order, OrderStatus } from '@/contracts/order';
 import type { Quote } from '@/contracts/quote';
 import type { User } from '@/contracts/auth';
-import type { Wallet } from '@/contracts/wallet';
+import type { Wallet, WalletConnection } from '@/contracts/wallet';
 
 export interface UserRecord extends User {
   passwordHash: string;
@@ -52,6 +52,7 @@ export interface DbState {
   favorites: Record<string, string[]>;
   carts: CartRecord[];
   wallets: Record<string, Wallet[]>;
+  walletConnections: Record<string, WalletConnection>;
   coupons: CouponRecord[];
   quotes: QuoteRecord[];
   orders: OrderRecord[];

@@ -33,6 +33,8 @@ export const apiErrorCodeSchema = z.enum([
   'COUPON_INVALID',
   'COUPON_EXPIRED',
   'IDEMPOTENCY_CONFLICT',
+  'WALLET_REJECTED',
+  'WALLET_DISCONNECTED',
   'SERVICE_UNAVAILABLE',
 ]);
 export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;

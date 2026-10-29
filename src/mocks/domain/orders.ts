@@ -141,6 +141,15 @@ export function placeOrder(
     });
   }
 
+  const connection = tx.db.walletConnections[user.id];
+  if (connection?.walletId !== input.walletId || connection.network !== input.network) {
+    return fail(
+      409,
+      'WALLET_DISCONNECTED',
+      'Connect the selected wallet on this network to continue.',
+    );
+  }
+
   const quote = validateQuote(tx, user, input);
   if (!quote.ok) return quote;
   const { id: quoteId, expiresAt, ...receipt } = quote.value;

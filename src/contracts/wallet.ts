@@ -22,3 +22,11 @@ export const walletSchema = walletInputSchema.extend({
   role: walletRoleSchema,
 });
 export type Wallet = z.infer<typeof walletSchema>;
+
+export const walletConnectionInputSchema = z.object({ walletId: idSchema, network: networkSchema });
+export type WalletConnectionInput = z.infer<typeof walletConnectionInputSchema>;
+
+export const walletConnectionSchema = walletConnectionInputSchema.extend({
+  connectedAt: z.iso.datetime(),
+});
+export type WalletConnection = z.infer<typeof walletConnectionSchema>;

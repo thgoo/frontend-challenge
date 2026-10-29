@@ -11,7 +11,16 @@ async function addToCart(page: Page, quantity = 1) {
   return api<Cart>(page, '/cart/items', { method: 'POST', body: { ...ITEM, quantity } });
 }
 
+async function connectWallet(page: Page) {
+  const result = await api(page, '/wallet-connection', {
+    method: 'PUT',
+    body: { walletId: 'wal_alice_1', network: 'ethereum' },
+  });
+  expect(result.status).toBe(200);
+}
+
 async function quote(page: Page) {
+  await connectWallet(page);
   const result = await api<Quote>(page, '/quotes', {
     method: 'POST',
     body: { network: 'ethereum' },
@@ -143,6 +152,16 @@ test.describe('mock commerce api', () => {
     expect((await api(page, `/orders/${created.body.id}`)).status).toBe(403);
     expect((await api<Order[]>(page, '/orders')).body).toEqual([]);
   });
+});
+
+test('rejects wallet connections in the wallet-rejected scenario', async ({ page }) => {
+  await openWithMocks(page, '/login?scenario=wallet-rejected');
+  await login(page, ALICE);
+  const result = await api(page, '/wallet-connection', {
+    method: 'PUT',
+    body: { walletId: 'wal_alice_1', network: 'ethereum' },
+  });
+  expect(result).toMatchObject({ status: 403, body: { code: 'WALLET_REJECTED' } });
 });
 
 test.describe('mock account api', () => {

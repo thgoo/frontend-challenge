@@ -16,6 +16,11 @@ async function checkoutReady(quantity = 2) {
   Object.assign(ref.edition, { available: 10, maxPerOrder: 5 });
   setItemQuantity(tx.db, userCart(tx, user.id), { ...item, quantity }, 'replace');
 
+  tx.db.walletConnections[user.id] = {
+    walletId: 'wal_alice_1',
+    network: 'ethereum',
+    connectedAt: '',
+  };
   const quote = createQuote(tx, user.id, 'ethereum');
   if (!quote.ok) throw new Error(quote.message);
   const input: CreateOrderInput = {
@@ -67,6 +72,15 @@ describe('orders', () => {
     expect(placeOrder(tx, user, input, options)).toMatchObject({
       ok: false,
       code: 'AVAILABILITY_CONFLICT',
+    });
+  });
+
+  it('requires the selected wallet to be connected on the order network', async () => {
+    const { tx, user, input } = await checkoutReady();
+    tx.db.walletConnections = {};
+    expect(placeOrder(tx, user, input, options)).toMatchObject({
+      ok: false,
+      code: 'WALLET_DISCONNECTED',
     });
   });
 

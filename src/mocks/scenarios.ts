@@ -20,6 +20,7 @@ export interface Scenario {
   orderTimeout: boolean;
   /** Applied once per reset, right before the first order is validated. */
   checkoutDisruption: 'none' | 'price-change' | 'sold-out';
+  walletConnection: 'approve' | 'reject';
 }
 
 const HOUR_MS = 3_600_000;
@@ -35,6 +36,7 @@ export const defaultScenario: Scenario = {
   payment: { outcome: 'confirmed', settleAfterMs: 3000 },
   orderTimeout: false,
   checkoutDisruption: 'none',
+  walletConnection: 'approve',
 };
 
 function variant(overrides: Partial<Scenario> & Pick<Scenario, 'name' | 'description'>): Scenario {
@@ -102,6 +104,11 @@ export const SCENARIOS = [
     name: 'sold-out',
     description: 'An item sells out right before the first order is placed.',
     checkoutDisruption: 'sold-out',
+  }),
+  variant({
+    name: 'wallet-rejected',
+    description: 'The wallet rejects every connection request.',
+    walletConnection: 'reject',
   }),
 ] as const satisfies readonly Scenario[];
 
