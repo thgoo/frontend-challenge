@@ -1,31 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
-import type {} from '../src/mocks/control-api';
-
-async function api(page: Page, path: string, init?: { method?: string; body?: unknown }) {
-  return page.evaluate(
-    async ({ path, init }) => {
-      try {
-        const response = await fetch(`/api${path}`, {
-          method: init?.method ?? 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          body: init?.body === undefined ? undefined : JSON.stringify(init.body),
-        });
-        const text = await response.text();
-        return { status: response.status, body: text ? (JSON.parse(text) as unknown) : null };
-      } catch {
-        return { status: 0, body: null };
-      }
-    },
-    { path, init },
-  );
-}
-
-async function open(page: Page, url: string) {
-  await page.goto(url);
-  await page.waitForFunction(() => window.__mocks !== undefined);
-}
-
-const alice = { email: 'alice@example.com', password: 'Password123' };
+import { expect, test } from '@playwright/test';
+import { ALICE as alice, api, openWithMocks as open, reloadWithMocks } from './support/mock-api';
 
 test.describe('mock api', () => {
   test('lists, filters and fetches NFTs', async ({ page }) => {
@@ -58,8 +32,7 @@ test.describe('mock api', () => {
     });
 
     expect((await api(page, '/auth/login', { method: 'POST', body: alice })).status).toBe(200);
-    await page.reload();
-    await page.waitForFunction(() => window.__mocks !== undefined);
+    await reloadWithMocks(page);
     expect(await api(page, '/auth/session')).toMatchObject({
       status: 200,
       body: { user: { email: alice.email } },
@@ -110,8 +83,7 @@ test.describe('mock api', () => {
     };
     expect((await api(page, '/auth/register', { method: 'POST', body: carol })).status).toBe(201);
 
-    await page.reload();
-    await page.waitForFunction(() => window.__mocks !== undefined);
+    await reloadWithMocks(page);
     expect((await api(page, '/auth/login', { method: 'POST', body: carol })).status).toBe(200);
 
     await open(page, '/?reset');
