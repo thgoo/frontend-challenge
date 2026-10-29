@@ -15,7 +15,9 @@ export const buyerSchema = z.object({
 });
 export type Buyer = z.infer<typeof buyerSchema>;
 
-/** Sent with an `Idempotency-Key` header; the same key with a different body yields 409. */
+export const IDEMPOTENCY_HEADER = 'Idempotency-Key';
+
+/** Sent with the idempotency header; the same key with a different body yields 409. */
 export const createOrderInputSchema = z.object({
   quoteId: idSchema,
   walletId: idSchema,
