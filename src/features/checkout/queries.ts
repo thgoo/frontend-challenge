@@ -1,8 +1,23 @@
-import { queryOptions, skipToken, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  queryOptions,
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { userKey } from '@/features/auth/queries';
 import { useCurrentUserId } from '@/features/auth/use-current-user-id';
+import type { Network } from '@/contracts/wallet';
 import { ApiRequestError } from '@/lib/api-error';
-import { createQuote, fetchOrder, fetchOrders, placeOrder } from './api';
+import {
+  connectWallet,
+  createQuote,
+  disconnectWallet,
+  fetchOrder,
+  fetchOrders,
+  fetchWalletConnection,
+  placeOrder,
+} from './api';
 
 export const orderKeys = {
   all: (userId: string) => [...userKey(userId), 'orders'] as const,
@@ -20,6 +35,47 @@ export function orderQueryOptions(userId: string | null, orderId: string) {
   return queryOptions({
     queryKey: orderKeys.detail(userId ?? 'anonymous', orderId),
     queryFn: userId ? ({ signal }) => fetchOrder(orderId, signal) : skipToken,
+  });
+}
+
+export const walletConnectionKey = (userId: string) =>
+  [...userKey(userId), 'wallet-connection'] as const;
+
+export function walletConnectionQueryOptions(userId: string | null) {
+  return queryOptions({
+    queryKey: walletConnectionKey(userId ?? 'anonymous'),
+    queryFn: userId ? ({ signal }) => fetchWalletConnection(signal) : skipToken,
+  });
+}
+
+export function useWalletConnection() {
+  return useQuery(walletConnectionQueryOptions(useCurrentUserId()));
+}
+
+export function useIsWalletConnected(walletId: string, network: Network) {
+  const { data: connection } = useWalletConnection();
+  return connection?.walletId === walletId && connection.network === network;
+}
+
+export function useConnectWallet() {
+  const queryClient = useQueryClient();
+  const userId = useCurrentUserId();
+  return useMutation({
+    mutationFn: connectWallet,
+    onSuccess: (connection) => {
+      if (userId) queryClient.setQueryData(walletConnectionKey(userId), connection);
+    },
+  });
+}
+
+export function useDisconnectWallet() {
+  const queryClient = useQueryClient();
+  const userId = useCurrentUserId();
+  return useMutation({
+    mutationFn: disconnectWallet,
+    onSuccess: () => {
+      if (userId) queryClient.setQueryData(walletConnectionKey(userId), null);
+    },
   });
 }
 
