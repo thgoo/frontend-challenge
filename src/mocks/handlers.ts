@@ -1,3 +1,12 @@
-import type { RequestHandler, WebSocketHandler } from 'msw';
+import { authHandlers } from './handlers/auth';
+import { unknownEndpointHandler } from './handlers/fallback';
+import { networkConditionsHandler } from './handlers/network';
+import { nftHandlers } from './handlers/nfts';
 
-export const handlers: (RequestHandler | WebSocketHandler)[] = [];
+/** Order matters: network conditions first, the unknown-endpoint fallback last. */
+export const handlers = [
+  networkConditionsHandler,
+  ...authHandlers,
+  ...nftHandlers,
+  unknownEndpointHandler,
+];

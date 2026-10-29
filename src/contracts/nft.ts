@@ -66,3 +66,30 @@ export type NftListQuery = z.infer<typeof nftListQuerySchema>;
 
 export const nftListResponseSchema = paginatedSchema(nftSchema);
 export type NftListResponse = z.infer<typeof nftListResponseSchema>;
+
+/** Query-string transport shared by the Axios client and the MSW handler. */
+export function toNftListSearchParams(query: NftListQuery): URLSearchParams {
+  const params = new URLSearchParams();
+  if (query.q) params.set('q', query.q);
+  for (const category of query.categories ?? []) params.append('categories', category);
+  if (query.minPrice) params.set('minPrice', query.minPrice);
+  if (query.maxPrice) params.set('maxPrice', query.maxPrice);
+  if (query.onlyAvailable) params.set('onlyAvailable', 'true');
+  params.set('sort', query.sort);
+  params.set('page', String(query.page));
+  return params;
+}
+
+export function parseNftListSearchParams(params: URLSearchParams) {
+  const categories = params.getAll('categories');
+  const page = params.get('page');
+  return nftListQuerySchema.safeParse({
+    q: params.get('q') ?? undefined,
+    categories: categories.length > 0 ? categories : undefined,
+    minPrice: params.get('minPrice') ?? undefined,
+    maxPrice: params.get('maxPrice') ?? undefined,
+    onlyAvailable: params.get('onlyAvailable') === 'true' || undefined,
+    sort: params.get('sort') ?? undefined,
+    page: page === null ? undefined : Number(page),
+  });
+}
