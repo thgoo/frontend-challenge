@@ -33,22 +33,29 @@ export function currentUser(cookies: Record<string, string>): UserRecord | null 
   return auth.ok ? auth.user : null;
 }
 
+export function findActiveSession(token: string | undefined, now = Date.now()) {
+  const session = readDb().sessions.find((candidate) => candidate.token === token);
+  return session && Date.parse(session.expiresAt) > now ? session : undefined;
+}
+
 type AuthResult =
   | { ok: true; user: UserRecord; expiresAt: string }
   | { ok: false; response: ReturnType<typeof apiError> };
 
+const unauthenticated = (): AuthResult => ({
+  ok: false,
+  response: apiError(401, 'UNAUTHENTICATED', 'Sign in to continue.'),
+});
+
 export function authenticate(cookies: Record<string, string>): AuthResult {
   const token = cookies[SESSION_COOKIE];
-  const session = readDb().sessions.find((candidate) => candidate.token === token);
-  if (!token || !session) {
-    return { ok: false, response: apiError(401, 'UNAUTHENTICATED', 'Sign in to continue.') };
-  }
-  if (Date.parse(session.expiresAt) <= Date.now()) {
+  const session = findActiveSession(token);
+  if (!session) {
+    const expired = readDb().sessions.some((candidate) => candidate.token === token);
+    if (!expired) return unauthenticated();
     deleteSession(token);
     return { ok: false, response: apiError(401, 'SESSION_EXPIRED', 'Your session has expired.') };
   }
   const user = readDb().users.find((candidate) => candidate.id === session.userId);
-  if (!user)
-    return { ok: false, response: apiError(401, 'UNAUTHENTICATED', 'Sign in to continue.') };
-  return { ok: true, user, expiresAt: session.expiresAt };
+  return user ? { ok: true, user, expiresAt: session.expiresAt } : unauthenticated();
 }
