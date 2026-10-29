@@ -52,9 +52,9 @@ export function authenticate(cookies: Record<string, string>): AuthResult {
   const session = findActiveSession(token);
   if (!session) {
     const expired = readDb().sessions.some((candidate) => candidate.token === token);
-    if (!expired) return unauthenticated();
-    deleteSession(token);
-    return { ok: false, response: apiError(401, 'SESSION_EXPIRED', 'Your session has expired.') };
+    return expired
+      ? { ok: false, response: apiError(401, 'SESSION_EXPIRED', 'Your session has expired.') }
+      : unauthenticated();
   }
   const user = readDb().users.find((candidate) => candidate.id === session.userId);
   return user ? { ok: true, user, expiresAt: session.expiresAt } : unauthenticated();
