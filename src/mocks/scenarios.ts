@@ -15,11 +15,16 @@ export interface Scenario {
   offline: boolean;
   failures: FailureRule[];
   sessionTtlMs: number;
+  payment: { outcome: 'confirmed' | 'declined'; settleAfterMs: number };
+  /** The first attempt of each order is committed but never answered, forcing an idempotent retry. */
+  orderTimeout: boolean;
+  /** Applied once per reset, right before the first order is validated. */
+  checkoutDisruption: 'none' | 'price-change' | 'sold-out';
 }
 
 const HOUR_MS = 3_600_000;
 
-const defaultScenario: Scenario = {
+export const defaultScenario: Scenario = {
   name: 'default',
   description: 'Seeded catalog, two users and realistic latency.',
   catalog: 'default',
@@ -27,6 +32,9 @@ const defaultScenario: Scenario = {
   offline: false,
   failures: [],
   sessionTtlMs: 2 * HOUR_MS,
+  payment: { outcome: 'confirmed', settleAfterMs: 3000 },
+  orderTimeout: false,
+  checkoutDisruption: 'none',
 };
 
 function variant(overrides: Partial<Scenario> & Pick<Scenario, 'name' | 'description'>): Scenario {
@@ -74,6 +82,27 @@ export const SCENARIOS = [
     description: 'Sessions expire after 60 seconds.',
     sessionTtlMs: 60_000,
   }),
+  variant({
+    name: 'payment-declined',
+    description: 'Orders are declined by the wallet after settling.',
+    payment: { outcome: 'declined', settleAfterMs: 3000 },
+  }),
+  variant({
+    name: 'order-timeout',
+    description:
+      'Order creation times out after being committed; retrying recovers the same order.',
+    orderTimeout: true,
+  }),
+  variant({
+    name: 'price-change',
+    description: 'The price of an item rises right before the first order is placed.',
+    checkoutDisruption: 'price-change',
+  }),
+  variant({
+    name: 'sold-out',
+    description: 'An item sells out right before the first order is placed.',
+    checkoutDisruption: 'sold-out',
+  }),
 ] as const satisfies readonly Scenario[];
 
 export type ScenarioName = (typeof SCENARIOS)[number]['name'];
@@ -81,5 +110,3 @@ export type ScenarioName = (typeof SCENARIOS)[number]['name'];
 export function findScenario(name: string | null | undefined): Scenario | undefined {
   return SCENARIOS.find((scenario) => scenario.name === name);
 }
-
-export { defaultScenario };
