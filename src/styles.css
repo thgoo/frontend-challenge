@@ -27,6 +27,7 @@
 }
 
 @theme inline {
+  --animate-shimmer: shimmer 1.6s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -57,5 +58,14 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
   }
 }
