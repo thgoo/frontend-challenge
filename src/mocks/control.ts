@@ -1,6 +1,7 @@
 import type { MockControl } from './control-api';
-import { initDb, mutateDb, resetDb } from './db/store';
+import { initDb, resetDb, transaction } from './db/store';
 import { resetNetworkConditions } from './handlers/network';
+import { cancelSettlements, scheduleSettlements } from './realtime/settlement-scheduler';
 import { currentScenario, setCurrentScenario } from './runtime';
 import { defaultScenario, findScenario, SCENARIOS } from './scenarios';
 
@@ -11,12 +12,13 @@ async function reset(name: string = currentScenario().name) {
   setCurrentScenario(scenario);
   localStorage.setItem(SCENARIO_STORAGE_KEY, scenario.name);
   resetNetworkConditions();
+  cancelSettlements();
   await resetDb(scenario);
 }
 
 function expireSessions() {
-  mutateDb((db) => {
-    const past = new Date(Date.now() - 1).toISOString();
+  transaction(({ db, now }) => {
+    const past = new Date(now - 1).toISOString();
     db.sessions = db.sessions.map((session) => ({ ...session, expiresAt: past }));
   });
 }
@@ -53,4 +55,5 @@ export async function initControl() {
     setCurrentScenario(scenario);
     await initDb(scenario);
   }
+  scheduleSettlements();
 }

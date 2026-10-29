@@ -1,12 +1,22 @@
 import { authHandlers } from './handlers/auth';
+import { cartHandlers } from './handlers/cart';
+import { checkoutHandlers } from './handlers/checkout';
+import { favoriteHandlers } from './handlers/favorites';
 import { unknownEndpointHandler } from './handlers/fallback';
 import { networkConditionsHandler } from './handlers/network';
 import { nftHandlers } from './handlers/nfts';
+import { profileHandlers } from './handlers/profile';
+import { walletHandlers } from './handlers/wallets';
 
 /** Order matters: network conditions first, the unknown-endpoint fallback last. */
 export const handlers = [
   networkConditionsHandler,
   ...authHandlers,
   ...nftHandlers,
+  ...favoriteHandlers,
+  ...cartHandlers,
+  ...checkoutHandlers,
+  ...profileHandlers,
+  ...walletHandlers,
   unknownEndpointHandler,
 ];
