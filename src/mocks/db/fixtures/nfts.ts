@@ -24,20 +24,20 @@ const EDITION_TIERS = [
   { name: 'One of One', priceFactor: 10, supply: [1, 1] },
 ] as const;
 
-function priceEth(random: Random, factor: number): string {
-  const thousandths = randomInt(random, 10, 1500) * factor;
+function toEth(thousandths: number): string {
   return (thousandths / 1000).toFixed(3).replace(/\.?0+$/, '');
 }
 
 function createEditions(random: Random, nftIndex: number): Edition[] {
   const tierCount = randomInt(random, 1, EDITION_TIERS.length);
+  const basePrice = randomInt(random, 10, 1500);
   return EDITION_TIERS.slice(0, tierCount).map((tier, tierIndex) => {
     const supply = randomInt(random, tier.supply[0], tier.supply[1]);
     const soldOut = random() < 0.12;
     return {
       id: `ed_${String(nftIndex).padStart(3, '0')}_${tierIndex + 1}`,
       name: tier.name,
-      priceEth: priceEth(random, tier.priceFactor),
+      priceEth: toEth(basePrice * tier.priceFactor),
       supply,
       available: soldOut ? 0 : randomInt(random, 1, supply),
       maxPerOrder: Math.min(supply, 5),
@@ -61,7 +61,7 @@ export function createNftFixtures(seed: number): Nft[] {
     return {
       id: `nft_${String(number).padStart(3, '0')}`,
       name,
-      description: `${name} is a ${pick(random, TAGS)} piece by ${creator.name}.`,
+      description: `An original ${pick(random, TAGS)} work by ${creator.name}, minted in limited editions.`,
       category: categories[index % categories.length] ?? 'art',
       tags: [pick(random, TAGS), pick(random, TAGS)].filter(
         (tag, i, all) => all.indexOf(tag) === i,
