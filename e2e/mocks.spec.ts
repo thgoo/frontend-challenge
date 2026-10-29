@@ -3,7 +3,7 @@ import { ALICE as alice, api, openWithMocks as open, reloadWithMocks } from './s
 
 test.describe('mock api', () => {
   test('lists, filters and fetches NFTs', async ({ page }) => {
-    await open(page, '/?scenario=default');
+    await open(page, '/login?scenario=default');
     const list = await api(page, '/nfts?categories=art&sort=price-asc&page=1');
     expect(list.status).toBe(200);
     expect(list.body).toMatchObject({ page: 1, pageSize: 12 });
@@ -20,8 +20,8 @@ test.describe('mock api', () => {
   });
 
   test('keeps the session in a cookie across reloads and clears it on logout', async ({ page }) => {
-    await open(page, '/?scenario=default');
-    expect((await api(page, '/auth/session')).status).toBe(401);
+    await open(page, '/login?scenario=default');
+    expect(await api(page, '/auth/session')).toEqual({ status: 200, body: null });
     expect(
       await api(page, '/auth/login', {
         method: 'POST',
@@ -39,11 +39,11 @@ test.describe('mock api', () => {
     });
 
     expect((await api(page, '/auth/logout', { method: 'POST' })).status).toBe(204);
-    expect((await api(page, '/auth/session')).status).toBe(401);
+    expect(await api(page, '/auth/session')).toEqual({ status: 200, body: null });
   });
 
   test('reports registration conflicts and validation errors per field', async ({ page }) => {
-    await open(page, '/?scenario=default');
+    await open(page, '/login?scenario=default');
     const conflict = await api(page, '/auth/register', {
       method: 'POST',
       body: { name: 'Alice', username: 'alice', email: alice.email, password: 'Password123' },
@@ -64,17 +64,18 @@ test.describe('mock api', () => {
   });
 
   test('expires sessions on demand', async ({ page }) => {
-    await open(page, '/?scenario=default');
+    await open(page, '/login?scenario=default');
     await api(page, '/auth/login', { method: 'POST', body: alice });
     await page.evaluate(() => window.__mocks?.expireSessions());
-    expect(await api(page, '/auth/session')).toMatchObject({
+    expect(await api(page, '/favorites')).toMatchObject({
       status: 401,
       body: { code: 'SESSION_EXPIRED' },
     });
+    expect(await api(page, '/auth/session')).toEqual({ status: 200, body: null });
   });
 
   test('persists registered users until the scenario is reset', async ({ page }) => {
-    await open(page, '/?scenario=default');
+    await open(page, '/login?scenario=default');
     const carol = {
       name: 'Carol',
       username: 'carol',
@@ -86,13 +87,13 @@ test.describe('mock api', () => {
     await reloadWithMocks(page);
     expect((await api(page, '/auth/login', { method: 'POST', body: carol })).status).toBe(200);
 
-    await open(page, '/?reset');
+    await open(page, '/login?reset');
     expect((await api(page, '/auth/login', { method: 'POST', body: carol })).status).toBe(401);
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/login$/);
   });
 
   test('simulates transient failures that recover', async ({ page }) => {
-    await open(page, '/?scenario=flaky');
+    await open(page, '/login?scenario=flaky');
     const statuses = [];
     for (let attempt = 0; attempt < 4; attempt += 1)
       statuses.push((await api(page, '/nfts')).status);
@@ -100,10 +101,10 @@ test.describe('mock api', () => {
   });
 
   test('simulates an offline network and an empty catalog', async ({ page }) => {
-    await open(page, '/?scenario=offline');
+    await open(page, '/login?scenario=offline');
     expect((await api(page, '/nfts')).status).toBe(0);
 
-    await open(page, '/?scenario=empty');
+    await open(page, '/login?scenario=empty');
     expect(await api(page, '/nfts')).toMatchObject({ status: 200, body: { total: 0, items: [] } });
   });
 });

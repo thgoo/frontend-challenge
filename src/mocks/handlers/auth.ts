@@ -74,8 +74,7 @@ export const authHandlers = [
 
   http.get(apiPath('/auth/session'), ({ cookies }) => {
     const auth = authenticate(cookies);
-    if (!auth.ok) return auth.response;
-    return HttpResponse.json(toSession(auth.user, auth.expiresAt));
+    return HttpResponse.json(auth.ok ? toSession(auth.user, auth.expiresAt) : null);
   }),
 
   http.post(apiPath('/auth/logout'), ({ cookies }) => {

@@ -37,7 +37,7 @@ async function expectOrderStatus(page: Page, orderId: string, status: Order['sta
 
 test.describe('mock commerce api', () => {
   test('keeps the guest cart across reloads and merges it on login', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     expect((await addToCart(page)).status).toBe(200);
 
     await reloadWithMocks(page);
@@ -51,7 +51,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('applies, rejects and removes coupons', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await addToCart(page);
 
     expect(
@@ -78,7 +78,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('confirms an order and removes the purchased items from the cart', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, ALICE);
     await addToCart(page);
 
@@ -91,7 +91,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('recovers the same order after a timeout using the idempotency key', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=order-timeout');
+    await openWithMocks(page, '/login?scenario=order-timeout');
     await login(page, ALICE);
     await addToCart(page);
     const { id: quoteId } = await quote(page);
@@ -105,7 +105,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('requires a new quote when the price changes during checkout', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=price-change');
+    await openWithMocks(page, '/login?scenario=price-change');
     await login(page, ALICE);
     await addToCart(page);
 
@@ -121,7 +121,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('keeps the cart when the payment is declined', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=payment-declined');
+    await openWithMocks(page, '/login?scenario=payment-declined');
     await login(page, ALICE);
     await addToCart(page);
 
@@ -132,7 +132,7 @@ test.describe('mock commerce api', () => {
   });
 
   test('isolates orders between users', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, ALICE);
     await addToCart(page);
     const { id: quoteId } = await quote(page);
@@ -147,7 +147,7 @@ test.describe('mock commerce api', () => {
 
 test.describe('mock account api', () => {
   test('updates the profile and rejects taken usernames', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, ALICE);
     const update = { name: 'Alice C.', username: 'alice_c', email: ALICE.email, bio: 'Hi' };
 
@@ -164,7 +164,7 @@ test.describe('mock account api', () => {
   });
 
   test('uploads an avatar and validates its type', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, ALICE);
 
     const statuses = await page.evaluate(async () => {
@@ -185,7 +185,7 @@ test.describe('mock account api', () => {
   });
 
   test('changes the password only with the current one', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, ALICE);
 
     const wrong = { currentPassword: 'Wrong12345', newPassword: 'NewPassword1' };
@@ -204,7 +204,7 @@ test.describe('mock account api', () => {
   });
 
   test('upserts wallets per slot and rejects duplicated addresses', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     await login(page, BOB);
     const wallet = { label: 'Main', address: `0x${'a'.repeat(40)}`, provider: 'metamask' };
 
@@ -218,7 +218,7 @@ test.describe('mock account api', () => {
   });
 
   test('favorites require a session and persist per user', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=default');
+    await openWithMocks(page, '/login?scenario=default');
     expect((await api(page, '/favorites')).status).toBe(401);
 
     await login(page, ALICE);
