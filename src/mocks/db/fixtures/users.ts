@@ -1,6 +1,5 @@
 import type { Wallet } from '@/contracts/wallet';
 
-/** Fictitious credentials documented in the README. */
 export const USER_FIXTURES = [
   {
     id: 'usr_alice',

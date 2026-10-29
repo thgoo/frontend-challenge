@@ -26,7 +26,7 @@ export function applyBasisPoints(wei: bigint, basisPoints: number): bigint {
   return (wei * BigInt(basisPoints)) / BASIS_POINTS;
 }
 
-/** Display helper that never rounds: it truncates and keeps at least `minFractionDigits`. */
+/** Truncates instead of rounding so the UI never overstates an amount. */
 export function displayEth(value: string, maxFractionDigits = 4, minFractionDigits = 2): string {
   const [whole = '0', fraction = ''] = formatEth(parseEth(value)).split('.');
   const truncated = fraction.slice(0, maxFractionDigits).padEnd(minFractionDigits, '0');
