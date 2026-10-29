@@ -40,6 +40,9 @@ export const orderUpdatedEventSchema = eventSchema(
 );
 export type OrderUpdatedEvent = z.infer<typeof orderUpdatedEventSchema>;
 
+/** Not the default `/socket.io`: MSW rewrites that path, which would also capture Vite's HMR socket. */
+export const SOCKET_PATH = '/realtime';
+
 export const SOCKET_EVENTS = {
   nftUpdated: 'nft.updated',
   orderUpdated: 'order.updated',

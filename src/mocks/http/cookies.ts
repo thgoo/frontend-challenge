@@ -12,3 +12,10 @@ export const CLEAR_SESSION_COOKIE = `${SESSION_COOKIE}=; Path=/; SameSite=Lax; M
 export function guestCartCookie(cartId: string) {
   return `${GUEST_CART_COOKIE}=${cartId}; Path=/; SameSite=Lax; Max-Age=${GUEST_CART_MAX_AGE_S}`;
 }
+
+export function readDocumentCookie(name: string): string | undefined {
+  return document.cookie
+    .split('; ')
+    .find((entry) => entry.startsWith(`${name}=`))
+    ?.slice(name.length + 1);
+}

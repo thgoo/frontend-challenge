@@ -1,11 +1,14 @@
 import type { MockControl } from './control-api';
 import { initDb, resetDb, transaction } from './db/store';
 import { resetNetworkConditions } from './handlers/network';
+import { updateEdition } from './domain/inventory';
 import { cancelSettlements, scheduleSettlements } from './realtime/settlement-scheduler';
+import { socketControl } from './realtime/socket-server';
 import { currentScenario, setCurrentScenario } from './runtime';
 import { defaultScenario, findScenario, SCENARIOS } from './scenarios';
 
 const SCENARIO_STORAGE_KEY = 'nft-mocks:scenario';
+
 async function reset(name: string = currentScenario().name) {
   const scenario = findScenario(name);
   if (!scenario) throw new Error(`Unknown mock scenario "${name}"`);
@@ -13,6 +16,7 @@ async function reset(name: string = currentScenario().name) {
   localStorage.setItem(SCENARIO_STORAGE_KEY, scenario.name);
   resetNetworkConditions();
   cancelSettlements();
+  socketControl.setOnline(true);
   await resetDb(scenario);
 }
 
@@ -30,6 +34,11 @@ export const mockControl: MockControl = {
   },
   reset,
   expireSessions,
+  updateEdition(nftId, editionId, patch) {
+    const updated = transaction((tx) => updateEdition(tx, { nftId, editionId }, patch));
+    if (!updated) throw new Error(`Unknown edition "${nftId}/${editionId}"`);
+  },
+  sockets: socketControl,
 };
 
 /** `?scenario=<name>` switches and resets, `?reset` restores the current scenario's seed. */
