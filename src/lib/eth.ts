@@ -26,8 +26,8 @@ export function applyBasisPoints(wei: bigint, basisPoints: number): bigint {
   return (wei * BigInt(basisPoints)) / BASIS_POINTS;
 }
 
-/** Truncates instead of rounding so the UI never overstates an amount. */
-export function displayEth(value: string, maxFractionDigits = 4, minFractionDigits = 2): string {
+/** Exact by default; a smaller `maxFractionDigits` truncates instead of rounding, never overstating. */
+export function displayEth(value: string, maxFractionDigits = 18, minFractionDigits = 2): string {
   const [whole = '0', fraction = ''] = formatEth(parseEth(value)).split('.');
   const truncated = fraction.slice(0, maxFractionDigits).padEnd(minFractionDigits, '0');
   const groupedWhole = BigInt(whole).toLocaleString('en-US');

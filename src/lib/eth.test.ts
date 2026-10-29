@@ -41,7 +41,8 @@ describe('arithmetic', () => {
 
 describe('displayEth', () => {
   it('truncates without rounding up', () => {
-    expect(displayEth('1.99999')).toBe('1.9999 ETH');
+    expect(displayEth('1.99999', 4)).toBe('1.9999 ETH');
+    expect(displayEth('1.99999')).toBe('1.99999 ETH');
   });
 
   it('pads to the minimum fraction digits and groups thousands', () => {

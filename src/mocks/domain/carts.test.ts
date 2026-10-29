@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { findEdition, purchasableQuantity } from './inventory';
+import { purchasableQuantity } from '@/lib/nft';
+import { findEdition } from './inventory';
 import {
   applyCoupon,
   guestCart,

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { NFT_PAGE_SIZE, nftListQuerySchema, type NftListQuery } from '@/contracts/nft';
 import { parseEth } from '@/lib/eth';
 import { createNftFixtures, NFT_FIXTURE_COUNT } from '../db/fixtures/nfts';
-import { isAvailable, lowestPrice, queryCatalog } from './catalog';
+import { isAvailable, lowestPrice } from '@/lib/nft';
+import { queryCatalog } from './catalog';
 
 const nfts = createNftFixtures(1);
 const query = (input: Partial<NftListQuery> = {}) => nftListQuerySchema.parse(input);

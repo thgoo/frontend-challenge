@@ -15,10 +15,6 @@ export function findEdition(db: DbState, key: CartItemKey): EditionRef | undefin
   return nft && edition ? { nft, edition } : undefined;
 }
 
-export function purchasableQuantity(edition: Edition): number {
-  return Math.min(edition.available, edition.maxPerOrder);
-}
-
 /** Single write path for catalog changes, so every change bumps the version and emits `nft.updated`. */
 export function updateEdition(
   tx: Tx,

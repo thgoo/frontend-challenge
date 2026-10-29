@@ -1,19 +1,6 @@
 import { NFT_PAGE_SIZE, type Nft, type NftListQuery, type NftListResponse } from '@/contracts/nft';
 import { parseEth } from '@/lib/eth';
-
-export function lowestPrice(nft: Nft): bigint {
-  return nft.editions.reduce(
-    (lowest, edition) => {
-      const price = parseEth(edition.priceEth);
-      return price < lowest ? price : lowest;
-    },
-    parseEth(nft.editions[0]?.priceEth ?? '0'),
-  );
-}
-
-export function isAvailable(nft: Nft): boolean {
-  return nft.editions.some((edition) => edition.available > 0);
-}
+import { isAvailable, lowestPrice } from '@/lib/nft';
 
 function matchesText(nft: Nft, text: string): boolean {
   const needle = text.toLowerCase();
