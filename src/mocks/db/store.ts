@@ -1,3 +1,5 @@
+import type { Tx } from '../domain/tx';
+import { publish, type Delivery } from '../realtime/event-bus';
 import type { Scenario } from '../scenarios';
 import { createSeed, DB_SCHEMA_VERSION } from './seed';
 import type { DbState } from './types';
@@ -16,6 +18,11 @@ function load(): DbState | null {
   }
 }
 
+function requireState(): DbState {
+  if (!state) throw new Error('Mock database used before initDb()');
+  return state;
+}
+
 function persist() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -31,19 +38,19 @@ export async function resetDb(scenario: Scenario) {
 }
 
 export function readDb(): Readonly<DbState> {
-  if (!state) throw new Error('Mock database used before initDb()');
-  return state;
+  return requireState();
 }
 
-/** Every write goes through here so persistence cannot be forgotten. */
-export function mutateDb<T>(change: (db: DbState) => T): T {
-  if (!state) throw new Error('Mock database used before initDb()');
-  const result = change(state);
+/** Events queued during the change are published only after the new state is persisted. */
+export function transaction<T>(change: (tx: Tx) => T): T {
+  const outbox: Delivery[] = [];
+  const result = change({
+    db: requireState(),
+    now: Date.now(),
+    emit: (event, recipientUserId) =>
+      outbox.push({ event, recipientUserId: recipientUserId ?? null }),
+  });
   persist();
+  outbox.forEach(publish);
   return result;
-}
-
-export function nextId(db: DbState, prefix: string): string {
-  db.sequence += 1;
-  return `${prefix}_${String(db.sequence).padStart(4, '0')}`;
 }

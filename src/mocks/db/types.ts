@@ -1,6 +1,6 @@
 import type { CartItemInput } from '@/contracts/cart';
 import type { Nft } from '@/contracts/nft';
-import type { Order } from '@/contracts/order';
+import type { Order, OrderStatus } from '@/contracts/order';
 import type { Quote } from '@/contracts/quote';
 import type { User } from '@/contracts/auth';
 import type { Wallet } from '@/contracts/wallet';
@@ -20,6 +20,7 @@ export interface CartRecord {
   id: string;
   userId: string | null;
   items: CartItemInput[];
+  couponCode: string | null;
   version: number;
 }
 
@@ -35,8 +36,11 @@ export interface QuoteRecord extends Quote {
 
 export interface OrderRecord extends Order {
   userId: string;
+  quoteId: string;
   idempotencyKey: string;
   requestFingerprint: string;
+  settlesAt: string;
+  plannedOutcome: Exclude<OrderStatus, 'pending'>;
 }
 
 export interface DbState {
@@ -51,4 +55,5 @@ export interface DbState {
   coupons: CouponRecord[];
   quotes: QuoteRecord[];
   orders: OrderRecord[];
+  checkoutDisruptionApplied: boolean;
 }

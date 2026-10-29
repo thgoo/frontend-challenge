@@ -1,6 +1,7 @@
 import { HttpResponse } from 'msw';
 import type { z } from 'zod';
 import type { ApiError, ApiErrorCode } from '@/contracts/common';
+import type { Failure } from '../domain/result';
 
 export function apiError(
   status: number,
@@ -9,6 +10,10 @@ export function apiError(
   fieldErrors?: Record<string, string>,
 ) {
   return HttpResponse.json<ApiError>({ code, message, fieldErrors }, { status });
+}
+
+export function failureResponse({ status, code, message, fieldErrors }: Failure) {
+  return apiError(status, code, message, fieldErrors);
 }
 
 const STATUS_CODES: Record<number, ApiErrorCode> = {

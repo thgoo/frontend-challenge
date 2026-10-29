@@ -1,9 +1,8 @@
 import type { Session, User } from '@/contracts/auth';
-import { mutateDb, readDb } from '../db/store';
+import { readDb, transaction } from '../db/store';
 import type { UserRecord } from '../db/types';
+import { SESSION_COOKIE } from './cookies';
 import { apiError } from './responses';
-
-export const SESSION_COOKIE = 'session';
 
 export function toUser({ passwordHash, passwordSalt, ...user }: UserRecord): User {
   return user;
@@ -12,27 +11,26 @@ export function toUser({ passwordHash, passwordSalt, ...user }: UserRecord): Use
 export function createSession(userId: string, ttlMs: number) {
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + ttlMs).toISOString();
-  mutateDb((db) => {
+  transaction(({ db }) => {
     db.sessions.push({ token, userId, expiresAt });
   });
   return { token, expiresAt };
 }
 
-export function sessionCookie(token: string, expiresAt: string) {
-  return `${SESSION_COOKIE}=${token}; Path=/; SameSite=Lax; Expires=${new Date(expiresAt).toUTCString()}`;
-}
-
-export const CLEAR_SESSION_COOKIE = `${SESSION_COOKIE}=; Path=/; SameSite=Lax; Max-Age=0`;
-
 export function deleteSession(token: string | undefined) {
   if (!token) return;
-  mutateDb((db) => {
+  transaction(({ db }) => {
     db.sessions = db.sessions.filter((session) => session.token !== token);
   });
 }
 
 export function toSession(user: UserRecord, expiresAt: string): Session {
   return { user: toUser(user), expiresAt };
+}
+
+export function currentUser(cookies: Record<string, string>): UserRecord | null {
+  const auth = authenticate(cookies);
+  return auth.ok ? auth.user : null;
 }
 
 type AuthResult =

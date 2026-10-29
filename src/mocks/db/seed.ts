@@ -28,5 +28,6 @@ export async function createSeed(scenario: Scenario): Promise<DbState> {
     coupons: structuredClone(COUPON_FIXTURES),
     quotes: [],
     orders: [],
+    checkoutDisruptionApplied: false,
   };
 }
