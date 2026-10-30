@@ -22,7 +22,7 @@ export const FIELD_ERRORS = {
   couponInvalid: 'coupon.invalid',
   couponExpired: 'coupon.expired',
   fullNameRequired: 'fullName.required',
-  countryRequired: 'country.required',
+  noteTooLong: 'note.tooLong',
   amountInvalid: 'amount.invalid',
   walletRequired: 'wallet.required',
   walletLabelRequired: 'wallet.labelRequired',

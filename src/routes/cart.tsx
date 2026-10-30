@@ -9,6 +9,7 @@ import { CouponForm } from '@/features/cart/components/coupon-form';
 import { PriceSummary, PriceSummarySkeleton } from '@/features/cart/components/price-summary';
 import { useCart } from '@/features/cart/queries';
 import { NftShelf } from '@/features/catalog/components/nft-shelf';
+import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
 
 export const Route = createFileRoute('/cart')({
   staticData: { hideMobileTabBar: true },
@@ -23,23 +24,7 @@ function CartPage() {
     <div className="page-container grid grid-cols-1 gap-16 pt-6 pb-10 lg:gap-24 lg:pt-8 lg:pb-0">
       <div className="grid grid-cols-1 gap-6 lg:gap-3">
         <MobilePageHeader title="Carrinho de NFTs" />
-        <nav aria-label="Trilha" className="hidden text-[15px] font-bold lg:block">
-          <ol className="flex gap-2">
-            <li>
-              <Link to="/" className="hover:text-highlight">
-                Início
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link to="/" hash="mercado" className="hover:text-highlight">
-                Mercado
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Carrinho</li>
-          </ol>
-        </nav>
+        <MarketplaceBreadcrumb current="Carrinho" />
 
         {error && !cart ? (
           <ErrorState

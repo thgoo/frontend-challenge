@@ -20,7 +20,7 @@ const MESSAGES: Record<FieldError, string> = {
   'coupon.invalid': 'Cupom inválido',
   'coupon.expired': 'Este cupom expirou',
   'fullName.required': 'Informe seu nome completo',
-  'country.required': 'Informe seu país',
+  'note.tooLong': 'Use no máximo 280 caracteres',
   'amount.invalid': 'Informe um valor como 0,5',
   'wallet.required': 'Selecione uma carteira',
   'wallet.labelRequired': 'Dê um nome à carteira',

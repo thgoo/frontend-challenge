@@ -6,7 +6,7 @@ import {
   type Network,
   type WalletConnectionInput,
 } from '@/contracts/wallet';
-import { http, request } from '@/lib/http';
+import { request } from '@/lib/http';
 
 export function createQuote(network: Network) {
   return request(quoteSchema, { method: 'POST', url: '/quotes', data: { network } });
@@ -41,8 +41,4 @@ export function fetchWalletConnection(signal?: AbortSignal) {
 
 export function connectWallet(input: WalletConnectionInput) {
   return request(walletConnectionSchema, { method: 'PUT', url: '/wallet-connection', data: input });
-}
-
-export async function disconnectWallet() {
-  await http.delete('/wallet-connection');
 }

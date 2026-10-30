@@ -12,7 +12,6 @@ import { ApiRequestError } from '@/lib/api-error';
 import {
   connectWallet,
   createQuote,
-  disconnectWallet,
   fetchOrder,
   fetchOrders,
   fetchWalletConnection,
@@ -68,19 +67,18 @@ export function useConnectWallet() {
   });
 }
 
-export function useDisconnectWallet() {
-  const queryClient = useQueryClient();
-  const userId = useCurrentUserId();
-  return useMutation({
-    mutationFn: disconnectWallet,
-    onSuccess: () => {
-      if (userId) queryClient.setQueryData(walletConnectionKey(userId), null);
-    },
+/**
+ * A quote locks prices for the order, so it is fetched like data and shown as the total. It is
+ * only replaced on purpose (network change or "Atualizar total"), never silently on focus.
+ */
+export function quoteQueryOptions(userId: string | null, network: Network) {
+  return queryOptions({
+    queryKey: [...userKey(userId ?? 'anonymous'), 'quote', network] as const,
+    queryFn: userId ? () => createQuote(network) : skipToken,
+    staleTime: Infinity,
+    gcTime: 0,
+    refetchOnWindowFocus: false,
   });
-}
-
-export function useCreateQuote() {
-  return useMutation({ mutationFn: createQuote });
 }
 
 const MAX_ORDER_RETRIES = 2;

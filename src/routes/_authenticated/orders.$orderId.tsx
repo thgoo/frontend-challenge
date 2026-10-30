@@ -8,7 +8,7 @@ import { orderQueryOptions } from '@/features/checkout/queries';
 import { hasErrorCode } from '@/lib/api-error';
 
 export const Route = createFileRoute('/_authenticated/orders/$orderId')({
-  head: () => ({ meta: [{ title: 'Order · NFT Marketplace' }] }),
+  head: () => ({ meta: [{ title: 'Pedido · Kurio' }] }),
   component: OrderPage,
 });
 
@@ -19,18 +19,18 @@ function OrderPage() {
   );
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-8 px-4 py-10 sm:px-8">
+    <div className="page-container grid grid-cols-1 gap-8 py-10 lg:py-16">
       {isPending ? (
-        <Skeleton className="h-80 w-full rounded-2xl" />
+        <Skeleton className="mx-auto h-[600px] w-full max-w-[578px]" />
       ) : hasErrorCode(error, 'NOT_FOUND', 'FORBIDDEN') ? (
-        <EmptyState title="Order not found">
-          <Link to="/" className="text-primary underline">
-            Back to the marketplace
+        <EmptyState title="Pedido não encontrado">
+          <Link to="/" hash="mercado" className="text-highlight underline">
+            Explorar o mercado
           </Link>
         </EmptyState>
       ) : error ? (
         <ErrorState
-          title="Could not load this order"
+          title="Não foi possível carregar este pedido"
           error={error}
           onRetry={() => void refetch()}
         />

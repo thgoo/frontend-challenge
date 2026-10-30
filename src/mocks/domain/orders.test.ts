@@ -27,7 +27,7 @@ async function checkoutReady(quantity = 2) {
     quoteId: quote.value.id,
     walletId: 'wal_alice_1',
     network: 'ethereum',
-    buyer: { fullName: 'Alice Collector', email: 'alice@example.com', country: 'BR' },
+    buyer: { fullName: 'Alice Collector', email: 'alice@example.com' },
   };
   return { tx, user, edition: ref.edition, input };
 }

@@ -1,125 +1,149 @@
 import { Link } from '@tanstack/react-router';
-import { CheckCircle2, ExternalLink, Loader2, XCircle } from 'lucide-react';
+import { cn } from 'cn';
+import { Loader2, X, XCircle } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { EthAmount } from '@/components/eth-amount';
 import { Button } from '@/components/ui/button';
 import type { Order } from '@/contracts/order';
-import { PriceSummary } from '@/features/cart/components/price-summary';
-import { NETWORK_LABELS } from '@/lib/networks';
+import { LOCALE } from '@/i18n/locale';
+import { EXPLORER_LABELS, NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
-import { NftImage } from '@/components/nft-image';
+import { QuoteLines } from './quote-lines';
 
-function PendingOrder({ order }: { order: Order }) {
+const dateFormat = new Intl.DateTimeFormat(LOCALE, { dateStyle: 'medium' });
+
+function SummaryBar({ order }: { order: Order }) {
+  const items = [
+    { label: 'ID da transação', value: order.txHash ? shortenAddress(order.txHash) : 'Pendente' },
+    { label: 'Data', value: dateFormat.format(new Date(order.createdAt)) },
+    { label: 'Total', value: <EthAmount value={order.receipt.totalEth} /> },
+    { label: 'Carteira', value: shortenAddress(order.walletAddress) },
+  ];
   return (
-    <section
-      role="status"
-      className="grid justify-items-center gap-4 rounded-2xl bg-card p-10 text-center"
-    >
-      <Loader2
-        aria-hidden="true"
-        className="size-10 animate-spin text-primary motion-reduce:animate-none"
-      />
-      <h1 className="text-2xl font-semibold">Waiting for payment confirmation</h1>
-      <p className="max-w-md text-muted-foreground">
-        Order {order.id} was submitted. You can safely refresh or come back later: this page updates
-        on its own.
-      </p>
-    </section>
+    <dl className="grid grid-cols-2 gap-y-3 border-y border-primary px-6 py-3 text-sm sm:grid-cols-4 sm:px-9">
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          className={cn('grid gap-0.5 px-3', index > 0 && 'sm:border-l sm:border-primary')}
+        >
+          <dt className="font-bold text-muted-foreground">{item.label}</dt>
+          <dd className="text-muted-foreground">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
-function DeclinedOrder({ order }: { order: Order }) {
-  return (
-    <section
-      role="alert"
-      className="grid justify-items-center gap-4 rounded-2xl bg-card p-10 text-center"
-    >
-      <XCircle aria-hidden="true" className="size-10 text-destructive" />
-      <h1 className="text-2xl font-semibold">Payment declined</h1>
-      <p className="max-w-md text-muted-foreground">
-        {order.failureReason ?? 'The payment could not be completed.'} Your cart was kept, so you
-        can try again.
-      </p>
-      <Button asChild>
-        <Link to="/checkout">Back to checkout</Link>
-      </Button>
-    </section>
-  );
-}
-
-/** Renders only the immutable receipt snapshot, never live catalog data. */
-function Receipt({ order }: { order: Order }) {
+function OrderCard({
+  order,
+  icon,
+  title,
+  status,
+  children,
+}: {
+  order: Order;
+  icon: ReactNode;
+  title: string;
+  status: 'status' | 'alert';
+  children: ReactNode;
+}) {
   const { receipt } = order;
   return (
-    <article className="grid gap-8 rounded-2xl bg-card p-6 sm:p-10">
-      <header className="grid gap-3">
-        <p role="status" className="flex items-center gap-2 text-emerald-400">
-          <CheckCircle2 aria-hidden="true" />
-          Payment confirmed
-        </p>
-        <h1 className="text-3xl font-semibold">Thank you for your purchase</h1>
-        <dl className="grid gap-1 text-sm">
-          <div className="flex flex-wrap gap-2">
-            <dt className="text-muted-foreground">Order:</dt>
-            <dd className="font-mono">{order.id}</dd>
+    <article className="relative mx-auto w-full max-w-[578px] border-b-[10px] border-primary bg-card">
+      <Link
+        to="/"
+        aria-label="Fechar e voltar ao início"
+        className="absolute top-4 right-4 grid size-8 place-items-center rounded text-primary hover:bg-accent"
+      >
+        <X aria-hidden="true" className="size-5" />
+      </Link>
+      <header role={status} className="grid justify-items-center gap-4 px-6 pt-6 pb-5 text-center">
+        {icon}
+        <h1 className="text-base font-bold text-muted-foreground">{title}</h1>
+      </header>
+      <SummaryBar order={order} />
+      <div className="grid gap-4 px-6 pt-6 pb-10 sm:px-11">
+        <h2 className="text-[15px] font-bold">Detalhes da transação</h2>
+        <QuoteLines lines={receipt.lines} />
+        <dl className="grid gap-2 border-b border-primary/30 pb-3 text-[15px]">
+          <div className="flex justify-between gap-4">
+            <dt>Taxa de rede</dt>
+            <dd>
+              <EthAmount value={receipt.networkFeeEth} />
+            </dd>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <dt className="text-muted-foreground">Transaction:</dt>
-            <dd className="font-mono break-all">{order.txHash}</dd>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <dt className="text-muted-foreground">Paid from:</dt>
-            <dd className="font-mono">
-              {shortenAddress(order.walletAddress)} on {NETWORK_LABELS[receipt.network]}
+          <div className="flex justify-between gap-4 font-bold">
+            <dt>Total</dt>
+            <dd className="text-lg text-highlight">
+              <EthAmount value={receipt.totalEth} />
             </dd>
           </div>
         </dl>
-        {order.explorerUrl && (
-          <a
-            href={order.explorerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-primary underline underline-offset-4"
-          >
-            View on block explorer (simulated transaction)
-            <ExternalLink aria-hidden="true" className="size-4" />
-            <span className="sr-only">(opens in a new tab)</span>
-          </a>
-        )}
-      </header>
-      <section aria-labelledby="receipt-items" className="grid gap-3">
-        <h2 id="receipt-items" className="text-lg font-semibold">
-          Items
-        </h2>
-        <ul className="grid gap-3">
-          {receipt.lines.map((line) => (
-            <li key={`${line.nftId}:${line.editionId}`} className="flex items-center gap-4">
-              <NftImage image={line.image} alt="" sizes="56px" className="size-14 rounded-lg" />
-              <div className="grid flex-1">
-                <span className="font-medium">{line.nftName}</span>
-                <span className="text-sm text-muted-foreground">
-                  {line.editionName} · {line.quantity} × <EthAmount value={line.unitPriceEth} />
-                </span>
-              </div>
-              <EthAmount value={line.lineTotalEth} className="font-mono" />
-            </li>
-          ))}
-        </ul>
-      </section>
-      <PriceSummary summary={receipt} />
-      <Button asChild variant="outline" className="justify-self-start">
-        <Link to="/">Continue browsing</Link>
-      </Button>
+        {children}
+      </div>
     </article>
   );
 }
 
 export function OrderStatus({ order }: { order: Order }) {
+  const network = NETWORK_LABELS[order.receipt.network];
   switch (order.status) {
     case 'pending':
-      return <PendingOrder order={order} />;
+      return (
+        <OrderCard
+          order={order}
+          status="status"
+          title="Aguardando confirmação do pagamento"
+          icon={
+            <Loader2
+              aria-hidden="true"
+              className="size-16 animate-spin text-primary motion-reduce:animate-none"
+            />
+          }
+        >
+          <p className="text-center text-sm leading-6 text-muted-foreground">
+            O pedido {order.id} foi enviado. Você pode atualizar a página ou voltar depois: esta
+            tela se atualiza sozinha.
+          </p>
+        </OrderCard>
+      );
     case 'declined':
-      return <DeclinedOrder order={order} />;
+      return (
+        <OrderCard
+          order={order}
+          status="alert"
+          title="Pagamento recusado"
+          icon={<XCircle aria-hidden="true" className="size-16 text-error" />}
+        >
+          <p className="text-center text-sm leading-6 text-muted-foreground">
+            A carteira recusou o pagamento. Seu carrinho foi mantido para você tentar novamente.
+          </p>
+          <Button asChild className="justify-self-center">
+            <Link to="/checkout">Voltar ao pagamento</Link>
+          </Button>
+        </OrderCard>
+      );
     case 'confirmed':
-      return <Receipt order={order} />;
+      return (
+        <OrderCard
+          order={order}
+          status="status"
+          title="Seus NFTs agora estão na sua carteira"
+          icon={<img src="/icons/thank-you.svg" alt="" width={80} height={80} />}
+        >
+          <p className="text-center text-sm leading-6 text-muted-foreground">
+            Transação confirmada na {network}. A propriedade foi transferida para sua carteira
+            conectada e registrada na rede.
+          </p>
+          {order.explorerUrl && (
+            <Button asChild className="h-12 justify-self-center px-4 text-base font-bold">
+              <a href={order.explorerUrl} target="_blank" rel="noopener noreferrer">
+                Ver no {EXPLORER_LABELS[order.receipt.network]}
+                <span className="sr-only"> (transação simulada, abre em nova aba)</span>
+              </a>
+            </Button>
+          )}
+        </OrderCard>
+      );
   }
 }

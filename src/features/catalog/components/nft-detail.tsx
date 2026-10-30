@@ -28,6 +28,7 @@ import { NftGallery } from './nft-gallery';
 import { NftReviews } from './nft-reviews';
 import { NftShelf } from './nft-shelf';
 import { ShareLinks } from './share-links';
+import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
 
 type DetailTab = 'details' | 'reviews';
 
@@ -90,21 +91,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
     <article className="page-container grid gap-16 pt-6 pb-56 lg:gap-24 lg:pt-8 lg:pb-0">
       <title>{`${nft.name} · Kurio`}</title>
       <div className="grid gap-3">
-        <nav aria-label="Trilha" className="hidden text-[15px] font-bold lg:block">
-          <ol className="flex gap-2">
-            <li>
-              <Link to="/" className="hover:text-highlight">
-                Início
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link to="/" hash="mercado" className="hover:text-highlight">
-                Mercado
-              </Link>
-            </li>
-          </ol>
-        </nav>
+        <MarketplaceBreadcrumb />
         <div className="grid gap-6 lg:grid-cols-[573px_minmax(0,1fr)] lg:gap-8">
           <div className="relative">
             <div className="absolute inset-x-3 top-3 z-10 flex justify-between lg:hidden">

@@ -5,7 +5,7 @@ import type { Quote } from '../src/contracts/quote';
 import { ALICE, api, BOB, login, openWithMocks, reloadWithMocks } from './support/mock-api';
 
 const ITEM = { nftId: 'nft_002', editionId: 'ed_002_1' };
-const BUYER = { fullName: 'Alice Collector', email: 'alice@example.com', country: 'BR' };
+const BUYER = { fullName: 'Alice Collector', email: 'alice@example.com' };
 
 async function addToCart(page: Page, quantity = 1) {
   return api<Cart>(page, '/cart/items', { method: 'POST', body: { ...ITEM, quantity } });

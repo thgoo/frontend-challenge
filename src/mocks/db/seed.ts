@@ -5,7 +5,7 @@ import { createNftFixtures } from './fixtures/nfts';
 import { USER_FIXTURES, WALLET_FIXTURES } from './fixtures/users';
 import type { DbState, UserRecord } from './types';
 
-export const DB_SCHEMA_VERSION = 4;
+export const DB_SCHEMA_VERSION = 5;
 const FIXTURE_SEED = 20_261_029;
 
 export async function createSeed(scenario: Scenario): Promise<DbState> {

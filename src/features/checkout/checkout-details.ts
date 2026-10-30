@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 import { buyerSchema } from '@/contracts/order';
 import { networkSchema } from '@/contracts/wallet';
 import { readStored, removeStored, writeStored } from '@/lib/session-storage';
 
 export const checkoutDetailsSchema = buyerSchema.extend({
-  walletId: z.string().min(1, 'Select a wallet'),
+  walletId: z.string().min(1, FIELD_ERRORS.walletRequired),
   network: networkSchema,
 });
 export type CheckoutDetails = z.infer<typeof checkoutDetailsSchema>;

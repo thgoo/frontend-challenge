@@ -12,7 +12,7 @@ export const TERMINAL_ORDER_STATUSES: ReadonlySet<OrderStatus> = new Set(['confi
 export const buyerSchema = z.object({
   fullName: z.string().trim().min(2, FIELD_ERRORS.fullNameRequired),
   email: z.email(FIELD_ERRORS.emailInvalid),
-  country: z.string().trim().min(2, FIELD_ERRORS.countryRequired),
+  note: z.string().trim().max(280, FIELD_ERRORS.noteTooLong).optional(),
 });
 export type Buyer = z.infer<typeof buyerSchema>;
 
