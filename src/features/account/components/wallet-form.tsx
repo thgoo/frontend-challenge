@@ -1,10 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { FormField } from '@/components/form-field';
+import { Field, FormField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   walletInputSchema,
   walletProviderSchema,
@@ -16,13 +21,21 @@ import { applyServerErrors } from '@/lib/forms';
 import { WALLET_PROVIDER_LABELS } from '@/lib/wallets';
 import { useSaveWallet } from '../queries';
 
-const ROLE_TITLES: Record<WalletRole, string> = {
-  primary: 'Primary wallet',
-  secondary: 'Secondary wallet',
+const ROLE_COPY: Record<WalletRole, { title: string; description: string }> = {
+  primary: {
+    title: 'Carteira principal',
+    description: 'Estas carteiras ficam disponíveis no pagamento e para receber NFTs comprados.',
+  },
+  secondary: {
+    title: 'Carteira secundária',
+    description: 'Uma alternativa para pagar ou receber em outra carteira.',
+  },
 };
 
 export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet | undefined }) {
   const save = useSaveWallet();
+  const copy = ROLE_COPY[role];
+  const headingId = `${role}-wallet-heading`;
   const { register, handleSubmit, setError, control, reset, formState } = useForm<WalletInput>({
     resolver: zodResolver(walletInputSchema),
     defaultValues: wallet ?? { label: '', address: '', provider: 'metamask' },
@@ -35,7 +48,7 @@ export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet 
       {
         onSuccess: () => {
           reset(input);
-          toast.success(`${ROLE_TITLES[role]} saved.`);
+          toast.success(`${copy.title} salva.`);
         },
         onError: (error) => {
           toast.error(applyServerErrors(error, setError));
@@ -47,42 +60,72 @@ export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet 
   return (
     <form
       noValidate
-      aria-labelledby={`${role}-wallet-heading`}
+      aria-labelledby={headingId}
       onSubmit={(event) => void submit(event)}
-      className="grid content-start gap-4 rounded-2xl bg-card p-6"
+      className="grid content-start gap-6"
     >
-      <h2 id={`${role}-wallet-heading`} className="text-xl font-semibold">
-        {ROLE_TITLES[role]}
-      </h2>
-      <FormField label="Label" error={errors.label?.message} {...register('label')} />
-      <FormField
-        label="Address"
-        placeholder="0x…"
-        autoComplete="off"
-        spellCheck={false}
-        className="font-mono"
-        error={errors.address?.message}
-        {...register('address')}
-      />
-      <fieldset className="grid gap-2">
-        <legend className="mb-2 text-sm font-medium">Provider</legend>
+      <header className="grid gap-1">
+        <h2 id={headingId} className="text-[17px] font-bold">
+          {copy.title}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {wallet ? copy.description : 'Você ainda não adicionou esta carteira.'}
+        </p>
+      </header>
+      <div className="grid gap-x-7 gap-y-6 sm:grid-cols-2">
+        <FormField
+          label="Apelido da carteira"
+          required
+          error={errors.label?.message}
+          {...register('label')}
+        />
+        <FormField
+          label="Endereço da carteira"
+          required
+          placeholder="Endereço 0x da carteira"
+          autoComplete="off"
+          spellCheck={false}
+          className="font-mono"
+          error={errors.address?.message}
+          {...register('address')}
+        />
         <Controller
           control={control}
           name="provider"
           render={({ field }) => (
-            <RadioGroup value={field.value} onValueChange={field.onChange} aria-label="Provider">
-              {walletProviderSchema.options.map((provider) => (
-                <div key={provider} className="flex items-center gap-2">
-                  <RadioGroupItem id={`${role}-${provider}`} value={provider} />
-                  <Label htmlFor={`${role}-${provider}`}>{WALLET_PROVIDER_LABELS[provider]}</Label>
-                </div>
-              ))}
-            </RadioGroup>
+            <Field label="Tipo de carteira" required>
+              {(fieldControl) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(walletProviderSchema.parse(value));
+                  }}
+                >
+                  <SelectTrigger
+                    {...fieldControl}
+                    className="h-10 w-full rounded-sm border-primary/40"
+                  >
+                    <SelectValue placeholder="Selecione uma carteira" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {walletProviderSchema.options.map((provider) => (
+                      <SelectItem key={provider} value={provider}>
+                        {WALLET_PROVIDER_LABELS[provider]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </Field>
           )}
         />
-      </fieldset>
-      <Button type="submit" disabled={!isDirty || save.isPending} className="justify-self-start">
-        {save.isPending ? 'Saving…' : wallet ? 'Save changes' : 'Add wallet'}
+      </div>
+      <Button
+        type="submit"
+        disabled={!isDirty || save.isPending}
+        className="h-10 justify-self-start px-4 font-bold"
+      >
+        {save.isPending ? 'Salvando…' : 'Salvar carteira'}
       </Button>
     </form>
   );

@@ -1,16 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { AccountLayout } from '@/features/account/components/account-layout';
 import { FavoritesList } from '@/features/favorites/components/favorites-list';
 
 export const Route = createFileRoute('/_authenticated/favorites')({
-  head: () => ({ meta: [{ title: 'Favoritos · Kurio' }] }),
+  head: () => ({ meta: [{ title: 'Lista de interesse · Kurio' }] }),
   component: FavoritesPage,
 });
 
 function FavoritesPage() {
   return (
-    <div className="page-container grid gap-8 py-10">
-      <h1 className="text-[28px] font-bold">Favoritos</h1>
+    <AccountLayout>
+      <h1 className="text-[17px] font-bold">Lista de interesse</h1>
       <FavoritesList />
-    </div>
+    </AccountLayout>
   );
 }

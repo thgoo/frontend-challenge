@@ -21,7 +21,7 @@ export function ProfileForm({ user }: { user: User }) {
     update.mutate(input, {
       onSuccess: (saved) => {
         reset({ name: saved.name, username: saved.username, email: saved.email, bio: saved.bio });
-        toast.success('Profile updated.');
+        toast.success('Perfil atualizado.');
       },
       onError: (error) => {
         toast.error(applyServerErrors(error, setError));
@@ -30,31 +30,42 @@ export function ProfileForm({ user }: { user: User }) {
   });
 
   return (
-    <form noValidate onSubmit={(event) => void submit(event)} className="grid gap-4">
+    <form
+      noValidate
+      onSubmit={(event) => void submit(event)}
+      className="grid gap-x-7 gap-y-6 sm:grid-cols-2"
+    >
       <FormField
-        label="Name"
+        label="Nome de exibição"
+        required
         autoComplete="name"
         error={errors.name?.message}
         {...register('name')}
       />
       <FormField
-        label="Username"
+        label="Nome de usuário"
+        required
         autoComplete="username"
         error={errors.username?.message}
         {...register('username')}
       />
       <FormField
-        label="Email"
+        label="E-mail"
+        required
         type="email"
         autoComplete="email"
         error={errors.email?.message}
         {...register('email')}
       />
-      <Field label="Bio" hint="Up to 280 characters." error={errors.bio?.message}>
-        {(control) => <Textarea rows={4} {...control} {...register('bio')} />}
+      <Field label="Bio" hint="Até 280 caracteres." error={errors.bio?.message}>
+        {(control) => <Textarea rows={3} {...control} {...register('bio')} />}
       </Field>
-      <Button type="submit" disabled={!isDirty || update.isPending} className="justify-self-start">
-        {update.isPending ? 'Saving…' : 'Save profile'}
+      <Button
+        type="submit"
+        disabled={!isDirty || update.isPending}
+        className="h-10 w-[131px] justify-self-start font-bold"
+      >
+        {update.isPending ? 'Salvando…' : 'Salvar'}
       </Button>
     </form>
   );

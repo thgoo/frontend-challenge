@@ -1,14 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { ErrorState } from '@/components/query-states';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AccountLayout } from '@/features/account/components/account-layout';
 import { AvatarUpload } from '@/features/account/components/avatar-upload';
 import { PasswordForm } from '@/features/account/components/password-form';
 import { ProfileForm } from '@/features/account/components/profile-form';
 import { useProfile } from '@/features/account/queries';
-import { SignOutButton } from '@/features/auth/components/sign-out-button';
 
 export const Route = createFileRoute('/_authenticated/profile')({
-  head: () => ({ meta: [{ title: 'Profile · NFT Marketplace' }] }),
+  head: () => ({ meta: [{ title: 'Perfil · Kurio' }] }),
   component: ProfilePage,
 });
 
@@ -16,44 +16,30 @@ function ProfilePage() {
   const { data: user, error, refetch } = useProfile();
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-10 px-4 py-10 sm:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl font-semibold sm:text-5xl">Profile</h1>
-        <SignOutButton />
-      </div>
+    <AccountLayout>
+      <h1 className="text-[17px] font-bold">Perfil do colecionador</h1>
       {error && !user ? (
         <ErrorState
-          title="Could not load your profile"
+          title="Não foi possível carregar seu perfil"
           error={error}
           onRetry={() => void refetch()}
         />
       ) : !user ? (
-        <Skeleton className="h-96 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full" />
       ) : (
         <>
-          <section aria-labelledby="avatar-heading" className="grid gap-4 rounded-2xl bg-card p-6">
-            <h2 id="avatar-heading" className="text-xl font-semibold">
-              Avatar
-            </h2>
+          <section aria-label="Dados do perfil" className="grid gap-6">
             <AvatarUpload user={user} />
-          </section>
-          <section aria-labelledby="details-heading" className="grid gap-4 rounded-2xl bg-card p-6">
-            <h2 id="details-heading" className="text-xl font-semibold">
-              Details
-            </h2>
             <ProfileForm key={user.id} user={user} />
           </section>
-          <section
-            aria-labelledby="password-heading"
-            className="grid gap-4 rounded-2xl bg-card p-6"
-          >
-            <h2 id="password-heading" className="text-xl font-semibold">
-              Password
+          <section aria-labelledby="password-heading" className="grid gap-6">
+            <h2 id="password-heading" className="text-[17px] font-bold">
+              Alterar senha
             </h2>
             <PasswordForm />
           </section>
         </>
       )}
-    </div>
+    </AccountLayout>
   );
 }
