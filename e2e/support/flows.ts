@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { ALICE, openWithMocks } from './mock-api';
 
 export async function signInThroughUi(page: Page, credentials = ALICE) {
@@ -26,4 +26,18 @@ export async function reachReview(page: Page) {
   await expect(page.getByText(/^Connected to /)).toBeVisible();
   await page.getByRole('button', { name: 'Review order' }).click();
   await expect(page.getByRole('heading', { name: 'Review your order' })).toBeVisible();
+}
+
+/** Edits catalog filters in the sidebar (desktop) or the drawer (mobile), closing the drawer after. */
+export async function editCatalogFilters(page: Page, edit: (panel: Locator) => Promise<void>) {
+  const drawerTrigger = page.getByRole('button', { name: /^Filters/ });
+  if (!(await drawerTrigger.isVisible())) {
+    await edit(page.getByRole('complementary', { name: 'Filters' }));
+    return;
+  }
+  await drawerTrigger.click();
+  const drawer = page.getByRole('dialog', { name: 'Filters' });
+  await edit(drawer);
+  await page.keyboard.press('Escape');
+  await expect(drawer).toBeHidden();
 }
