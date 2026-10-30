@@ -1,4 +1,5 @@
 import type { DbState } from '../db/types';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 export function findAccountConflicts(
   db: DbState,
@@ -8,10 +9,10 @@ export function findAccountConflicts(
   const others = db.users.filter((user) => user.id !== exceptUserId);
   const conflicts: Record<string, string> = {};
   if (others.some((user) => user.email.toLowerCase() === email.toLowerCase())) {
-    conflicts.email = 'This email is already registered';
+    conflicts.email = FIELD_ERRORS.emailTaken;
   }
   if (others.some((user) => user.username === username)) {
-    conflicts.username = 'This username is already taken';
+    conflicts.username = FIELD_ERRORS.usernameTaken;
   }
   return conflicts;
 }

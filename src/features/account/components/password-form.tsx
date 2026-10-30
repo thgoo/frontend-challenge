@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { FormField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 import { passwordChangeSchema } from '@/contracts/profile';
 import { applyServerErrors } from '@/lib/forms';
 import { useChangePassword } from '../queries';
@@ -12,7 +13,7 @@ const passwordFormSchema = passwordChangeSchema
   .and(z.object({ confirmPassword: z.string() }))
   .refine((input) => input.newPassword === input.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'Passwords do not match',
+    message: FIELD_ERRORS.passwordMismatch,
   });
 type PasswordForm = z.infer<typeof passwordFormSchema>;
 

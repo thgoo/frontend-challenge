@@ -1,3 +1,5 @@
+import { DECIMAL_SEPARATOR, LOCALE } from '@/i18n/locale';
+
 const DECIMALS = 18;
 const WEI_PER_ETH = 10n ** BigInt(DECIMALS);
 const BASIS_POINTS = 10_000n;
@@ -30,6 +32,6 @@ export function applyBasisPoints(wei: bigint, basisPoints: number): bigint {
 export function displayEth(value: string, maxFractionDigits = 18, minFractionDigits = 2): string {
   const [whole = '0', fraction = ''] = formatEth(parseEth(value)).split('.');
   const truncated = fraction.slice(0, maxFractionDigits).padEnd(minFractionDigits, '0');
-  const groupedWhole = BigInt(whole).toLocaleString('en-US');
-  return `${groupedWhole}.${truncated} ETH`;
+  const groupedWhole = BigInt(whole).toLocaleString(LOCALE);
+  return `${groupedWhole}${DECIMAL_SEPARATOR}${truncated} ETH`;
 }

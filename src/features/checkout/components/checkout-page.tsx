@@ -9,7 +9,8 @@ import { useWallets } from '@/features/account/queries';
 import { useCurrentUserId } from '@/features/auth/use-current-user-id';
 import { PriceSummary } from '@/features/cart/components/price-summary';
 import { useCart } from '@/features/cart/queries';
-import { hasErrorCode, toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
+import { hasErrorCode } from '@/lib/api-error';
 import { checkoutDraft, type CheckoutDetails } from '../checkout-details';
 import { ordersQueryOptions, useCreateQuote, usePlaceOrder } from '../queries';
 import { isQuoteStale } from '../quote-freshness';
@@ -30,7 +31,7 @@ interface Notice {
 
 function noticeFor(error: unknown): Notice {
   return {
-    message: toApiRequestError(error).message,
+    message: errorMessage(error),
     linkToCart: hasErrorCode(
       error,
       'AVAILABILITY_CONFLICT',

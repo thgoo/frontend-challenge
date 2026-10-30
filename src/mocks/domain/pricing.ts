@@ -3,6 +3,7 @@ import type { Coupon, PriceSummary } from '@/contracts/pricing';
 import { applyBasisPoints, formatEth, parseEth, sumEth } from '@/lib/eth';
 import type { DbState } from '../db/types';
 import { fail, ok, type Result } from './result';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 export const DEFAULT_NETWORK: Network = 'ethereum';
 
@@ -17,12 +18,12 @@ export function findCoupon(db: DbState, code: string, now: number): Result<Coupo
   const coupon = db.coupons.find((candidate) => candidate.code === code.toUpperCase());
   if (!coupon) {
     return fail(422, 'COUPON_INVALID', 'This coupon does not exist.', {
-      code: 'Invalid coupon code',
+      code: FIELD_ERRORS.couponInvalid,
     });
   }
   if (Date.parse(coupon.expiresAt) <= now) {
     return fail(422, 'COUPON_EXPIRED', 'This coupon has expired.', {
-      code: 'This coupon has expired',
+      code: FIELD_ERRORS.couponExpired,
     });
   }
   return ok({ code: coupon.code, basisPoints: coupon.basisPoints });

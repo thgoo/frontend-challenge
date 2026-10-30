@@ -74,8 +74,8 @@ test.describe('form validation', () => {
     await email.press('Enter');
     await expect(email).toBeFocused();
     await expect(email).toHaveAttribute('aria-invalid', 'true');
-    await expect(email).toHaveAccessibleDescription('Enter a valid email');
-    await expect(password).toHaveAccessibleDescription('Enter your password');
+    await expect(email).toHaveAccessibleDescription('Informe um e-mail válido');
+    await expect(password).toHaveAccessibleDescription('Informe sua senha');
 
     await email.fill('alice@example.com');
     await password.fill('Password123');

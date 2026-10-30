@@ -5,7 +5,7 @@ import { EthAmount } from '@/components/eth-amount';
 import { QuantityStepper } from '@/components/quantity-stepper';
 import { Button } from '@/components/ui/button';
 import type { CartLine } from '@/contracts/cart';
-import { toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
 import { formatEth, parseEth } from '@/lib/eth';
 import { exceedsAvailability } from '../cart-lines';
 import { useRemoveCartItem, useUpdateCartItem } from '../queries';
@@ -17,7 +17,7 @@ export function CartLineItem({ line }: { line: CartLine }) {
   const max = Math.min(line.available, line.maxPerOrder);
   const key = { nftId: line.nftId, editionId: line.editionId };
   const onError = (error: unknown) => {
-    toast.error(toApiRequestError(error).message);
+    toast.error(errorMessage(error));
   };
 
   return (

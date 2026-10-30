@@ -11,6 +11,7 @@ import { apiPath } from '../http/api';
 import { createSalt, hashPassword, verifyPassword } from '../http/password';
 import { apiError, readJson, validationError } from '../http/responses';
 import { authenticate, toUser } from '../http/session';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 async function toDataUrl(file: File): Promise<string> {
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -50,12 +51,12 @@ export const profileHandlers = [
 
     if (!(avatar instanceof File) || !isAllowedAvatarType(avatar.type)) {
       return apiError(422, 'VALIDATION_FAILED', 'Upload a PNG, JPEG or WebP image.', {
-        avatar: 'Use a PNG, JPEG or WebP image',
+        avatar: FIELD_ERRORS.avatarType,
       });
     }
     if (avatar.size > AVATAR_MAX_BYTES) {
       return apiError(422, 'VALIDATION_FAILED', 'The image is too large.', {
-        avatar: 'Use an image up to 2 MB',
+        avatar: FIELD_ERRORS.avatarSize,
       });
     }
     const avatarUrl = await toDataUrl(avatar);
@@ -74,7 +75,7 @@ export const profileHandlers = [
     const { currentPassword, newPassword } = input.data;
     if (!(await verifyPassword(currentPassword, auth.user.passwordSalt, auth.user.passwordHash))) {
       return apiError(422, 'VALIDATION_FAILED', 'The current password is incorrect.', {
-        currentPassword: 'Current password is incorrect',
+        currentPassword: FIELD_ERRORS.passwordIncorrect,
       });
     }
     const passwordSalt = createSalt();

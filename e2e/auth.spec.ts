@@ -10,7 +10,7 @@ test.describe('auth', () => {
     const create = page.getByRole('button', { name: 'Create account' });
 
     await create.click();
-    await expect(page.getByText('Enter your name')).toBeVisible();
+    await expect(page.getByText('Informe seu nome')).toBeVisible();
     await expect(page.getByLabel('Email')).toHaveAttribute('aria-invalid', 'true');
 
     await page.getByLabel('Name', { exact: true }).fill('Carol Collector');
@@ -18,15 +18,13 @@ test.describe('auth', () => {
     await page.getByLabel('Email').fill('alice@example.com');
     await page.getByLabel('Password').fill('short');
     await create.click();
-    await expect(
-      page.getByText('Use 3-20 lowercase letters, numbers or underscores'),
-    ).toBeVisible();
-    await expect(page.getByText('Use at least 8 characters')).toBeVisible();
+    await expect(page.getByText('Use de 3 a 20 letras minúsculas, números ou _')).toBeVisible();
+    await expect(page.getByText('Use pelo menos 8 caracteres')).toBeVisible();
 
     await page.getByLabel('Username').fill('carol');
     await page.getByLabel('Password').fill(CAROL.password);
     await create.click();
-    await expect(page.getByText('This email is already registered')).toBeVisible();
+    await expect(page.getByText('Este e-mail já está cadastrado')).toBeVisible();
 
     await page.getByLabel('Email').fill(CAROL.email);
     await create.click();
@@ -38,7 +36,7 @@ test.describe('auth', () => {
     await signOutThroughUi(page);
     await page.goto('/login');
     await signInThroughUi(page, { ...CAROL, password: 'Wrong12345' });
-    await expect(page.getByText('Invalid email or password.')).toBeVisible();
+    await expect(page.getByText('E-mail ou senha incorretos.')).toBeVisible();
 
     await signInThroughUi(page, CAROL);
     await expect(

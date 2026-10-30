@@ -43,7 +43,9 @@ test.describe('loading states', () => {
 test.describe('failures and recovery', () => {
   test('recovers when the app starts without a connection', async ({ page }) => {
     await openWithMocks(page, '/?scenario=offline');
-    const error = page.getByRole('alert').filter({ hasText: 'Could not reach the server' });
+    const error = page
+      .getByRole('alert')
+      .filter({ hasText: 'Não foi possível conectar ao servidor' });
     await expect(error).toBeVisible(LOADED_TIMEOUT);
 
     await page.evaluate(() => window.__mocks?.reset('default'));

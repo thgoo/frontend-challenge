@@ -5,6 +5,7 @@ import { nextId } from '../domain/ids';
 import { apiPath } from '../http/api';
 import { apiError, readJson, validationError } from '../http/responses';
 import { authenticate } from '../http/session';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 function walletsOf(userId: string): Wallet[] {
   return readDb().wallets[userId] ?? [];
@@ -32,7 +33,7 @@ export const walletHandlers = [
       )
     ) {
       return apiError(409, 'CONFLICT', 'This address is already registered.', {
-        address: 'Already used by your other wallet',
+        address: FIELD_ERRORS.walletAddressDuplicate,
       });
     }
 

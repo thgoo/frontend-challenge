@@ -5,7 +5,7 @@ import { FormField } from '@/components/form-field';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { couponInputSchema, type Coupon, type CouponInput } from '@/contracts/pricing';
-import { toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
 import { applyServerErrors } from '@/lib/forms';
 import { useApplyCoupon, useRemoveCoupon } from '../queries';
 
@@ -30,7 +30,7 @@ export function CouponForm({ coupon }: { coupon: Coupon | null }) {
           onClick={() => {
             remove.mutate(undefined, {
               onError: (error) => {
-                toast.error(toApiRequestError(error).message);
+                toast.error(errorMessage(error));
               },
             });
           }}

@@ -2,7 +2,7 @@ import { CheckCircle2, PlugZap } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import type { Network, Wallet } from '@/contracts/wallet';
-import { toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
 import { NETWORK_LABELS } from '@/lib/networks';
 import { useConnectWallet, useDisconnectWallet, useIsWalletConnected } from '../queries';
 
@@ -57,7 +57,7 @@ export function WalletConnectionStatus({
       )}
       {connect.isError && !connected && (
         <Alert variant="destructive">
-          <AlertDescription>{toApiRequestError(connect.error).message}</AlertDescription>
+          <AlertDescription>{errorMessage(connect.error)}</AlertDescription>
         </Alert>
       )}
     </div>

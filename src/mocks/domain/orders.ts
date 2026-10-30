@@ -13,6 +13,7 @@ import { adjustAvailability } from './inventory';
 import { lineTotal } from './pricing';
 import { fail, ok, type Result } from './result';
 import type { Tx } from './tx';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 const QUOTE_TTL_MS = 10 * 60_000;
 
@@ -94,7 +95,7 @@ function validateQuote(tx: Tx, user: UserRecord, input: CreateOrderInput): Resul
   if (tx.db.orders.some((order) => order.quoteId === quote.id)) return outdated;
   if (quote.network !== input.network) {
     return fail(422, 'VALIDATION_FAILED', 'The network does not match the quote.', {
-      network: 'Network changed',
+      network: FIELD_ERRORS.networkChanged,
     });
   }
 
@@ -137,7 +138,7 @@ export function placeOrder(
   const wallet = tx.db.wallets[user.id]?.find((candidate) => candidate.id === input.walletId);
   if (!wallet) {
     return fail(422, 'VALIDATION_FAILED', 'Select one of your wallets.', {
-      walletId: 'Select a wallet',
+      walletId: FIELD_ERRORS.walletRequired,
     });
   }
 

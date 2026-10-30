@@ -11,7 +11,7 @@ test.describe('account', () => {
 
     await details.getByLabel('Username').fill('bob');
     await details.getByRole('button', { name: 'Save profile' }).click();
-    await expect(details.getByText('This username is already taken')).toBeVisible();
+    await expect(details.getByText('Este nome de usuário já está em uso')).toBeVisible();
     await expect(details.getByLabel('Username')).toHaveAttribute('aria-invalid', 'true');
 
     await details.getByLabel('Username').fill('alice_collector');
@@ -32,7 +32,7 @@ test.describe('account', () => {
       mimeType: 'text/plain',
       buffer: Buffer.from('hello'),
     });
-    await expect(page.getByText('Use a PNG, JPEG or WebP image')).toBeVisible();
+    await expect(page.getByText('Use uma imagem PNG, JPEG ou WebP')).toBeVisible();
 
     const png = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
@@ -51,11 +51,11 @@ test.describe('account', () => {
     await form.getByLabel('New password', { exact: true }).fill('NewPassword1');
     await form.getByLabel('Confirm new password').fill('Mismatch1');
     await form.getByRole('button', { name: 'Change password' }).click();
-    await expect(form.getByText('Passwords do not match')).toBeVisible();
+    await expect(form.getByText('As senhas não coincidem')).toBeVisible();
 
     await form.getByLabel('Confirm new password').fill('NewPassword1');
     await form.getByRole('button', { name: 'Change password' }).click();
-    await expect(form.getByText('Current password is incorrect')).toBeVisible();
+    await expect(form.getByText('Senha atual incorreta')).toBeVisible();
 
     await form.getByLabel('Current password').fill('Password123');
     await form.getByRole('button', { name: 'Change password' }).click();
@@ -68,11 +68,11 @@ test.describe('account', () => {
 
     await secondary.getByLabel('Address').fill('not-an-address');
     await secondary.getByRole('button', { name: 'Save changes' }).click();
-    await expect(secondary.getByText('Enter a valid 0x address')).toBeVisible();
+    await expect(secondary.getByText('Informe um endereço 0x válido')).toBeVisible();
 
     await secondary.getByLabel('Address').fill('0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
     await secondary.getByRole('button', { name: 'Save changes' }).click();
-    await expect(secondary.getByText('Already used by your other wallet')).toBeVisible();
+    await expect(secondary.getByText('Endereço já usado na sua outra carteira')).toBeVisible();
 
     await secondary.getByLabel('Label').fill('Cold storage');
     await secondary.getByLabel('Address').fill(`0x${'b'.repeat(40)}`);

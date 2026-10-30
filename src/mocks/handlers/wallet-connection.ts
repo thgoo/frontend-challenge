@@ -5,6 +5,7 @@ import { apiPath } from '../http/api';
 import { apiError, readJson, validationError } from '../http/responses';
 import { authenticate } from '../http/session';
 import { currentScenario } from '../runtime';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
 
 /** Simulates the browser wallet extension handshake, which is out of scope for a real integration. */
 export const walletConnectionHandlers = [
@@ -23,7 +24,7 @@ export const walletConnectionHandlers = [
 
     if (!readDb().wallets[auth.user.id]?.some((wallet) => wallet.id === input.data.walletId)) {
       return apiError(422, 'VALIDATION_FAILED', 'Select one of your wallets.', {
-        walletId: 'Select a wallet',
+        walletId: FIELD_ERRORS.walletRequired,
       });
     }
     if (currentScenario().walletConnection === 'reject') {

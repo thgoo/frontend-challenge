@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { idSchema, timestampSchema } from './common';
 import { quoteSchema } from './quote';
 import { networkSchema } from './wallet';
+import { FIELD_ERRORS } from './field-errors';
 
 export const orderStatusSchema = z.enum(['pending', 'confirmed', 'declined']);
 export type OrderStatus = z.infer<typeof orderStatusSchema>;
@@ -9,9 +10,9 @@ export type OrderStatus = z.infer<typeof orderStatusSchema>;
 export const TERMINAL_ORDER_STATUSES: ReadonlySet<OrderStatus> = new Set(['confirmed', 'declined']);
 
 export const buyerSchema = z.object({
-  fullName: z.string().trim().min(2, 'Enter your full name'),
-  email: z.email('Enter a valid email'),
-  country: z.string().trim().min(2, 'Select your country'),
+  fullName: z.string().trim().min(2, FIELD_ERRORS.fullNameRequired),
+  email: z.email(FIELD_ERRORS.emailInvalid),
+  country: z.string().trim().min(2, FIELD_ERRORS.countryRequired),
 });
 export type Buyer = z.infer<typeof buyerSchema>;
 

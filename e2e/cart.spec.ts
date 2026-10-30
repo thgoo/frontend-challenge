@@ -39,11 +39,11 @@ test.describe('cart', () => {
     const apply = page.getByRole('button', { name: 'Apply' });
     await coupon.fill('NOPE');
     await apply.click();
-    await expect(page.getByText('Invalid coupon code')).toBeVisible();
+    await expect(page.getByText('Cupom inválido')).toBeVisible();
     await expect(coupon).toHaveAttribute('aria-invalid', 'true');
     await coupon.fill('SUMMER20');
     await apply.click();
-    await expect(page.getByText('This coupon has expired')).toBeVisible();
+    await expect(page.getByText('Este cupom expirou')).toBeVisible();
     await coupon.fill('WELCOME10');
     await apply.click();
     await expect(summary(page).getByText('Discount (WELCOME10)')).toBeVisible();

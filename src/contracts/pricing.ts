@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ethAmountSchema } from './common';
 import { networkSchema } from './wallet';
+import { FIELD_ERRORS } from './field-errors';
 
 export const couponSchema = z.object({
   code: z.string(),
@@ -9,7 +10,7 @@ export const couponSchema = z.object({
 export type Coupon = z.infer<typeof couponSchema>;
 
 export const couponInputSchema = z.object({
-  code: z.string().trim().min(1, 'Enter a coupon code').toUpperCase(),
+  code: z.string().trim().min(1, FIELD_ERRORS.couponRequired).toUpperCase(),
 });
 export type CouponInput = z.infer<typeof couponInputSchema>;
 

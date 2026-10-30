@@ -1,6 +1,7 @@
 import { useId, type ComponentProps, type ReactNode } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { fieldErrorMessage } from '@/i18n/field-errors';
 
 export interface FieldControlProps {
   id: string;
@@ -10,6 +11,7 @@ export interface FieldControlProps {
 
 interface FieldProps {
   label: string;
+  /** A validation key from the contracts; it is localized here. */
   error?: string;
   hint?: string;
   id?: string;
@@ -38,7 +40,7 @@ export function Field({ label, error, hint, id, children }: FieldProps) {
       )}
       {error && (
         <p id={errorId} className="text-sm text-destructive">
-          {error}
+          {fieldErrorMessage(error)}
         </p>
       )}
     </div>

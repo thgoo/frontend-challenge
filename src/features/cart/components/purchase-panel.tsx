@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { Nft } from '@/contracts/nft';
-import { toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
 import { purchasableQuantity } from '@/lib/nft';
 import { useAddCartItem, useCart } from '../queries';
 
@@ -40,7 +40,7 @@ export function PurchasePanel({ nft }: { nft: Nft }) {
           });
         },
         onError: (error) => {
-          toast.error(toApiRequestError(error).message);
+          toast.error(errorMessage(error));
         },
       },
     );

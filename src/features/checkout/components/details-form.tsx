@@ -14,6 +14,7 @@ import { shortenAddress, WALLET_PROVIDER_LABELS } from '@/lib/wallets';
 import { checkoutDetailsSchema, checkoutDraft, type CheckoutDetails } from '../checkout-details';
 import { useIsWalletConnected } from '../queries';
 import { WalletConnectionStatus } from './wallet-connection-status';
+import { fieldErrorMessage } from '@/i18n/field-errors';
 
 interface DetailsFormProps {
   wallets: Wallet[];
@@ -110,7 +111,9 @@ export function DetailsForm({ wallets, submitting, onSubmit }: DetailsFormProps)
             )}
           />
         )}
-        {errors.walletId && <p className="text-sm text-destructive">{errors.walletId.message}</p>}
+        {errors.walletId && (
+          <p className="text-sm text-destructive">{fieldErrorMessage(errors.walletId.message)}</p>
+        )}
       </fieldset>
 
       <fieldset className="grid gap-4">

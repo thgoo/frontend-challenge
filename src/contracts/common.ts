@@ -1,12 +1,11 @@
 import { z } from 'zod';
+import { FIELD_ERRORS } from './field-errors';
 
 export const idSchema = z.string().min(1);
 export const timestampSchema = z.iso.datetime();
 
 /** ETH travels as a decimal string with up to 18 fraction digits. */
-export const ethAmountSchema = z
-  .string()
-  .regex(/^\d+(?:\.\d{1,18})?$/, 'Must be a decimal ETH amount');
+export const ethAmountSchema = z.string().regex(/^\d+(?:\.\d{1,18})?$/, FIELD_ERRORS.amountInvalid);
 export type EthAmount = z.infer<typeof ethAmountSchema>;
 
 export const quantitySchema = z.number().int().positive();

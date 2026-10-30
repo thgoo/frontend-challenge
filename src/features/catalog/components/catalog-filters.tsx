@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { ethAmountSchema } from '@/contracts/common';
+import { FIELD_ERRORS } from '@/contracts/field-errors';
+import { normalizeDecimalInput } from '@/i18n/locale';
 import { nftCategorySchema, nftSortSchema, type NftListQuery } from '@/contracts/nft';
 import { CATEGORY_LABELS, SORT_LABELS } from '../category-labels';
 
@@ -107,8 +109,8 @@ function PriceField({
       onCommit(undefined);
       return;
     }
-    const parsed = ethAmountSchema.safeParse(draft);
-    setError(parsed.success ? undefined : 'Enter an amount like 0.5');
+    const parsed = ethAmountSchema.safeParse(normalizeDecimalInput(draft));
+    setError(parsed.success ? undefined : FIELD_ERRORS.amountInvalid);
     if (parsed.success) onCommit(parsed.data);
   };
 

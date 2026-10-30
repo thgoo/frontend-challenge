@@ -1,7 +1,7 @@
 import { AlertCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { toApiRequestError } from '@/lib/api-error';
+import { errorMessage } from '@/i18n/api-errors';
 
 export function ErrorState({
   error,
@@ -19,7 +19,7 @@ export function ErrorState({
     >
       <AlertCircle aria-hidden="true" className="size-8 text-destructive" />
       <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="text-muted-foreground">{toApiRequestError(error).message}</p>
+      <p className="text-muted-foreground">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="outline" onClick={onRetry}>
           Try again
