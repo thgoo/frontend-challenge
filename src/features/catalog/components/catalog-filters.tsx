@@ -131,6 +131,7 @@ function PriceField({
 }
 
 function FilterControls({ query, onChange }: FiltersProps) {
+  const idPrefix = useId();
   const selected = new Set(query.categories);
   const toggleCategory = (
     category: (typeof nftCategorySchema.options)[number],
@@ -152,13 +153,13 @@ function FilterControls({ query, onChange }: FiltersProps) {
         {nftCategorySchema.options.map((category) => (
           <div key={category} className="flex items-center gap-2">
             <Checkbox
-              id={`category-${category}`}
+              id={`${idPrefix}-${category}`}
               checked={selected.has(category)}
               onCheckedChange={(checked) => {
                 toggleCategory(category, checked === true);
               }}
             />
-            <Label htmlFor={`category-${category}`}>{CATEGORY_LABELS[category]}</Label>
+            <Label htmlFor={`${idPrefix}-${category}`}>{CATEGORY_LABELS[category]}</Label>
           </div>
         ))}
       </fieldset>
@@ -181,13 +182,13 @@ function FilterControls({ query, onChange }: FiltersProps) {
       </fieldset>
       <div className="flex items-center gap-2">
         <Checkbox
-          id="only-available"
+          id={`${idPrefix}-available`}
           checked={query.onlyAvailable ?? false}
           onCheckedChange={(checked) => {
             onChange({ onlyAvailable: checked === true || undefined });
           }}
         />
-        <Label htmlFor="only-available">Only available</Label>
+        <Label htmlFor={`${idPrefix}-available`}>Only available</Label>
       </div>
       {hasFilters && (
         <Button
