@@ -58,6 +58,11 @@ test.describe('cart', () => {
     await addToCart(page, 'nft_002');
     await page.goto('/cart');
     await page.getByRole('button', { name: 'Aumentar quantidade' }).click();
+    // Wait for the server's answer: a reload would cancel the request still in flight.
+    await expect(
+      page.getByRole('group', { name: /^Quantidade de / }).getByRole('status'),
+    ).toHaveText('2');
+    await expect(page.getByRole('button', { name: 'Aumentar quantidade' })).toBeEnabled();
     await page.getByLabel('Código promocional').fill('WELCOME10');
     await page.getByRole('button', { name: 'Aplicar' }).click();
     await expect(summary(page).getByText('Desconto (WELCOME10)')).toBeVisible();
