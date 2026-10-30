@@ -13,6 +13,8 @@ interface FieldProps {
   label: string;
   /** Marks the label with the Figma asterisk; the control itself carries `required`. */
   required?: boolean;
+  /** Placeholder-only designs keep the label for assistive technology. */
+  hideLabel?: boolean;
   /** A validation key from the contracts; it is localized here. */
   error?: string;
   hint?: string;
@@ -21,7 +23,7 @@ interface FieldProps {
 }
 
 /** Wires label, hint and error to any control so assistive tech announces them together. */
-export function Field({ label, required, error, hint, id, children }: FieldProps) {
+export function Field({ label, required, hideLabel, error, hint, id, children }: FieldProps) {
   const generatedId = useId();
   const controlId = id ?? generatedId;
   const hintId = hint ? `${controlId}-hint` : undefined;
@@ -29,7 +31,7 @@ export function Field({ label, required, error, hint, id, children }: FieldProps
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor={controlId} className="text-[15px] font-normal">
+      <Label htmlFor={controlId} className={hideLabel ? 'sr-only' : 'text-[15px] font-normal'}>
         {label}
         {required && (
           <span aria-hidden="true" className="text-destructive">
@@ -58,9 +60,17 @@ export function Field({ label, required, error, hint, id, children }: FieldProps
 
 type FormFieldProps = ComponentProps<typeof Input> & Omit<FieldProps, 'children'>;
 
-export function FormField({ label, error, hint, id, required, ...inputProps }: FormFieldProps) {
+export function FormField(props: FormFieldProps) {
+  const { label, error, hint, id, required, hideLabel, ...inputProps } = props;
   return (
-    <Field label={label} required={required} error={error} hint={hint} id={id}>
+    <Field
+      label={label}
+      required={required}
+      hideLabel={hideLabel}
+      error={error}
+      hint={hint}
+      id={id}
+    >
       {(control) => <Input {...control} required={required} {...inputProps} />}
     </Field>
   );

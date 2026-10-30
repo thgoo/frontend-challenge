@@ -1,16 +1,17 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { authSearchSchema } from '@/features/auth/auth-search';
-import { AuthLayout } from '@/features/auth/components/auth-layout';
+import { AuthCard } from '@/features/auth/components/auth-card';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { safeRedirect } from '@/features/auth/safe-redirect';
 
 export const Route = createFileRoute('/login')({
   validateSearch: authSearchSchema,
+  staticData: { hideMobileTabBar: true },
   beforeLoad: ({ context, search }) => {
     if (context.session) throw redirect({ href: safeRedirect(search.redirect) });
   },
-  head: () => ({ meta: [{ title: 'Sign in · NFT Marketplace' }] }),
+  head: () => ({ meta: [{ title: 'Entrar · Kurio' }] }),
   component: LoginPage,
 });
 
@@ -19,32 +20,23 @@ function LoginPage() {
   const navigate = useNavigate();
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to buy, favorite and manage your collection."
-      footer={
-        <>
-          New here?{' '}
-          <Link
-            to="/register"
-            search={search}
-            className="text-primary underline underline-offset-4"
-          >
-            Create an account
-          </Link>
-        </>
+    <AuthCard
+      mode="login"
+      search={search}
+      subtitle="Entre para gerenciar sua carteira, coleção e perfil de criador."
+      notice={
+        search.reason === 'expired' && (
+          <Alert role="status">
+            <AlertDescription>
+              Sua sessão expirou. Entre novamente para continuar de onde parou.
+            </AlertDescription>
+          </Alert>
+        )
       }
     >
-      {search.reason === 'expired' && (
-        <Alert role="status">
-          <AlertDescription>
-            Your session expired. Sign in again to continue where you left off.
-          </AlertDescription>
-        </Alert>
-      )}
       <LoginForm
         onSuccess={() => void navigate({ href: safeRedirect(search.redirect), replace: true })}
       />
-    </AuthLayout>
+    </AuthCard>
   );
 }
