@@ -99,10 +99,9 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
   const placing = connect.isPending || placeOrder.isPending;
   const selectedWallet = wallets.find((wallet) => wallet.id === walletId);
 
-  const refreshQuote = async () => {
-    await queryClient.invalidateQueries({ queryKey: cartKey(userId) });
-    await quote.refetch();
-  };
+  /** Both at once, so the quote is marked as fetching (and confirmation blocked) right away. */
+  const refreshQuote = () =>
+    Promise.all([queryClient.invalidateQueries({ queryKey: cartKey(userId) }), quote.refetch()]);
 
   const submit = handleSubmit(async ({ walletId: wallet, network: chain, ...buyer }) => {
     if (!quote.data || quote.isFetching || stale) return;
