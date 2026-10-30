@@ -2,9 +2,9 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { ALICE, openWithMocks } from './mock-api';
 
 export async function signInThroughUi(page: Page, credentials = ALICE) {
-  await page.getByLabel('Email').fill(credentials.email);
-  await page.getByLabel('Password').fill(credentials.password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByLabel('E-mail', { exact: true }).fill(credentials.email);
+  await page.getByLabel('Senha', { exact: true }).fill(credentials.password);
+  await page.getByRole('button', { name: 'Entrar', exact: true }).click();
 }
 
 export async function startSignedIn(page: Page, scenario = 'default', path = '/') {

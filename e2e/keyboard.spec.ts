@@ -71,8 +71,8 @@ test.describe('keyboard and focus', () => {
 test.describe('form validation', () => {
   test('focuses the first invalid field and describes each error', async ({ page }) => {
     await openWithMocks(page, '/login?scenario=default');
-    const email = page.getByLabel('Email');
-    const password = page.getByLabel('Password');
+    const email = page.getByLabel('E-mail', { exact: true });
+    const password = page.getByLabel('Senha', { exact: true });
 
     await email.fill('not-an-email');
     await email.press('Enter');

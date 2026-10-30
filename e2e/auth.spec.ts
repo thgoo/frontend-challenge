@@ -13,29 +13,35 @@ const CAROL = { email: 'carol@example.com', password: 'Password123' };
 test.describe('auth', () => {
   test('registers with validation, signs out and signs back in', async ({ page }) => {
     await openWithMocks(page, '/register?scenario=default');
-    const create = page.getByRole('button', { name: 'Create account' });
+    const create = page.getByRole('button', { name: 'Criar conta', exact: true });
+    const username = page.getByLabel('Nome de usuário');
+    const email = page.getByLabel('E-mail', { exact: true });
+    const password = page.getByLabel('Senha', { exact: true });
+    const confirm = page.getByLabel('Confirmar senha');
 
     await create.click();
-    await expect(page.getByText('Informe seu nome')).toBeVisible();
-    await expect(page.getByLabel('Email')).toHaveAttribute('aria-invalid', 'true');
+    await expect(username).toHaveAttribute('aria-invalid', 'true');
+    await expect(email).toHaveAttribute('aria-invalid', 'true');
 
-    await page.getByLabel('Name', { exact: true }).fill('Carol Collector');
-    await page.getByLabel('Username').fill('Carol!');
-    await page.getByLabel('Email').fill('alice@example.com');
-    await page.getByLabel('Password').fill('short');
+    await username.fill('Carol!');
+    await email.fill('alice@example.com');
+    await password.fill('short');
+    await confirm.fill('different');
     await create.click();
     await expect(page.getByText('Use de 3 a 20 letras minúsculas, números ou _')).toBeVisible();
     await expect(page.getByText('Use pelo menos 8 caracteres')).toBeVisible();
+    await expect(page.getByText('As senhas não coincidem')).toBeVisible();
 
-    await page.getByLabel('Username').fill('carol');
-    await page.getByLabel('Password').fill(CAROL.password);
+    await username.fill('carol');
+    await password.fill(CAROL.password);
+    await confirm.fill(CAROL.password);
     await create.click();
     await expect(page.getByText('Este e-mail já está cadastrado')).toBeVisible();
 
-    await page.getByLabel('Email').fill(CAROL.email);
+    await email.fill(CAROL.email);
     await create.click();
     await expect(page).toHaveURL('/');
-    await expect(signedInIndicator(page, 'Carol Collector')).toBeVisible();
+    await expect(signedInIndicator(page, 'carol')).toBeVisible();
 
     await signOutThroughUi(page);
     await page.goto('/login');
@@ -43,7 +49,7 @@ test.describe('auth', () => {
     await expect(page.getByText('E-mail ou senha incorretos.')).toBeVisible();
 
     await signInThroughUi(page, CAROL);
-    await expect(signedInIndicator(page, 'Carol Collector')).toBeVisible();
+    await expect(signedInIndicator(page, 'carol')).toBeVisible();
   });
 
   test('sends guests to login and back to the protected page', async ({ page }) => {
@@ -64,9 +70,7 @@ test.describe('auth', () => {
     await page.getByRole('button', { name: 'Save profile' }).click();
 
     await expect(page).toHaveURL(/\/login\?redirect=%2Fprofile&reason=expired/);
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Your session expired' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Sua sessão expirou' })).toBeVisible();
     await expect(signedInIndicator(page)).toBeHidden();
 
     await signInThroughUi(page);
