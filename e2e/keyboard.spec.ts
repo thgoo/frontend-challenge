@@ -62,9 +62,9 @@ test.describe('keyboard and focus', () => {
     await page.getByRole('button', { name: /^comprar/i }).focus();
     await page.keyboard.press('Enter');
     await page.waitForURL('/cart');
-    await expect(page.getByRole('group', { name: /^Quantity of / }).getByRole('status')).toHaveText(
-      '2',
-    );
+    await expect(
+      page.getByRole('group', { name: /^Quantidade de / }).getByRole('status'),
+    ).toHaveText('2');
   });
 });
 

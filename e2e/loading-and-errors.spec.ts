@@ -36,8 +36,8 @@ test.describe('loading states', () => {
     );
 
     await openWithMocks(page, '/cart?scenario=slow');
-    await expect(page.getByRole('status').filter({ hasText: 'Loading your cart' })).toBeAttached();
-    await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible(
+    await expect(page.getByRole('status').filter({ hasText: 'Carregando seu carrinho' })).toBeAttached();
+    await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible(
       LOADED_TIMEOUT,
     );
   });

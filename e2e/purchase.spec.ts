@@ -27,5 +27,5 @@ test('buys an NFT from the catalog to a confirmed receipt', async ({ page }) => 
   await expect(page.getByText(/^0x[0-9a-f]{64}$/)).toBeVisible();
 
   await page.goto('/cart');
-  await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible();
 });

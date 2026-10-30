@@ -74,7 +74,7 @@ test.describe('auth', () => {
   });
 
   test('switches users without leaking private data', async ({ page }) => {
-    const cartLines = page.getByRole('group', { name: /^Quantity of / });
+    const cartLines = page.getByRole('group', { name: /^Quantidade de / });
     await startSignedIn(page);
     await addToCart(page, 'nft_002');
     await page.goto('/cart');
@@ -82,13 +82,13 @@ test.describe('auth', () => {
 
     await signOutThroughUi(page);
     await page.goto('/cart');
-    await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible();
 
     await page.goto('/login?redirect=%2Fprofile');
     await signInThroughUi(page, BOB);
     await expect(page.getByLabel('Username')).toHaveValue('bob');
     await page.goto('/cart');
-    await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible();
 
     await signOutThroughUi(page);
     await page.goto('/login?redirect=%2Fcart');

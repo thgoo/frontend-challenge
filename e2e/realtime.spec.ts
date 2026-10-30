@@ -71,7 +71,7 @@ test.describe('realtime during checkout', () => {
     await expect(review.getByRole('button', { name: 'Confirm and pay' })).toBeDisabled();
 
     await page.goto('/cart');
-    await expect(page.getByText('Sold out. Remove it to continue.')).toBeVisible();
+    await expect(page.getByText('Esgotado. Remova o item para continuar.')).toBeVisible();
   });
 
   test('asks for a new confirmation when the price changes as the order is placed', async ({
