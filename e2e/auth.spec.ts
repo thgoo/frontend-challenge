@@ -57,12 +57,11 @@ test.describe('auth', () => {
 
   test('recovers from an expired session by signing in again', async ({ page }) => {
     await startSignedIn(page, 'default', '/profile');
-    const save = page.getByRole('button', { name: 'Save profile' });
     await expect(page.getByLabel('Bio')).not.toBeEmpty();
     await page.evaluate(() => window.__mocks?.expireSessions());
 
     await page.getByLabel('Bio').fill('Updated after a long break.');
-    await save.click();
+    await page.getByRole('button', { name: 'Save profile' }).click();
 
     await expect(page).toHaveURL(/\/login\?redirect=%2Fprofile&reason=expired/);
     await expect(
