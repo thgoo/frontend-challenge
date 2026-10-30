@@ -127,6 +127,7 @@ export function cartLines(db: DbState, cart: CartRecord): CartLine[] {
       {
         ...item,
         nftName: nft.name,
+        tokenId: nft.tokenId,
         editionName: edition.name,
         image: nft.images[0],
         unitPriceEth: edition.priceEth,

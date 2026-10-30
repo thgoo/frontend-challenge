@@ -7,6 +7,7 @@ const line = {
   nftId: 'n1',
   editionId: 'e1',
   nftName: 'A',
+  tokenId: '#0001',
   editionName: 'S',
   image: { url: '', alt: '', variants: [] },
   quantity: 2,

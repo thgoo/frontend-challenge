@@ -13,6 +13,7 @@ export const cartQuantityInputSchema = cartItemInputSchema.pick({ quantity: true
 
 export const cartLineSchema = cartItemInputSchema.extend({
   nftName: z.string(),
+  tokenId: z.string(),
   editionName: z.string(),
   image: nftImageSchema,
   unitPriceEth: ethAmountSchema,
