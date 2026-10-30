@@ -29,9 +29,14 @@ export function applyBasisPoints(wei: bigint, basisPoints: number): bigint {
 }
 
 /** Exact by default; a smaller `maxFractionDigits` truncates instead of rounding, never overstating. */
-export function displayEth(value: string, maxFractionDigits = 18, minFractionDigits = 2): string {
+/** Localized number without the unit, truncated (never rounded up) to the given precision. */
+export function displayEthNumber(value: string, maxFractionDigits = 18, minFractionDigits = 2) {
   const [whole = '0', fraction = ''] = formatEth(parseEth(value)).split('.');
   const truncated = fraction.slice(0, maxFractionDigits).padEnd(minFractionDigits, '0');
   const groupedWhole = BigInt(whole).toLocaleString(LOCALE);
-  return `${groupedWhole}${DECIMAL_SEPARATOR}${truncated} ETH`;
+  return `${groupedWhole}${DECIMAL_SEPARATOR}${truncated}`;
+}
+
+export function displayEth(value: string, maxFractionDigits = 18, minFractionDigits = 2): string {
+  return `${displayEthNumber(value, maxFractionDigits, minFractionDigits)} ETH`;
 }

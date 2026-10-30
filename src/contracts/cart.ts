@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ethAmountSchema, idSchema, quantitySchema } from './common';
+import { nftImageSchema } from './nft';
 import { priceSummarySchema } from './pricing';
 
 export const cartItemKeySchema = z.object({ nftId: idSchema, editionId: idSchema });
@@ -13,7 +14,7 @@ export const cartQuantityInputSchema = cartItemInputSchema.pick({ quantity: true
 export const cartLineSchema = cartItemInputSchema.extend({
   nftName: z.string(),
   editionName: z.string(),
-  imageUrl: z.string(),
+  image: nftImageSchema,
   unitPriceEth: ethAmountSchema,
   available: z.number().int().nonnegative(),
   maxPerOrder: z.number().int().positive(),

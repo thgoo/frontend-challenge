@@ -3,7 +3,7 @@ import { NFT_PAGE_SIZE, nftListQuerySchema, type NftListQuery } from '@/contract
 import { parseEth } from '@/lib/eth';
 import { createNftFixtures, NFT_FIXTURE_COUNT } from '../db/fixtures/nfts';
 import { isAvailable, lowestPrice } from '@/lib/nft';
-import { queryCatalog } from './catalog';
+import { catalogFacets, queryCatalog } from './catalog';
 
 const nfts = createNftFixtures(1);
 const query = (input: Partial<NftListQuery> = {}) => nftListQuerySchema.parse(input);
@@ -20,11 +20,11 @@ describe('queryCatalog', () => {
   it('combines category, price and availability filters', () => {
     const result = queryCatalog(
       nfts,
-      query({ categories: ['art', 'music'], maxPrice: '1', onlyAvailable: true }),
+      query({ categories: ['digital-art', 'music'], maxPrice: '1', onlyAvailable: true }),
     );
     expect(result.items.length).toBeGreaterThan(0);
     for (const nft of result.items) {
-      expect(['art', 'music']).toContain(nft.category);
+      expect(['digital-art', 'music']).toContain(nft.category);
       expect(lowestPrice(nft) <= parseEth('1')).toBe(true);
       expect(isAvailable(nft)).toBe(true);
     }
@@ -44,6 +44,19 @@ describe('queryCatalog', () => {
     expect(descending).toEqual([...descending].sort((a, b) => (a > b ? -1 : a < b ? 1 : 0)));
   });
 
+  it('filters by network and by the new and trending views', () => {
+    const polygon = queryCatalog(nfts, query({ networks: ['polygon'] }));
+    expect(polygon.total).toBeGreaterThan(0);
+    expect(polygon.items.every((nft) => nft.network === 'polygon')).toBe(true);
+
+    const trending = queryCatalog(nfts, query({ view: 'trending' }));
+    expect(trending.total).toBe(nfts.filter((nft) => nft.trending).length);
+
+    const fresh = queryCatalog(nfts, query({ view: 'new' }));
+    expect(fresh.total).toBeGreaterThan(0);
+    expect(fresh.total).toBeLessThan(nfts.length);
+  });
+
   it('returns an empty page when nothing matches', () => {
     expect(queryCatalog(nfts, query({ q: 'no-such-nft' }))).toMatchObject({
       items: [],
@@ -53,13 +66,36 @@ describe('queryCatalog', () => {
   });
 });
 
+describe('catalogFacets', () => {
+  it('counts every category and network, and spans the price range', () => {
+    const facets = catalogFacets(nfts);
+    const total = (counts: Record<string, number>) =>
+      Object.values(counts).reduce((sum, count) => sum + count, 0);
+    expect(total(facets.categories)).toBe(nfts.length);
+    expect(total(facets.networks)).toBe(nfts.length);
+    const prices = nfts.map(lowestPrice);
+    expect(parseEth(facets.priceRange.min)).toBe(prices.reduce((a, b) => (b < a ? b : a)));
+    expect(parseEth(facets.priceRange.max)).toBe(prices.reduce((a, b) => (b > a ? b : a)));
+  });
+});
+
 describe('fixtures', () => {
+  it('start with the pieces drawn in the Figma', () => {
+    const showcase = createNftFixtures(1).slice(0, 3);
+    expect(showcase.map((nft) => nft.name)).toEqual([
+      'Emerald Ape #042',
+      'Sage Nomad #009',
+      'Neon Vessel #552',
+    ]);
+    expect(showcase[2]?.editions[0]).toMatchObject({ priceEth: '1.99', compareAtPriceEth: '2.29' });
+  });
+
   it('are deterministic for the same seed', () => {
     expect(createNftFixtures(1)).toEqual(nfts);
   });
 
   it('cover every category, sold-out editions and multiple pages', () => {
-    expect(new Set(nfts.map((nft) => nft.category)).size).toBe(8);
+    expect(new Set(nfts.map((nft) => nft.category)).size).toBe(9);
     expect(nfts.some((nft) => nft.editions.some((edition) => edition.available === 0))).toBe(true);
     expect(NFT_FIXTURE_COUNT / NFT_PAGE_SIZE).toBeGreaterThan(2);
   });

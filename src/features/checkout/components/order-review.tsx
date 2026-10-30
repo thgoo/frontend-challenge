@@ -7,6 +7,7 @@ import type { Wallet } from '@/contracts/wallet';
 import { PriceSummary } from '@/features/cart/components/price-summary';
 import { shortenAddress } from '@/lib/wallets';
 import type { CheckoutDetails } from '../checkout-details';
+import { NftImage } from '@/components/nft-image';
 
 interface OrderReviewProps {
   quote: Quote;
@@ -50,13 +51,7 @@ export function OrderReview(props: OrderReviewProps) {
       <ul className="grid gap-3">
         {quote.lines.map((line) => (
           <li key={`${line.nftId}:${line.editionId}`} className="flex items-center gap-4">
-            <img
-              src={line.imageUrl}
-              alt=""
-              width={56}
-              height={56}
-              className="size-14 rounded-lg object-cover"
-            />
+            <NftImage image={line.image} alt="" sizes="56px" className="size-14 rounded-lg" />
             <div className="grid flex-1">
               <span className="font-medium">{line.nftName}</span>
               <span className="text-sm text-muted-foreground">

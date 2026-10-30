@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  nftFacetsSchema,
   nftListResponseSchema,
   nftSchema,
   toNftListSearchParams,
@@ -13,6 +14,10 @@ export function fetchNfts(query: NftListQuery, signal?: AbortSignal) {
     params: toNftListSearchParams(query),
     signal,
   });
+}
+
+export function fetchNftFacets(signal?: AbortSignal) {
+  return request(nftFacetsSchema, { url: '/nfts/facets', signal });
 }
 
 export function fetchFeaturedNfts(signal?: AbortSignal) {

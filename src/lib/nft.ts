@@ -1,14 +1,15 @@
 import type { Edition, Nft } from '@/contracts/nft';
 import { parseEth } from './eth';
 
-export function lowestPrice(nft: Nft): bigint {
-  return nft.editions.reduce(
-    (lowest, edition) => {
-      const price = parseEth(edition.priceEth);
-      return price < lowest ? price : lowest;
-    },
-    parseEth(nft.editions[0]?.priceEth ?? '0'),
+/** Contracts guarantee at least one edition. */
+export function cheapestEdition(nft: Nft): Edition {
+  return nft.editions.reduce((cheapest, edition) =>
+    parseEth(edition.priceEth) < parseEth(cheapest.priceEth) ? edition : cheapest,
   );
+}
+
+export function lowestPrice(nft: Nft): bigint {
+  return parseEth(cheapestEdition(nft).priceEth);
 }
 
 export function isAvailable(nft: Nft): boolean {

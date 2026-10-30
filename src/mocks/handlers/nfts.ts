@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { parseNftListSearchParams } from '@/contracts/nft';
-import { queryCatalog } from '../domain/catalog';
+import { catalogFacets, queryCatalog } from '../domain/catalog';
 import { readDb } from '../db/store';
 import { apiPath } from '../http/api';
 import { apiError, validationError } from '../http/responses';
@@ -11,6 +11,8 @@ export const nftHandlers = [
     if (!query.success) return validationError(query.error);
     return HttpResponse.json(queryCatalog(readDb().nfts, query.data));
   }),
+
+  http.get(apiPath('/nfts/facets'), () => HttpResponse.json(catalogFacets(readDb().nfts))),
 
   http.get(apiPath('/nfts/featured'), () =>
     HttpResponse.json(readDb().nfts.filter((nft) => nft.featured)),

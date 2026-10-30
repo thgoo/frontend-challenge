@@ -8,7 +8,7 @@ const line = {
   editionId: 'e1',
   nftName: 'A',
   editionName: 'S',
-  imageUrl: '',
+  image: { url: '', alt: '', variants: [] },
   quantity: 2,
   unitPriceEth: '1',
 };

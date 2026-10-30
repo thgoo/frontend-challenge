@@ -9,6 +9,7 @@ import { errorMessage } from '@/i18n/api-errors';
 import { formatEth, parseEth } from '@/lib/eth';
 import { exceedsAvailability } from '../cart-lines';
 import { useRemoveCartItem, useUpdateCartItem } from '../queries';
+import { NftImage } from '@/components/nft-image';
 
 export function CartLineItem({ line }: { line: CartLine }) {
   const update = useUpdateCartItem();
@@ -22,12 +23,11 @@ export function CartLineItem({ line }: { line: CartLine }) {
 
   return (
     <li className="grid grid-cols-[5rem_1fr] gap-4 rounded-2xl bg-card p-4 sm:grid-cols-[6rem_1fr_auto]">
-      <img
-        src={line.imageUrl}
+      <NftImage
+        image={line.image}
         alt=""
-        width={96}
-        height={96}
-        className="aspect-square w-full rounded-lg object-cover"
+        sizes="96px"
+        className="aspect-square w-full rounded-lg"
       />
       <div className="grid content-start gap-1">
         <Link

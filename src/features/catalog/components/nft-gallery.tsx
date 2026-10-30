@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { NftImage } from '@/components/nft-image';
 import type { Nft } from '@/contracts/nft';
 
 export function NftGallery({ images }: { images: Nft['images'] }) {
@@ -7,16 +8,12 @@ export function NftGallery({ images }: { images: Nft['images'] }) {
 
   return (
     <div className="grid gap-4">
-      {current && (
-        <img
-          src={current.url}
-          alt={current.alt}
-          width={800}
-          height={800}
-          fetchPriority="high"
-          className="aspect-square w-full rounded-2xl object-cover"
-        />
-      )}
+      <NftImage
+        image={current}
+        sizes="(min-width: 1024px) 360px, 100vw"
+        priority
+        className="aspect-square w-full rounded-2xl"
+      />
       {images.length > 1 && (
         <ul className="flex gap-3" aria-label="Gallery thumbnails">
           {images.map((image, index) => (

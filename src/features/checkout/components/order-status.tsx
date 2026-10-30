@@ -6,6 +6,7 @@ import type { Order } from '@/contracts/order';
 import { PriceSummary } from '@/features/cart/components/price-summary';
 import { NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
+import { NftImage } from '@/components/nft-image';
 
 function PendingOrder({ order }: { order: Order }) {
   return (
@@ -92,13 +93,7 @@ function Receipt({ order }: { order: Order }) {
         <ul className="grid gap-3">
           {receipt.lines.map((line) => (
             <li key={`${line.nftId}:${line.editionId}`} className="flex items-center gap-4">
-              <img
-                src={line.imageUrl}
-                alt=""
-                width={56}
-                height={56}
-                className="size-14 rounded-lg object-cover"
-              />
+              <NftImage image={line.image} alt="" sizes="56px" className="size-14 rounded-lg" />
               <div className="grid flex-1">
                 <span className="font-medium">{line.nftName}</span>
                 <span className="text-sm text-muted-foreground">
