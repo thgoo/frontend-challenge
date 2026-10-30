@@ -5,6 +5,7 @@ import { AvatarUpload } from '@/features/account/components/avatar-upload';
 import { PasswordForm } from '@/features/account/components/password-form';
 import { ProfileForm } from '@/features/account/components/profile-form';
 import { useProfile } from '@/features/account/queries';
+import { SignOutButton } from '@/features/auth/components/sign-out-button';
 
 export const Route = createFileRoute('/_authenticated/profile')({
   head: () => ({ meta: [{ title: 'Profile · NFT Marketplace' }] }),
@@ -16,7 +17,10 @@ function ProfilePage() {
 
   return (
     <div className="mx-auto grid max-w-3xl gap-10 px-4 py-10 sm:px-8">
-      <h1 className="text-3xl font-semibold sm:text-5xl">Profile</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-semibold sm:text-5xl">Profile</h1>
+        <SignOutButton />
+      </div>
       {error && !user ? (
         <ErrorState
           title="Could not load your profile"
