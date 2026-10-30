@@ -187,7 +187,7 @@ export function CheckoutPage() {
           Cart summary
         </h2>
         {cart.data ? (
-          <PriceSummary summary={cart.data.summary} feeLabel="Estimated network fee" />
+          <PriceSummary summary={cart.data.summary} estimatedFee />
         ) : (
           <Skeleton className="h-32 w-full" />
         )}
