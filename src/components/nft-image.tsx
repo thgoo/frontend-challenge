@@ -7,6 +7,7 @@ interface NftImageProps {
   image: Image;
   /** Rendered width hints for the browser, e.g. `(min-width: 1024px) 250px, 45vw`. */
   sizes: string;
+  /** Size and shape of the frame; the image always covers it. */
   className?: string;
   /** Decorative uses (the name is already next to it) pass an empty alt. */
   alt?: string;
@@ -15,7 +16,7 @@ interface NftImageProps {
 
 export function NftImage({ image, sizes, className, alt, priority = false }: NftImageProps) {
   return (
-    <picture className="contents">
+    <picture className={cn('block overflow-hidden', className)}>
       {FORMATS.map((type) => {
         const variants = image.variants.filter((variant) => variant.type === type);
         if (variants.length === 0) return null;
@@ -38,7 +39,7 @@ export function NftImage({ image, sizes, className, alt, priority = false }: Nft
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
-        className={cn('object-cover', className)}
+        className="size-full object-cover"
       />
     </picture>
   );
