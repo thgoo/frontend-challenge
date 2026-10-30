@@ -6,7 +6,7 @@ import { errorMessage } from '@/i18n/api-errors';
 export function ErrorState({
   error,
   onRetry,
-  title = 'Something went wrong',
+  title = 'Algo deu errado',
 }: {
   error: unknown;
   onRetry?: () => void;
@@ -22,7 +22,7 @@ export function ErrorState({
       <p className="text-muted-foreground">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="outline" onClick={onRetry}>
-          Try again
+          Tentar novamente
         </Button>
       )}
     </div>

@@ -54,7 +54,7 @@ test.describe('failures and recovery', () => {
     await expect(error).toBeVisible(LOADED_TIMEOUT);
 
     await page.evaluate(() => window.__mocks?.reset('default'));
-    await error.getByRole('button', { name: 'Try again' }).click();
+    await error.getByRole('button', { name: 'Tentar novamente' }).click();
     await expect(page.getByText(/NFTs? encontrados?/)).toBeAttached();
   });
 
@@ -70,7 +70,7 @@ test.describe('failures and recovery', () => {
     await expect(error).toBeVisible(LOADED_TIMEOUT);
 
     await page.evaluate(() => window.__mocks?.reset('default'));
-    await error.getByRole('button', { name: 'Try again' }).click();
+    await error.getByRole('button', { name: 'Tentar novamente' }).click();
     await expect(error).toBeHidden();
     await expect(page.getByRole('link', { name: 'Página 2' })).toHaveAttribute(
       'aria-current',
