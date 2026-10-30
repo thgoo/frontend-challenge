@@ -1,8 +1,9 @@
-import { Link, useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router';
-import { ChevronLeft, Star } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { Star } from 'lucide-react';
 import { Tabs } from 'radix-ui';
 import { useRef, useState } from 'react';
 import { EthAmount } from '@/components/eth-amount';
+import { BackButton } from '@/components/layout/mobile-page-header';
 import { QuantityStepper } from '@/components/quantity-stepper';
 import { RatingStars } from '@/components/rating-stars';
 import { Button } from '@/components/ui/button';
@@ -25,32 +26,13 @@ import { NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
 import { NftGallery } from './nft-gallery';
 import { NftReviews } from './nft-reviews';
-import { RelatedNfts } from './related-nfts';
+import { NftShelf } from './nft-shelf';
 import { ShareLinks } from './share-links';
 
 type DetailTab = 'details' | 'reviews';
 
 const TAB_TRIGGER =
   'border-b-2 border-transparent pb-2 text-[17px] data-[state=active]:border-primary data-[state=active]:font-bold data-[state=active]:text-highlight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none';
-
-function BackButton() {
-  const router = useRouter();
-  const navigate = useNavigate();
-  const canGoBack = useCanGoBack();
-  return (
-    <button
-      type="button"
-      aria-label="Voltar"
-      onClick={() => {
-        if (canGoBack) router.history.back();
-        else void navigate({ to: '/' });
-      }}
-      className="grid size-9 place-items-center rounded-full bg-background/70 text-foreground"
-    >
-      <ChevronLeft aria-hidden="true" className="size-5" />
-    </button>
-  );
-}
 
 function DetailsText({ nft, edition }: { nft: Nft; edition: Edition | undefined }) {
   const network = NETWORK_LABELS[nft.network];
@@ -247,7 +229,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
         </Tabs.Root>
       </div>
 
-      <RelatedNfts nft={nft} />
+      <NftShelf title="Mais desta coleção" query={{ q: nft.collection }} excludeIds={[nft.id]} />
 
       <div className="fixed inset-x-0 bottom-0 z-40 grid gap-4 rounded-t-[32px] bg-card px-6 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] lg:hidden">
         <div className="flex items-center justify-between">
