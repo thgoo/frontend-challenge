@@ -1,17 +1,15 @@
-import { useNavigate } from '@tanstack/react-router';
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLogout } from '../queries';
+import { useSignOut } from '../use-sign-out';
 
 export function SignOutButton() {
-  const logout = useLogout();
-  const navigate = useNavigate();
+  const { pending, signOut } = useSignOut();
   return (
     <Button
       variant="outline"
-      disabled={logout.isPending}
+      disabled={pending}
       onClick={() => {
-        logout.mutate(undefined, { onSuccess: () => void navigate({ to: '/' }) });
+        void signOut();
       }}
     >
       <LogOut aria-hidden="true" />

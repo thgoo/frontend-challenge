@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { LogIn, ShoppingCart } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,7 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useLogout, useSession } from '@/features/auth/queries';
+import { useSession } from '@/features/auth/queries';
+import { useSignOut } from '@/features/auth/use-sign-out';
 import { useCartItemCount } from '@/features/cart/queries';
 import { cartLabel } from './cart-count';
 import { SearchDialog } from './search-dialog';
@@ -49,8 +50,7 @@ function CartLink() {
 
 function AccountMenu() {
   const session = useSession();
-  const logout = useLogout();
-  const navigate = useNavigate();
+  const { signOut } = useSignOut();
 
   if (!session) {
     return (
@@ -94,7 +94,7 @@ function AccountMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => {
-            logout.mutate(undefined, { onSuccess: () => void navigate({ to: '/' }) });
+            void signOut();
           }}
         >
           Sair
