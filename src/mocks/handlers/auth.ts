@@ -33,7 +33,7 @@ export const authHandlers = [
     const input = await readJson(request, registerInputSchema);
     if (!input.success) return validationError(input.error);
 
-    const { name, username, email, password } = input.data;
+    const { username, email, password } = input.data;
     const conflicts = findAccountConflicts(readDb(), { email, username });
     if (Object.keys(conflicts).length > 0) {
       return apiError(409, 'CONFLICT', 'An account with these details already exists.', conflicts);
@@ -44,7 +44,7 @@ export const authHandlers = [
     const user = transaction(({ db }) => {
       const record: UserRecord = {
         id: nextId(db, 'usr'),
-        name,
+        name: username,
         username,
         email,
         bio: '',

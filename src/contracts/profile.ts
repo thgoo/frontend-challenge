@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { passwordSchema, registerInputSchema } from './auth';
+import { displayNameSchema, passwordSchema, registerInputSchema } from './auth';
 import { FIELD_ERRORS } from './field-errors';
 
 export const profileUpdateSchema = registerInputSchema
-  .pick({ name: true, username: true, email: true })
-  .extend({ bio: z.string().trim().max(280, FIELD_ERRORS.bioTooLong) });
+  .pick({ username: true, email: true })
+  .extend({ name: displayNameSchema, bio: z.string().trim().max(280, FIELD_ERRORS.bioTooLong) });
 export type ProfileUpdate = z.infer<typeof profileUpdateSchema>;
 
 export const AVATAR_MAX_BYTES = 2 * 1024 * 1024;

@@ -31,8 +31,10 @@ export const loginInputSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
+export const displayNameSchema = z.string().trim().min(2, FIELD_ERRORS.nameRequired);
+
+/** The display name starts as the username and can be edited on the profile page. */
 export const registerInputSchema = z.object({
-  name: z.string().trim().min(2, FIELD_ERRORS.nameRequired),
   username: z
     .string()
     .trim()
