@@ -41,3 +41,10 @@ export async function editCatalogFilters(page: Page, edit: (panel: Locator) => P
   await page.keyboard.press('Escape');
   await expect(drawer).toBeHidden();
 }
+
+export async function signOutThroughUi(page: Page) {
+  await page.getByRole('button', { name: /^Account menu for / }).click();
+  await page.getByRole('menuitem', { name: 'Sign out' }).click();
+  // A CSS locator, because role queries also skip the trigger while the open menu hides the page.
+  await expect(page.locator('[aria-label^="Account menu for "]')).toHaveCount(0);
+}
