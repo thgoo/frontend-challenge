@@ -23,3 +23,12 @@ export function formatDateTime(value: string | Date): string {
 export function normalizeDecimalInput(value: string): string {
   return value.trim().replace(DECIMAL_SEPARATOR, '.');
 }
+
+const ratingFormat = new Intl.NumberFormat(LOCALE, {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+export function formatRating(average: number): string {
+  return ratingFormat.format(average);
+}

@@ -1,44 +1,62 @@
+import { cn } from 'cn';
+import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { NftImage } from '@/components/nft-image';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import type { Nft } from '@/contracts/nft';
 
-export function NftGallery({ images }: { images: Nft['images'] }) {
+export function NftGallery({ nft }: { nft: Nft }) {
+  const { images } = nft;
   const [selected, setSelected] = useState(0);
   const current = images[selected] ?? images[0];
 
   return (
-    <div className="grid gap-4">
-      <NftImage
-        image={current}
-        sizes="(min-width: 1024px) 360px, 100vw"
-        priority
-        className="aspect-square w-full rounded-2xl"
-      />
+    <div className="flex gap-7">
       {images.length > 1 && (
-        <ul className="flex gap-3" aria-label="Gallery thumbnails">
+        <ul className="hidden w-[100px] shrink-0 gap-4 lg:grid" aria-label="Miniaturas">
           {images.map((image, index) => (
-            <li key={image.url}>
+            <li key={image.alt}>
               <button
                 type="button"
-                aria-label={`Show image ${index + 1} of ${images.length}`}
+                aria-label={`Mostrar imagem ${String(index + 1)} de ${String(images.length)}`}
                 aria-pressed={index === selected}
                 onClick={() => {
                   setSelected(index);
                 }}
-                className="overflow-hidden rounded-lg ring-offset-2 ring-offset-background aria-pressed:ring-2 aria-pressed:ring-primary"
+                className="block overflow-hidden rounded-lg bg-card ring-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-pressed:ring-1"
               >
-                <img
-                  src={image.url}
-                  alt=""
-                  width={80}
-                  height={80}
-                  className="size-20 object-cover"
-                />
+                <NftImage image={image} alt="" sizes="100px" className="size-[100px]" />
               </button>
             </li>
           ))}
         </ul>
       )}
+      <div className="relative flex-1 lg:rounded-md lg:bg-card lg:p-4">
+        <NftImage
+          image={current}
+          sizes="(min-width: 1024px) 404px, 100vw"
+          priority
+          className="aspect-square w-full rounded-3xl"
+        />
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              aria-label="Ampliar imagem"
+              className={cn(
+                'absolute top-3 right-3 hidden size-[30px] place-items-center rounded-full bg-background text-foreground lg:grid',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+              )}
+            >
+              <Search aria-hidden="true" className="size-4" />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl p-2 sm:max-w-3xl">
+            <DialogTitle className="sr-only">{current.alt}</DialogTitle>
+            <NftImage image={current} sizes="768px" className="aspect-square w-full rounded-xl" />
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }

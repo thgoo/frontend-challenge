@@ -26,7 +26,11 @@ function NftDetailPage() {
   if (hasErrorCode(error, 'NOT_FOUND')) return <NftNotFound />;
   if (error)
     return (
-      <ErrorState title="Could not load this NFT" error={error} onRetry={() => void refetch()} />
+      <ErrorState
+        title="Não foi possível carregar este NFT"
+        error={error}
+        onRetry={() => void refetch()}
+      />
     );
   return <NftDetail nft={data} />;
 }

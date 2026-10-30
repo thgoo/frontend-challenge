@@ -56,7 +56,7 @@ export function FavoriteButton({
         aria-pressed={isFavorite}
         aria-label={`Favoritar ${nftName}`}
         onClick={onClick}
-        className={cn('bg-background/80 hover:bg-background', className)}
+        className={cn('rounded-full bg-background/80 hover:bg-background', className)}
       >
         {heart}
       </Button>
