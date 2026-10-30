@@ -1,11 +1,25 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/features/auth/queries';
 import { useFavorites, useToggleFavorite } from '../queries';
 
-export function FavoriteButton({ nftId, nftName }: { nftId: string; nftName: string }) {
+interface FavoriteButtonProps {
+  nftId: string;
+  nftName: string;
+  /** `icon` is the compact heart used on cards and image overlays. */
+  variant?: 'full' | 'icon';
+  className?: string;
+}
+
+export function FavoriteButton({
+  nftId,
+  nftName,
+  variant = 'full',
+  className,
+}: FavoriteButtonProps) {
   const session = useSession();
   const navigate = useNavigate();
   const currentHref = useRouterState({ select: (state) => state.location.href });
@@ -22,16 +36,37 @@ export function FavoriteButton({ nftId, nftName }: { nftId: string; nftName: str
       { nftId, favorite: !isFavorite },
       {
         onError: () => {
-          toast.error(`Could not update favorites for “${nftName}”. Your change was undone.`);
+          toast.error(
+            `Não foi possível atualizar os favoritos de “${nftName}”. Desfizemos a alteração.`,
+          );
         },
       },
     );
   };
 
+  const heart = (
+    <Heart aria-hidden="true" className={cn(isFavorite && 'fill-primary text-primary')} />
+  );
+
+  if (variant === 'icon') {
+    return (
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-pressed={isFavorite}
+        aria-label={`Favoritar ${nftName}`}
+        onClick={onClick}
+        className={cn('bg-background/80 hover:bg-background', className)}
+      >
+        {heart}
+      </Button>
+    );
+  }
+
   return (
-    <Button variant="outline" aria-pressed={isFavorite} onClick={onClick}>
-      <Heart aria-hidden="true" className={isFavorite ? 'fill-primary text-primary' : undefined} />
-      {isFavorite ? 'Favorited' : 'Add to favorites'}
+    <Button variant="outline" aria-pressed={isFavorite} onClick={onClick} className={className}>
+      {heart}
+      {isFavorite ? 'Favoritado' : 'Favoritar'}
     </Button>
   );
 }
