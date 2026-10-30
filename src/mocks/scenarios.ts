@@ -90,6 +90,11 @@ export const SCENARIOS = [
     payment: { outcome: 'declined', settleAfterMs: 3000 },
   }),
   variant({
+    name: 'slow-payment',
+    description: 'Payments stay pending for 20 seconds, to exercise refresh and duplicate guards.',
+    payment: { outcome: 'confirmed', settleAfterMs: 20_000 },
+  }),
+  variant({
     name: 'order-timeout',
     description:
       'Order creation times out after being committed; retrying recovers the same order.',
