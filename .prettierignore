@@ -7,3 +7,4 @@ test-results
 .lighthouseci
 e2e/**/*-snapshots
 CHALLENGE.md
+lighthouse-reports
