@@ -57,7 +57,14 @@ function noticeFor(error: unknown): Notice {
 const CONFIRM_BUTTON =
   'h-[60px] w-full rounded-full bg-linear-to-r from-primary to-primary/70 text-base font-bold lg:h-[45px] lg:rounded-md lg:bg-primary lg:bg-none';
 
-function CheckoutForm({ cart, wallets }: { cart: Cart; wallets: readonly Wallet[] }) {
+interface CheckoutFormProps {
+  cart: Cart;
+  wallets: readonly Wallet[];
+  /** Owned by the page: the form may unmount (cart emptied by settlement) while the order is in flight. */
+  placeOrder: ReturnType<typeof usePlaceOrder>;
+}
+
+function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
   const session = useSession();
   const userId = useCurrentUserId();
   const navigate = useNavigate();
@@ -85,7 +92,6 @@ function CheckoutForm({ cart, wallets }: { cart: Cart; wallets: readonly Wallet[
   const idempotencyKey = useIdempotencyKey(quote.data?.id);
   const connect = useConnectWallet();
   const connected = useIsWalletConnected(walletId, network);
-  const placeOrder = usePlaceOrder();
   const [notice, setNotice] = useState<Notice | null>(null);
   const [showCoupon, setShowCoupon] = useState(false);
 
@@ -99,7 +105,7 @@ function CheckoutForm({ cart, wallets }: { cart: Cart; wallets: readonly Wallet[
   };
 
   const submit = handleSubmit(async ({ walletId: wallet, network: chain, ...buyer }) => {
-    if (!quote.data || stale) return;
+    if (!quote.data || quote.isFetching || stale) return;
     setNotice(null);
     if (!connected) {
       try {
@@ -316,7 +322,7 @@ function CheckoutForm({ cart, wallets }: { cart: Cart; wallets: readonly Wallet[
         )}
         <Button
           type="submit"
-          disabled={!quote.data || stale || placing || wallets.length === 0}
+          disabled={!quote.data || quote.isFetching || stale || placing || wallets.length === 0}
           className={CONFIRM_BUTTON}
         >
           {placing ? 'Confirmando…' : 'Confirmar compra'}
@@ -331,9 +337,12 @@ export function CheckoutPage() {
   const cart = useCart();
   const wallets = useWallets();
   const orders = useQuery(ordersQueryOptions(userId));
+  const placeOrder = usePlaceOrder();
   const pendingOrder = orders.data?.find((order) => order.status === 'pending');
+  /** While an order is in flight, settlement may empty the cart; the form must stay mounted. */
+  const finishing = placeOrder.isPending || placeOrder.isSuccess;
 
-  if (pendingOrder) {
+  if (pendingOrder && !finishing) {
     return (
       <Alert>
         <AlertTitle>Você tem um pedido em processamento</AlertTitle>
@@ -350,7 +359,7 @@ export function CheckoutPage() {
       </Alert>
     );
   }
-  if (cart.error && !cart.data) {
+  if (cart.error && !cart.data && !finishing) {
     return (
       <ErrorState
         title="Não foi possível carregar seu carrinho"
@@ -359,7 +368,7 @@ export function CheckoutPage() {
       />
     );
   }
-  if (cart.data?.lines.length === 0) {
+  if (cart.data?.lines.length === 0 && !finishing) {
     return (
       <EmptyState title="Seu carrinho está vazio">
         <Link to="/" hash="mercado" className="text-highlight underline">
@@ -379,5 +388,5 @@ export function CheckoutPage() {
       </div>
     );
   }
-  return <CheckoutForm cart={cart.data} wallets={wallets.data} />;
+  return <CheckoutForm cart={cart.data} wallets={wallets.data} placeOrder={placeOrder} />;
 }
