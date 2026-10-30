@@ -1,4 +1,5 @@
 import { env } from '@/config/env';
+import './styles.css';
 
 /**
  * The app is loaded only after the mocks start: libraries such as engine.io-client capture
