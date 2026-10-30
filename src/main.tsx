@@ -2,8 +2,9 @@ import { env } from '@/config/env';
 import './styles.css';
 
 /**
- * The app is loaded only after the mocks start: libraries such as engine.io-client capture
- * `globalThis.WebSocket` at import time, which would bypass MSW's interception.
+ * The app is loaded only after the mocks start: engine.io-client captures `globalThis.WebSocket`
+ * when evaluated, which would bypass MSW's interception. The realtime layer is additionally
+ * lazy-loaded after the first render (see RealtimeSync), keeping the app chunk smaller.
  */
 async function bootstrap() {
   if (env.enableMocks) {
