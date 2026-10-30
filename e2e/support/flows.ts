@@ -30,16 +30,29 @@ export async function reachReview(page: Page) {
 
 /** Edits catalog filters in the sidebar (desktop) or the drawer (mobile), closing the drawer after. */
 export async function editCatalogFilters(page: Page, edit: (panel: Locator) => Promise<void>) {
-  const drawerTrigger = page.getByRole('button', { name: /^Filters/ });
+  const drawerTrigger = page.getByRole('button', { name: /^Filtros/ });
   if (!(await drawerTrigger.isVisible())) {
-    await edit(page.getByRole('complementary', { name: 'Filters' }));
+    await edit(page.getByRole('region', { name: 'Filtros' }));
     return;
   }
   await drawerTrigger.click();
-  const drawer = page.getByRole('dialog', { name: 'Filters' });
+  const drawer = page.getByRole('dialog', { name: 'Filtros' });
   await edit(drawer);
   await page.keyboard.press('Escape');
   await expect(drawer).toBeHidden();
+}
+
+/** Mobile searches from the bar above the catalog; desktop from the header search dialog. */
+export async function searchCatalog(page: Page, term: string) {
+  const inline = page.getByRole('searchbox', { name: 'Buscar NFTs' });
+  if (await inline.isVisible()) {
+    await inline.fill(term);
+    return;
+  }
+  await page.getByRole('button', { name: 'Buscar NFTs' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Buscar NFTs' });
+  await dialog.getByRole('searchbox', { name: 'Buscar NFTs' }).fill(term);
+  await dialog.getByRole('button', { name: 'Buscar' }).click();
 }
 
 /** Desktop shows the account menu in the header; mobile shows "Perfil de …" in the tab bar. */

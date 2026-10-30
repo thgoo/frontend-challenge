@@ -6,23 +6,23 @@ const LOADED_TIMEOUT = { timeout: 15_000 };
 test.describe('loading states', () => {
   test('shows shimmer skeletons while the catalog loads slowly', async ({ page }) => {
     await openWithMocks(page, '/?scenario=slow');
-    const catalog = page.getByRole('region', { name: 'Browse marketplace' });
+    const catalog = page.getByRole('region', { name: 'Mercado' });
 
-    await expect(catalog.getByRole('status').filter({ hasText: 'Loading NFTs' })).toBeAttached();
+    await expect(catalog.getByRole('status').filter({ hasText: 'Carregando NFTs' })).toBeAttached();
     const skeleton = catalog.locator('[data-slot="skeleton"]').first();
     await expect(skeleton).toBeVisible();
     expect(await skeleton.evaluate((node) => getComputedStyle(node).animationName)).not.toBe(
       'none',
     );
 
-    await expect(catalog.getByText(/NFTs? found/)).toBeVisible(LOADED_TIMEOUT);
+    await expect(catalog.getByText(/NFTs? encontrados?/)).toBeAttached(LOADED_TIMEOUT);
     await expect(catalog.locator('[data-slot="skeleton"]')).toHaveCount(0);
   });
 
   test('stops the shimmer for users who prefer reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openWithMocks(page, '/?scenario=slow');
-    const skeleton = page.locator('[data-slot="skeleton"]').first();
+    const skeleton = page.locator('[data-slot="skeleton"]:visible').first();
     await expect(skeleton).toBeVisible();
     expect(await skeleton.evaluate((node) => getComputedStyle(node).animationName)).toBe('none');
   });
@@ -30,7 +30,10 @@ test.describe('loading states', () => {
   test('shows skeletons for the NFT detail and the cart', async ({ page }) => {
     await openWithMocks(page, '/nfts/nft_002?scenario=slow');
     await expect(page.getByRole('status').filter({ hasText: 'Loading NFT' })).toBeAttached();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('#2', LOADED_TIMEOUT);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Sage Nomad #009',
+      LOADED_TIMEOUT,
+    );
 
     await openWithMocks(page, '/cart?scenario=slow');
     await expect(page.getByRole('status').filter({ hasText: 'Loading your cart' })).toBeAttached();
@@ -50,22 +53,24 @@ test.describe('failures and recovery', () => {
 
     await page.evaluate(() => window.__mocks?.reset('default'));
     await error.getByRole('button', { name: 'Try again' }).click();
-    await expect(page.getByText(/NFTs? found/)).toBeVisible();
+    await expect(page.getByText(/NFTs? encontrados?/)).toBeAttached();
   });
 
   test('explains a failed catalog page and recovers on retry', async ({ page }) => {
     await openWithMocks(page, '/?scenario=default');
-    await expect(page.getByText(/NFTs? found/)).toBeVisible();
+    await expect(page.getByText(/NFTs? encontrados?/)).toBeAttached();
 
     await page.evaluate(() => window.__mocks?.reset('offline'));
-    await page.getByRole('link', { name: 'Page 2' }).click();
-    const error = page.getByRole('alert').filter({ hasText: 'Could not load the catalog' });
+    await page.getByRole('link', { name: 'Página 2' }).click();
+    const error = page
+      .getByRole('alert')
+      .filter({ hasText: 'Não foi possível carregar o catálogo' });
     await expect(error).toBeVisible(LOADED_TIMEOUT);
 
     await page.evaluate(() => window.__mocks?.reset('default'));
     await error.getByRole('button', { name: 'Try again' }).click();
     await expect(error).toBeHidden();
-    await expect(page.getByRole('link', { name: 'Page 2' })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Página 2' })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -73,7 +78,7 @@ test.describe('failures and recovery', () => {
 
   test('retries transient server errors without bothering the user', async ({ page }) => {
     await openWithMocks(page, '/?scenario=flaky');
-    await expect(page.getByText(/NFTs? found/)).toBeVisible(LOADED_TIMEOUT);
+    await expect(page.getByText(/NFTs? encontrados?/)).toBeAttached(LOADED_TIMEOUT);
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 

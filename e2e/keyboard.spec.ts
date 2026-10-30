@@ -15,11 +15,11 @@ test.describe('keyboard and focus', () => {
   test('traps focus in the filters drawer and restores it on close', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'Filters open in a drawer below the desktop breakpoint');
     await openWithMocks(page, '/?scenario=default');
-    const trigger = page.getByRole('button', { name: /^Filters/ });
+    const trigger = page.getByRole('button', { name: /^Filtros/ });
     await trigger.focus();
     await page.keyboard.press('Enter');
 
-    const drawer = page.getByRole('dialog', { name: 'Filters' });
+    const drawer = page.getByRole('dialog', { name: 'Filtros' });
     await expect(drawer).toBeVisible();
     for (let step = 0; step < 15; step += 1) {
       await page.keyboard.press('Tab');

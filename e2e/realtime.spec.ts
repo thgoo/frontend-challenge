@@ -12,12 +12,13 @@ import {
 const STANDARD = { nftId: 'nft_002', editionId: 'ed_002_1' };
 const OTHER = { nftId: 'nft_001', editionId: 'ed_001_1' };
 
-function featuredPrice(page: Page, nftId: string) {
+function cardPrice(page: Page, nftId: string) {
   return page
-    .getByRole('region', { name: 'Featured NFTs' })
+    .getByRole('region', { name: 'Mercado' })
     .getByRole('article')
     .filter({ has: page.locator(`a[href="/nfts/${nftId}"]`) })
-    .locator('[data-eth]');
+    .locator('[data-eth]')
+    .first();
 }
 
 async function setSocketOnline(page: Page, online: boolean) {
@@ -95,9 +96,9 @@ test.describe('realtime consistency', () => {
     await waitForSocket(page);
 
     await updateEdition(page, STANDARD, { priceEth: '0.011' });
-    await expect(featuredPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.011');
+    await expect(cardPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.011');
     await updateEdition(page, STANDARD, { priceEth: '0.022' });
-    await expect(featuredPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.022');
+    await expect(cardPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.022');
 
     await page.evaluate((nftId) => {
       const sockets = window.__mocks?.sockets;
@@ -106,24 +107,25 @@ test.describe('realtime consistency', () => {
     }, STANDARD.nftId);
     // Events arrive in order, so once this one shows up the redelivered ones were handled.
     await updateEdition(page, OTHER, { priceEth: '0.033' });
-    await expect(featuredPrice(page, OTHER.nftId)).toHaveAttribute('data-eth', '0.033');
-    await expect(featuredPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.022');
+    await expect(cardPrice(page, OTHER.nftId)).toHaveAttribute('data-eth', '0.033');
+    await expect(cardPrice(page, STANDARD.nftId)).toHaveAttribute('data-eth', '0.022');
   });
 
   test('reconciles with the API after the socket reconnects', async ({ page }) => {
     await openWithMocks(page, '/?scenario=default');
     await waitForSocket(page);
-    const price = featuredPrice(page, STANDARD.nftId);
+    const price = cardPrice(page, STANDARD.nftId);
     const initial = await price.getAttribute('data-eth');
 
     await setSocketOnline(page, false);
     await updateEdition(page, STANDARD, { priceEth: '0.044' });
-    // Fetch a page to give a wrongly delivered event time to land before checking it did not.
-    await page.getByRole('link', { name: 'Page 2' }).click();
-    await expect(page.getByRole('link', { name: 'Page 2' })).toHaveAttribute(
+    // A round trip to page 2 gives a wrongly delivered event time to land before checking it did not.
+    await page.getByRole('link', { name: 'Página 2' }).click();
+    await expect(page.getByRole('link', { name: 'Página 2' })).toHaveAttribute(
       'aria-current',
       'page',
     );
+    await page.goBack();
     await expect(price).toHaveAttribute('data-eth', initial ?? '');
 
     await setSocketOnline(page, true);

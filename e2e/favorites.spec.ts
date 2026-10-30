@@ -14,12 +14,12 @@ async function toggleAndSettle(page: Page, button: Locator) {
 test.describe('favorites', () => {
   test('asks guests to sign in and returns them to the NFT', async ({ page }) => {
     await openWithMocks(page, `${NFT_PATH}?scenario=default`);
-    await page.getByRole('button', { name: 'Add to favorites' }).click();
+    await page.getByRole('button', { name: 'Favoritar' }).click();
     await expect(page).toHaveURL(/\/login\?redirect=%2Fnfts%2Fnft_004/);
 
     await signInThroughUi(page);
     await expect(page).toHaveURL(NFT_PATH);
-    await expect(page.getByRole('button', { name: 'Add to favorites' })).toHaveAttribute(
+    await expect(page.getByRole('button', { name: 'Favoritar' })).toHaveAttribute(
       'aria-pressed',
       'false',
     );
@@ -27,11 +27,11 @@ test.describe('favorites', () => {
 
   test('favorites and unfavorites, keeping the state after a refresh', async ({ page }) => {
     await startSignedIn(page, 'default', NFT_PATH);
-    const button = page.getByRole('button', { name: /favorite/i });
+    const button = page.getByRole('button', { name: /^Favorit/ });
 
     await toggleAndSettle(page, button);
     await expect(button).toHaveAttribute('aria-pressed', 'true');
-    await expect(button).toHaveText('Favorited');
+    await expect(button).toHaveText('Favoritado');
 
     await reloadWithMocks(page);
     await expect(button).toHaveAttribute('aria-pressed', 'true');
@@ -39,18 +39,18 @@ test.describe('favorites', () => {
     await toggleAndSettle(page, button);
     await expect(button).toHaveAttribute('aria-pressed', 'false');
     await reloadWithMocks(page);
-    await expect(button).toHaveText('Add to favorites');
+    await expect(button).toHaveText('Favoritar');
   });
 
   test('rolls back an optimistic favorite when the server fails', async ({ page }) => {
     await startSignedIn(page, 'favorites-failure', NFT_PATH);
-    const button = page.getByRole('button', { name: /favorite/i });
+    const button = page.getByRole('button', { name: /^Favorit/ });
     await expect(button).toHaveAttribute('aria-pressed', 'false');
 
     await button.click();
     await expect(button).toHaveAttribute('aria-pressed', 'true');
     await expect(
-      page.getByText(/Could not update favorites for .*Your change was undone\./),
+      page.getByText(/Não foi possível atualizar os favoritos de .*Desfizemos a alteração\./),
     ).toBeVisible();
     await expect(button).toHaveAttribute('aria-pressed', 'false');
 

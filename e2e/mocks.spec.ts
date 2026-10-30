@@ -4,7 +4,7 @@ import { ALICE as alice, api, openWithMocks as open, reloadWithMocks } from './s
 test.describe('mock api', () => {
   test('lists, filters and fetches NFTs', async ({ page }) => {
     await open(page, '/login?scenario=default');
-    const list = await api(page, '/nfts?categories=art&sort=price-asc&page=1');
+    const list = await api(page, '/nfts?categories=digital-art&sort=price-asc&page=1');
     expect(list.status).toBe(200);
     expect(list.body).toMatchObject({ page: 1, pageSize: 12 });
 
