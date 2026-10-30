@@ -68,6 +68,8 @@ function accept(socket: WebSocketHandlerConnection) {
       io.client.emit(event, payload);
     },
     close: () => {
+      // Closing is async: unregister now so nothing is delivered to a socket being closed.
+      connections.delete(connection);
       client.close();
     },
   };
