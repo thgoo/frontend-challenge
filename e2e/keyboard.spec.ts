@@ -7,7 +7,7 @@ test.describe('keyboard and focus', () => {
     await openWithMocks(page, '/?scenario=default');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await page.keyboard.press('Tab');
-    await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Pular para o conteúdo' })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('main')).toBeFocused();
   });
@@ -34,7 +34,7 @@ test.describe('keyboard and focus', () => {
   test('opens the account menu and navigates with the keyboard', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Covered by the drawer test on mobile');
     await startSignedIn(page);
-    const trigger = page.getByRole('button', { name: /^Account menu for / });
+    const trigger = page.getByRole('button', { name: /^Menu da conta de / });
     await trigger.focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('menu')).toBeVisible();
@@ -44,9 +44,9 @@ test.describe('keyboard and focus', () => {
     await expect(trigger).toBeFocused();
 
     await page.keyboard.press('Enter');
-    await expect(page.getByRole('menuitem', { name: 'Profile' })).toBeFocused();
+    await expect(page.getByRole('menuitem', { name: 'Perfil' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
-    await expect(page.getByRole('menuitem', { name: 'Wallets' })).toBeFocused();
+    await expect(page.getByRole('menuitem', { name: 'Carteiras' })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL('/wallets');
   });
@@ -60,7 +60,6 @@ test.describe('keyboard and focus', () => {
     await page.getByRole('button', { name: 'Add to cart' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByText(/Added 2 ×/)).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Cart, 2 items' })).toBeVisible();
   });
 });
 

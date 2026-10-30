@@ -42,9 +42,21 @@ export async function editCatalogFilters(page: Page, edit: (panel: Locator) => P
   await expect(drawer).toBeHidden();
 }
 
+/** Desktop shows the account menu in the header; mobile shows "Perfil de …" in the tab bar. */
+export function signedInIndicator(page: Page, name?: string) {
+  const desktop = name ? `Menu da conta de ${name}` : /^Menu da conta de /;
+  const mobile = name ? `Perfil de ${name}` : /^Perfil de /;
+  return page.getByRole('button', { name: desktop }).or(page.getByRole('link', { name: mobile }));
+}
+
 export async function signOutThroughUi(page: Page) {
-  await page.getByRole('button', { name: /^Account menu for / }).click();
-  await page.getByRole('menuitem', { name: 'Sign out' }).click();
-  // A CSS locator, because role queries also skip the trigger while the open menu hides the page.
-  await expect(page.locator('[aria-label^="Account menu for "]')).toHaveCount(0);
+  const menu = page.getByRole('button', { name: /^Menu da conta de / });
+  if (await menu.isVisible()) {
+    await menu.click();
+    await page.getByRole('menuitem', { name: 'Sair' }).click();
+  } else {
+    await page.goto('/profile');
+    await page.getByRole('button', { name: 'Sair da conta' }).click();
+  }
+  await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible();
 }

@@ -7,7 +7,7 @@ test('renders the home page', async ({ page }) => {
 
 test('renders the not found page for unknown routes', async ({ page }) => {
   await page.goto('/does-not-exist');
-  await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Página não encontrada' })).toBeVisible();
 });
 
 test('starts the MSW worker in the production build', async ({ page }) => {

@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { addToCart, signInThroughUi, signOutThroughUi, startSignedIn } from './support/flows';
+import {
+  addToCart,
+  signedInIndicator,
+  signInThroughUi,
+  signOutThroughUi,
+  startSignedIn,
+} from './support/flows';
 import { BOB, openWithMocks } from './support/mock-api';
 
 const CAROL = { email: 'carol@example.com', password: 'Password123' };
@@ -29,9 +35,7 @@ test.describe('auth', () => {
     await page.getByLabel('Email').fill(CAROL.email);
     await create.click();
     await expect(page).toHaveURL('/');
-    await expect(
-      page.getByRole('button', { name: 'Account menu for Carol Collector' }),
-    ).toBeVisible();
+    await expect(signedInIndicator(page, 'Carol Collector')).toBeVisible();
 
     await signOutThroughUi(page);
     await page.goto('/login');
@@ -39,9 +43,7 @@ test.describe('auth', () => {
     await expect(page.getByText('E-mail ou senha incorretos.')).toBeVisible();
 
     await signInThroughUi(page, CAROL);
-    await expect(
-      page.getByRole('button', { name: 'Account menu for Carol Collector' }),
-    ).toBeVisible();
+    await expect(signedInIndicator(page, 'Carol Collector')).toBeVisible();
   });
 
   test('sends guests to login and back to the protected page', async ({ page }) => {
@@ -65,29 +67,32 @@ test.describe('auth', () => {
     await expect(
       page.getByRole('status').filter({ hasText: 'Your session expired' }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: /^Account menu for / })).toBeHidden();
+    await expect(signedInIndicator(page)).toBeHidden();
 
     await signInThroughUi(page);
     await expect(page).toHaveURL('/profile');
   });
 
   test('switches users without leaking private data', async ({ page }) => {
+    const cartLines = page.getByRole('group', { name: /^Quantity of / });
     await startSignedIn(page);
     await addToCart(page, 'nft_002');
-    const cartLink = (count: string) => page.getByRole('link', { name: `Cart, ${count}` });
-    await expect(cartLink('1 item')).toBeVisible();
+    await page.goto('/cart');
+    await expect(cartLines).toHaveCount(1);
 
     await signOutThroughUi(page);
-    await expect(cartLink('0 items')).toBeVisible();
+    await page.goto('/cart');
+    await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
 
     await page.goto('/login?redirect=%2Fprofile');
     await signInThroughUi(page, BOB);
     await expect(page.getByLabel('Username')).toHaveValue('bob');
-    await expect(cartLink('0 items')).toBeVisible();
+    await page.goto('/cart');
+    await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
 
     await signOutThroughUi(page);
     await page.goto('/login?redirect=%2Fcart');
     await signInThroughUi(page);
-    await expect(cartLink('1 item')).toBeVisible();
+    await expect(cartLines).toHaveCount(1);
   });
 });

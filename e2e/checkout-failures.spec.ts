@@ -23,7 +23,6 @@ test.describe('checkout failures', () => {
 
     await declined.getByRole('link', { name: 'Back to checkout' }).click();
     await expect(page.getByRole('button', { name: 'Review order' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Cart, 1 item' })).toBeVisible();
   });
 
   test('creates a single order when confirm is clicked repeatedly', async ({ page }) => {

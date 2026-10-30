@@ -45,7 +45,7 @@ test.describe('realtime during checkout', () => {
 
     await updateEdition(page, STANDARD, { priceEth: '9.99' });
     await expect(
-      page.getByText(/changed price or availability\. Your cart was updated\./),
+      page.getByText(/mudou de preço ou disponibilidade\. Seu carrinho foi atualizado\./),
     ).toBeVisible();
     const review = page.getByRole('region', { name: 'Review your order' });
     await expect(review.getByText('Prices or availability changed')).toBeVisible();
@@ -69,7 +69,7 @@ test.describe('realtime during checkout', () => {
     const review = page.getByRole('region', { name: 'Review your order' });
     await expect(review.getByRole('button', { name: 'Confirm and pay' })).toBeDisabled();
 
-    await page.getByRole('link', { name: /^Cart, / }).click();
+    await page.goto('/cart');
     await expect(page.getByText('Sold out. Remove it to continue.')).toBeVisible();
   });
 
