@@ -4,6 +4,7 @@ import { checkoutHandlers } from './handlers/checkout';
 import { favoriteHandlers } from './handlers/favorites';
 import { unknownEndpointHandler } from './handlers/fallback';
 import { networkConditionsHandler } from './handlers/network';
+import { newsletterHandlers } from './handlers/newsletter';
 import { nftHandlers } from './handlers/nfts';
 import { profileHandlers } from './handlers/profile';
 import { walletConnectionHandlers } from './handlers/wallet-connection';
@@ -20,5 +21,6 @@ export const handlers = [
   ...profileHandlers,
   ...walletHandlers,
   ...walletConnectionHandlers,
+  ...newsletterHandlers,
   unknownEndpointHandler,
 ];
