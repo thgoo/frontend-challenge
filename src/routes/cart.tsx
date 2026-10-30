@@ -9,6 +9,7 @@ import { PriceSummary, PriceSummarySkeleton } from '@/features/cart/components/p
 import { useCart } from '@/features/cart/queries';
 
 export const Route = createFileRoute('/cart')({
+  staticData: { hideMobileTabBar: true },
   head: () => ({ meta: [{ title: 'Cart · NFT Marketplace' }] }),
   component: CartPage,
 });

@@ -11,6 +11,7 @@ import { hasErrorCode } from '@/lib/api-error';
 import { noop } from '@/lib/noop';
 
 export const Route = createFileRoute('/nfts/$nftId')({
+  staticData: { hideMobileTabBar: true },
   loader: ({ context: { queryClient }, params }) => {
     queryClient.query(nftDetailQueryOptions(params.nftId)).catch(noop);
   },

@@ -78,6 +78,14 @@
   }
 }
 
+/* Figma content width is 1200px with 24px gutters on mobile. */
+@utility page-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: calc(1200px + 3rem);
+  padding-inline: 1.5rem;
+}
+
 @keyframes shimmer {
   from {
     background-position: 200% 0;

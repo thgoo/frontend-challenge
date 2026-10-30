@@ -42,3 +42,8 @@ export const useUpdateCartItem = () => useCartMutation(updateCartItem);
 export const useRemoveCartItem = () => useCartMutation(removeCartItem);
 export const useApplyCoupon = () => useCartMutation(applyCoupon);
 export const useRemoveCoupon = () => useCartMutation(removeCoupon);
+
+export function useCartItemCount(): number {
+  const { data } = useCart();
+  return data?.lines.reduce((total, line) => total + line.quantity, 0) ?? 0;
+}
