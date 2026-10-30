@@ -58,7 +58,7 @@ test.describe('auth', () => {
 
     await signInThroughUi(page);
     await expect(page).toHaveURL('/profile');
-    await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Perfil do colecionador' })).toBeVisible();
   });
 
   test('recovers from an expired session by signing in again', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('auth', () => {
     await page.evaluate(() => window.__mocks?.expireSessions());
 
     await page.getByLabel('Bio').fill('Updated after a long break.');
-    await page.getByRole('button', { name: 'Save profile' }).click();
+    await page.getByRole('button', { name: 'Salvar', exact: true }).click();
 
     await expect(page).toHaveURL(/\/login\?redirect=%2Fprofile&reason=expired/);
     await expect(page.getByRole('status').filter({ hasText: 'Sua sessão expirou' })).toBeVisible();
@@ -90,7 +90,7 @@ test.describe('auth', () => {
 
     await page.goto('/login?redirect=%2Fprofile');
     await signInThroughUi(page, BOB);
-    await expect(page.getByLabel('Username')).toHaveValue('bob');
+    await expect(page.getByLabel('Nome de usuário')).toHaveValue('bob');
     await page.goto('/cart');
     await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible();
 

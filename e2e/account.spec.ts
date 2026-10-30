@@ -7,25 +7,25 @@ test.describe('account', () => {
     page,
   }) => {
     await startSignedIn(page, 'default', '/profile');
-    const details = page.getByRole('region', { name: 'Details' });
+    const details = page.getByRole('region', { name: 'Dados do perfil' });
 
-    await details.getByLabel('Username').fill('bob');
-    await details.getByRole('button', { name: 'Save profile' }).click();
+    await details.getByLabel('Nome de usuário').fill('bob');
+    await details.getByRole('button', { name: 'Salvar', exact: true }).click();
     await expect(details.getByText('Este nome de usuário já está em uso')).toBeVisible();
-    await expect(details.getByLabel('Username')).toHaveAttribute('aria-invalid', 'true');
+    await expect(details.getByLabel('Nome de usuário')).toHaveAttribute('aria-invalid', 'true');
 
-    await details.getByLabel('Username').fill('alice_collector');
+    await details.getByLabel('Nome de usuário').fill('alice_collector');
     await details.getByLabel('Bio').fill('Collector of generative art and music.');
-    await details.getByRole('button', { name: 'Save profile' }).click();
-    await expect(page.getByText('Profile updated.')).toBeVisible();
+    await details.getByRole('button', { name: 'Salvar', exact: true }).click();
+    await expect(page.getByText('Perfil atualizado.')).toBeVisible();
 
     await reloadWithMocks(page);
-    await expect(details.getByLabel('Username')).toHaveValue('alice_collector');
+    await expect(details.getByLabel('Nome de usuário')).toHaveValue('alice_collector');
   });
 
   test('uploads an avatar and validates the file type', async ({ page }) => {
     await startSignedIn(page, 'default', '/profile');
-    const input = page.getByLabel('Change avatar');
+    const input = page.getByLabel('Alterar avatar');
 
     await input.setInputFiles({
       name: 'notes.txt',
@@ -39,47 +39,49 @@ test.describe('account', () => {
       'base64',
     );
     await input.setInputFiles({ name: 'avatar.png', mimeType: 'image/png', buffer: png });
-    await expect(page.getByText('Avatar updated.')).toBeVisible();
-    await expect(page.getByRole('img', { name: "Alice Collector's avatar" })).toBeVisible();
+    await expect(page.getByText('Avatar atualizado.')).toBeVisible();
+    await expect(page.getByRole('img', { name: 'Avatar de Alice Collector' })).toBeVisible();
   });
 
   test('changes the password and validates the current one', async ({ page }) => {
     await startSignedIn(page, 'default', '/profile');
-    const form = page.getByRole('region', { name: 'Password' });
+    const form = page.getByRole('region', { name: 'Alterar senha' });
 
-    await form.getByLabel('Current password').fill('Wrong12345');
-    await form.getByLabel('New password', { exact: true }).fill('NewPassword1');
-    await form.getByLabel('Confirm new password').fill('Mismatch1');
-    await form.getByRole('button', { name: 'Change password' }).click();
+    await form.getByLabel('Senha atual').fill('Wrong12345');
+    await form.getByLabel('Nova senha', { exact: true }).fill('NewPassword1');
+    await form.getByLabel('Confirmar nova senha').fill('Mismatch1');
+    await form.getByRole('button', { name: 'Alterar senha' }).click();
     await expect(form.getByText('As senhas não coincidem')).toBeVisible();
 
-    await form.getByLabel('Confirm new password').fill('NewPassword1');
-    await form.getByRole('button', { name: 'Change password' }).click();
+    await form.getByLabel('Confirmar nova senha').fill('NewPassword1');
+    await form.getByRole('button', { name: 'Alterar senha' }).click();
     await expect(form.getByText('Senha atual incorreta')).toBeVisible();
 
-    await form.getByLabel('Current password').fill('Password123');
-    await form.getByRole('button', { name: 'Change password' }).click();
-    await expect(page.getByText('Password changed.')).toBeVisible();
+    await form.getByLabel('Senha atual').fill('Password123');
+    await form.getByRole('button', { name: 'Alterar senha' }).click();
+    await expect(page.getByText('Senha alterada.')).toBeVisible();
   });
 
   test('edits wallets and rejects an invalid or duplicated address', async ({ page }) => {
     await startSignedIn(page, 'default', '/wallets');
-    const secondary = page.getByRole('form', { name: 'Secondary wallet' });
+    const secondary = page.getByRole('form', { name: 'Carteira secundária' });
 
-    await secondary.getByLabel('Address').fill('not-an-address');
-    await secondary.getByRole('button', { name: 'Save changes' }).click();
+    await secondary.getByLabel('Endereço da carteira').fill('not-an-address');
+    await secondary.getByRole('button', { name: 'Salvar carteira' }).click();
     await expect(secondary.getByText('Informe um endereço 0x válido')).toBeVisible();
 
-    await secondary.getByLabel('Address').fill('0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
-    await secondary.getByRole('button', { name: 'Save changes' }).click();
+    await secondary
+      .getByLabel('Endereço da carteira')
+      .fill('0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
+    await secondary.getByRole('button', { name: 'Salvar carteira' }).click();
     await expect(secondary.getByText('Endereço já usado na sua outra carteira')).toBeVisible();
 
-    await secondary.getByLabel('Label').fill('Cold storage');
-    await secondary.getByLabel('Address').fill(`0x${'b'.repeat(40)}`);
-    await secondary.getByRole('button', { name: 'Save changes' }).click();
-    await expect(page.getByText('Secondary wallet saved.')).toBeVisible();
+    await secondary.getByLabel('Apelido da carteira').fill('Cold storage');
+    await secondary.getByLabel('Endereço da carteira').fill(`0x${'b'.repeat(40)}`);
+    await secondary.getByRole('button', { name: 'Salvar carteira' }).click();
+    await expect(page.getByText('Carteira secundária salva.')).toBeVisible();
 
     await reloadWithMocks(page);
-    await expect(secondary.getByLabel('Label')).toHaveValue('Cold storage');
+    await expect(secondary.getByLabel('Apelido da carteira')).toHaveValue('Cold storage');
   });
 });

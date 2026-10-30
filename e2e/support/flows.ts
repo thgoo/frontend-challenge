@@ -67,7 +67,7 @@ export async function signOutThroughUi(page: Page) {
     await page.getByRole('menuitem', { name: 'Sair' }).click();
   } else {
     await page.goto('/profile');
-    await page.getByRole('button', { name: 'Sair da conta' }).click();
+    await page.getByRole('button', { name: 'Sair', exact: true }).click();
   }
   await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible();
 }
