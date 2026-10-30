@@ -13,3 +13,6 @@ dist
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# chrome-launcher under WSL creates its temporary profiles with Windows-style relative paths
+/C:*

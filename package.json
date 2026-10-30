@@ -18,9 +18,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "lighthouse": "npm run build && npm run lighthouse:mobile && npm run lighthouse:desktop",
+    "lighthouse": "npm run build && npm run lighthouse:mobile && npm run lighthouse:desktop && npm run lighthouse:summary",
     "lighthouse:mobile": "LH_PRESET=mobile lhci autorun",
-    "lighthouse:desktop": "LH_PRESET=desktop lhci autorun"
+    "lighthouse:desktop": "LH_PRESET=desktop lhci autorun",
+    "lighthouse:summary": "node scripts/lighthouse-summary.mjs"
   },
   "msw": {
     "workerDirectory": [

@@ -1,3 +1,5 @@
+const { chromium } = require('@playwright/test');
+
 const BASE_URL = 'http://localhost:4173';
 
 module.exports = {
@@ -5,7 +7,9 @@ module.exports = {
     collect: {
       startServerCommand: 'npm run preview -- --port 4173 --strictPort',
       startServerReadyPattern: 'localhost:4173',
-      url: [`${BASE_URL}/`],
+      url: [`${BASE_URL}/`, `${BASE_URL}/nfts/nft_001`],
+      // The same Chromium the E2E suite uses, so audits need no separate browser install.
+      chromePath: process.env.CHROME_PATH ?? chromium.executablePath(),
       numberOfRuns: 3,
       settings: {
         preset: process.env.LH_PRESET === 'desktop' ? 'desktop' : undefined,
