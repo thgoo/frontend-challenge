@@ -4,12 +4,14 @@ import { authSearchSchema } from '@/features/auth/auth-search';
 import { AuthCard } from '@/features/auth/components/auth-card';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { safeRedirect } from '@/features/auth/safe-redirect';
+import { ensureSession } from '@/features/auth/queries';
 
 export const Route = createFileRoute('/login')({
   validateSearch: authSearchSchema,
   staticData: { hideMobileTabBar: true },
-  beforeLoad: ({ context, search }) => {
-    if (context.session) throw redirect({ href: safeRedirect(search.redirect) });
+  beforeLoad: async ({ context, search }) => {
+    const session = await ensureSession(context.queryClient);
+    if (session) throw redirect({ href: safeRedirect(search.redirect) });
   },
   head: () => ({ meta: [{ title: 'Entrar · Kurio' }] }),
   component: LoginPage,

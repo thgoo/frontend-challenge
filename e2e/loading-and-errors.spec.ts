@@ -1,11 +1,24 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { openWithMocks } from './support/mock-api';
 
 const LOADED_TIMEOUT = { timeout: 15_000 };
 
+/**
+ * The first load renders once the session and the route data resolve together, so skeletons
+ * show up on client-side navigation: start on the sign-in screen, then move into the app.
+ */
+async function enterAppFromSignIn(page: Page) {
+  await openWithMocks(page, '/login?scenario=slow');
+  await expect(page.getByLabel('E-mail', { exact: true })).toBeVisible(LOADED_TIMEOUT);
+  await page
+    .getByRole('link', { name: 'KURIO', exact: true })
+    .or(page.getByRole('link', { name: 'Kurio, voltar ao início' }))
+    .click();
+}
+
 test.describe('loading states', () => {
   test('shows shimmer skeletons while the catalog loads slowly', async ({ page }) => {
-    await openWithMocks(page, '/?scenario=slow');
+    await enterAppFromSignIn(page);
     const catalog = page.getByRole('region', { name: 'Mercado' });
 
     await expect(catalog.getByRole('status').filter({ hasText: 'Carregando NFTs' })).toBeAttached();
@@ -21,14 +34,19 @@ test.describe('loading states', () => {
 
   test('stops the shimmer for users who prefer reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await openWithMocks(page, '/?scenario=slow');
+    await enterAppFromSignIn(page);
     const skeleton = page.locator('[data-slot="skeleton"]:visible').first();
     await expect(skeleton).toBeVisible();
     expect(await skeleton.evaluate((node) => getComputedStyle(node).animationName)).toBe('none');
   });
 
   test('shows skeletons for the NFT detail and the cart', async ({ page }) => {
-    await openWithMocks(page, '/nfts/nft_002?scenario=slow');
+    await enterAppFromSignIn(page);
+    await page
+      .getByRole('region', { name: 'Mercado' })
+      .getByRole('article')
+      .getByRole('link', { name: 'Sage Nomad #009' })
+      .click(LOADED_TIMEOUT);
     await expect(page.getByRole('status').filter({ hasText: 'Carregando NFT' })).toBeAttached();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Sage Nomad #009',

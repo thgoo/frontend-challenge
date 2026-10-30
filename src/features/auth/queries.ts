@@ -20,6 +20,11 @@ export const sessionQueryOptions = queryOptions({
   staleTime: Infinity,
 });
 
+/** Resolves the session once per page load; later reads come from the cache. */
+export function ensureSession(queryClient: QueryClient) {
+  return queryClient.query({ ...sessionQueryOptions, staleTime: 'static' });
+}
+
 export function userKey(userId: string) {
   return ['user', userId] as const;
 }

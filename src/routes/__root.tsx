@@ -10,15 +10,12 @@ import {
 } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { lazy, Suspense } from 'react';
-import { toast } from 'sonner';
 import { MobileTabBar } from '@/components/layout/mobile-tab-bar';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { ErrorState } from '@/components/query-states';
 import { Toaster } from '@/components/toaster';
-import { sessionQueryOptions } from '@/features/auth/queries';
-import { useCurrentUserId } from '@/features/auth/use-current-user-id';
-import { useRealtimeSync } from '@/features/realtime/use-realtime-sync';
+import { ensureSession } from '@/features/auth/queries';
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -32,11 +29,16 @@ declare module '@tanstack/react-router' {
 }
 
 const Devtools = import.meta.env.DEV ? lazy(() => import('@/app/devtools')) : () => null;
+const RealtimeSync = lazy(() => import('@/features/realtime/realtime-sync'));
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  beforeLoad: async ({ context }) => ({
-    session: await context.queryClient.query({ ...sessionQueryOptions, staleTime: 'static' }),
-  }),
+  /**
+   * A loader, not beforeLoad: loaders of all matches run in parallel, so the session request no
+   * longer delays route chunks and catalog requests. Guards await the same cached query.
+   */
+  loader: async ({ context }) => {
+    await ensureSession(context.queryClient);
+  },
   head: () => ({ meta: [{ title: 'Kurio' }] }),
   component: RootLayout,
   notFoundComponent: NotFound,
@@ -46,13 +48,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootLayout() {
   const showTabBar = useMatches({
     select: (matches) => !matches.some((match) => match.staticData.hideMobileTabBar),
-  });
-  useRealtimeSync(useCurrentUserId(), {
-    onCartLineChanged: (line) => {
-      toast.info(
-        `“${line.nftName}” mudou de preço ou disponibilidade. Seu carrinho foi atualizado.`,
-      );
-    },
   });
 
   return (
@@ -72,6 +67,7 @@ function RootLayout() {
       {showTabBar && <MobileTabBar />}
       <Toaster />
       <Suspense>
+        <RealtimeSync />
         <Devtools />
       </Suspense>
     </>
