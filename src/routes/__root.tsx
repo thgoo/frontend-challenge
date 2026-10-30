@@ -1,5 +1,12 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { createRootRouteWithContext, HeadContent, Link, Outlet } from '@tanstack/react-router';
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Link,
+  Outlet,
+  useRouter,
+  type ErrorComponentProps,
+} from '@tanstack/react-router';
 import { lazy, Suspense } from 'react';
 import { toast } from 'sonner';
 import { SiteHeader } from '@/components/layout/site-header';
@@ -22,7 +29,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({ meta: [{ title: 'NFT Marketplace' }] }),
   component: RootLayout,
   notFoundComponent: NotFound,
-  errorComponent: ({ error, reset }) => <ErrorState error={error} onRetry={reset} />,
+  errorComponent: RootError,
 });
 
 function RootLayout() {
@@ -51,6 +58,12 @@ function RootLayout() {
       </Suspense>
     </>
   );
+}
+
+/** Invalidating re-runs `beforeLoad` and loaders; resetting the boundary alone would not. */
+function RootError({ error }: ErrorComponentProps) {
+  const router = useRouter();
+  return <ErrorState error={error} onRetry={() => void router.invalidate()} />;
 }
 
 function NotFound() {
