@@ -6,4 +6,4 @@ playwright-report
 test-results
 .lighthouseci
 e2e/**/*-snapshots
-README.md
+CHALLENGE.md
