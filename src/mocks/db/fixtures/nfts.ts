@@ -2,6 +2,7 @@ import type { Edition, Nft } from '@/contracts/nft';
 import { nftCategorySchema } from '@/contracts/nft';
 import { networkSchema, type Network } from '@/contracts/wallet';
 import { createRandom, pick, randomInt, type Random } from '../random';
+import { createReviews, ratingOf } from './reviews';
 import { ARTWORKS, artworkImage, type Artwork } from '@/lib/artwork';
 
 export const NFT_FIXTURE_COUNT = 48;
@@ -11,6 +12,7 @@ const DAY_MS = 86_400_000;
 const GALLERY_SIZE = 4;
 
 const COLLECTION = 'Kurio Apes';
+const ROYALTY_BASIS_POINTS = 500;
 const CREATORS = [
   { id: 'creator_01', name: 'Nova Sato' },
   { id: 'creator_02', name: 'Mr Fox' },
@@ -211,14 +213,20 @@ export function createNftFixtures(seed: number): Nft[] {
     const network = networks[index % networks.length] ?? 'ethereum';
     const creator = pick(random, CREATORS);
 
+    const id = `nft_${String(number).padStart(3, '0')}`;
+    const contractAddress = `0x${Array.from({ length: 40 }, () => randomInt(random, 0, 15).toString(16)).join('')}`;
+
     return {
-      id: `nft_${String(number).padStart(3, '0')}`,
+      id,
       name,
       description: `Um colecionável digital finalizado à mão da coleção ${COLLECTION}, verificado na ${NETWORK_LABELS[network]}, com arte desbloqueável e acesso para colecionadores.`,
       category: categories[index % categories.length] ?? 'digital-art',
       network,
       collection: COLLECTION,
       tokenId: `#${tokenId.padStart(4, '0')}`,
+      contractAddress,
+      royaltyBasisPoints: ROYALTY_BASIS_POINTS,
+      rating: ratingOf(createReviews(id)),
       tags: [...FAMILIES[listing.artwork].traits],
       images: [
         artworkImage(listing.artwork, `${name}, vista 1`),

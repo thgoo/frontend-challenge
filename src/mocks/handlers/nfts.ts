@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { parseNftListSearchParams } from '@/contracts/nft';
 import { catalogFacets, queryCatalog } from '../domain/catalog';
+import { createReviews } from '../db/fixtures/reviews';
 import { readDb } from '../db/store';
 import { apiPath } from '../http/api';
 import { apiError, validationError } from '../http/responses';
@@ -17,6 +18,12 @@ export const nftHandlers = [
   http.get(apiPath('/nfts/featured'), () =>
     HttpResponse.json(readDb().nfts.filter((nft) => nft.featured)),
   ),
+
+  http.get<{ id: string }>(apiPath('/nfts/:id/reviews'), ({ params }) => {
+    const exists = readDb().nfts.some((nft) => nft.id === params.id);
+    if (!exists) return apiError(404, 'NOT_FOUND', 'This NFT does not exist.');
+    return HttpResponse.json(createReviews(params.id));
+  }),
 
   http.get<{ id: string }>(apiPath('/nfts/:id'), ({ params }) => {
     const nft = readDb().nfts.find((candidate) => candidate.id === params.id);

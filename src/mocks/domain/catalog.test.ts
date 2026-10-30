@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { NFT_PAGE_SIZE, nftListQuerySchema, type NftListQuery } from '@/contracts/nft';
 import { parseEth } from '@/lib/eth';
 import { createNftFixtures, NFT_FIXTURE_COUNT } from '../db/fixtures/nfts';
+import { createReviews, ratingOf } from '../db/fixtures/reviews';
 import { isAvailable, lowestPrice } from '@/lib/nft';
 import { catalogFacets, queryCatalog } from './catalog';
 
@@ -88,6 +89,13 @@ describe('fixtures', () => {
       'Neon Vessel #552',
     ]);
     expect(showcase[2]?.editions[0]).toMatchObject({ priceEth: '1.99', compareAtPriceEth: '2.29' });
+  });
+
+  it('advertise the rating of the reviews they serve', () => {
+    for (const nft of nfts.slice(0, 5)) {
+      expect(nft.rating).toEqual(ratingOf(createReviews(nft.id)));
+      expect(nft.rating.count).toBeGreaterThan(0);
+    }
   });
 
   it('are deterministic for the same seed', () => {

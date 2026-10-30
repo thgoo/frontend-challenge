@@ -1,6 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import type { NftListQuery } from '@/contracts/nft';
-import { fetchFeaturedNfts, fetchNft, fetchNftFacets, fetchNfts } from './api';
+import { fetchFeaturedNfts, fetchNft, fetchNftFacets, fetchNftReviews, fetchNfts } from './api';
 
 export const nftKeys = {
   all: ['nfts'] as const,
@@ -9,6 +9,7 @@ export const nftKeys = {
   featured: () => [...nftKeys.all, 'featured'] as const,
   facets: () => [...nftKeys.all, 'facets'] as const,
   detail: (id: string) => [...nftKeys.all, 'detail', id] as const,
+  reviews: (id: string) => [...nftKeys.all, 'reviews', id] as const,
 };
 
 /** Each query owns its key, so a late response for old filters can never overwrite the current page. */
@@ -34,5 +35,12 @@ export function nftDetailQueryOptions(id: string) {
   return queryOptions({
     queryKey: nftKeys.detail(id),
     queryFn: ({ signal }) => fetchNft(id, signal),
+  });
+}
+
+export function nftReviewsQueryOptions(id: string) {
+  return queryOptions({
+    queryKey: nftKeys.reviews(id),
+    queryFn: ({ signal }) => fetchNftReviews(id, signal),
   });
 }

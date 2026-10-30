@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   nftFacetsSchema,
   nftListResponseSchema,
+  reviewSchema,
   nftSchema,
   toNftListSearchParams,
   type NftListQuery,
@@ -22,6 +23,13 @@ export function fetchNftFacets(signal?: AbortSignal) {
 
 export function fetchFeaturedNfts(signal?: AbortSignal) {
   return request(z.array(nftSchema), { url: '/nfts/featured', signal });
+}
+
+export function fetchNftReviews(id: string, signal?: AbortSignal) {
+  return request(z.array(reviewSchema), {
+    url: `/nfts/${encodeURIComponent(id)}/reviews`,
+    signal,
+  });
 }
 
 export function fetchNft(id: string, signal?: AbortSignal) {

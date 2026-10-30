@@ -43,6 +43,20 @@ export type NftImage = z.infer<typeof nftImageSchema>;
 
 export const creatorSchema = z.object({ id: idSchema, name: z.string() });
 
+export const ratingSchema = z.object({
+  average: z.number().min(0).max(5),
+  count: z.number().int().nonnegative(),
+});
+
+export const reviewSchema = z.object({
+  id: idSchema,
+  author: z.string(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string(),
+  createdAt: timestampSchema,
+});
+export type Review = z.infer<typeof reviewSchema>;
+
 export const nftSchema = z.object({
   id: idSchema,
   name: z.string(),
@@ -51,6 +65,9 @@ export const nftSchema = z.object({
   network: networkSchema,
   collection: z.string(),
   tokenId: z.string(),
+  contractAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+  royaltyBasisPoints: z.number().int().min(0).max(10_000),
+  rating: ratingSchema,
   tags: z.array(z.string()),
   images: z.tuple([nftImageSchema], nftImageSchema),
   creator: creatorSchema,
