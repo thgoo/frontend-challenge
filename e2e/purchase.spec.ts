@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { addToCart, reachReview, startSignedIn } from './support/flows';
+import { addToCart, openCheckout, startSignedIn } from './support/flows';
 
 test('buys an NFT from the catalog to a confirmed receipt', async ({ page }) => {
   await startSignedIn(page);
@@ -15,16 +15,21 @@ test('buys an NFT from the catalog to a confirmed receipt', async ({ page }) => 
   await page.goto('/cart');
   await expect(page.getByRole('link', { name })).toBeVisible();
 
-  await reachReview(page);
-  await page.getByRole('button', { name: 'Confirm and pay' }).click();
+  await openCheckout(page);
+  await page.getByRole('button', { name: 'Confirmar compra' }).click();
 
   await expect(
-    page.getByRole('heading', { name: 'Waiting for payment confirmation' }),
+    page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
   ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Thank you for your purchase' })).toBeVisible({
+  await expect(
+    page.getByRole('heading', { name: 'Seus NFTs agora estão na sua carteira' }),
+  ).toBeVisible({
     timeout: 10_000,
   });
-  await expect(page.getByText(/^0x[0-9a-f]{64}$/)).toBeVisible();
+  await expect(page.getByRole('link', { name: /^Ver no Etherscan/ })).toHaveAttribute(
+    'href',
+    /0x[0-9a-f]{64}$/,
+  );
 
   await page.goto('/cart');
   await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio' })).toBeVisible();

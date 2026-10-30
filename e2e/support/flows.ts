@@ -20,13 +20,10 @@ export async function addToCart(page: Page, nftId: string) {
   await page.waitForURL('/cart');
 }
 
-export async function reachReview(page: Page) {
+/** Opens the single-page checkout and waits for the quote that enables confirmation. */
+export async function openCheckout(page: Page) {
   await page.goto('/checkout');
-  await page.getByLabel('Country').fill('Brazil');
-  await page.getByRole('button', { name: /^Connect / }).click();
-  await expect(page.getByText(/^Connected to /)).toBeVisible();
-  await page.getByRole('button', { name: 'Review order' }).click();
-  await expect(page.getByRole('heading', { name: 'Review your order' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Confirmar compra' })).toBeEnabled();
 }
 
 /** Edits catalog filters in the sidebar (desktop) or the drawer (mobile), closing the drawer after. */

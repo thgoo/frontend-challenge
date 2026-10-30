@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import type { Order } from '../src/contracts/order';
-import { addToCart, reachReview, startSignedIn } from './support/flows';
+import { addToCart, openCheckout, startSignedIn } from './support/flows';
 import {
   api,
   openWithMocks,
@@ -28,9 +28,9 @@ async function setSocketOnline(page: Page, online: boolean) {
 }
 
 async function confirmOrder(page: Page) {
-  await page.getByRole('button', { name: 'Confirm and pay' }).click();
+  await page.getByRole('button', { name: 'Confirmar compra' }).click();
   await expect(
-    page.getByRole('heading', { name: 'Waiting for payment confirmation' }),
+    page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
   ).toBeVisible();
   return page.url().split('/').at(-1) ?? '';
 }
@@ -41,34 +41,33 @@ test.describe('realtime during checkout', () => {
   }) => {
     await startSignedIn(page);
     await addToCart(page, STANDARD.nftId);
-    await reachReview(page);
+    await openCheckout(page);
     await waitForSocket(page);
 
     await updateEdition(page, STANDARD, { priceEth: '9.99' });
     await expect(
       page.getByText(/mudou de preço ou disponibilidade\. Seu carrinho foi atualizado\./),
     ).toBeVisible();
-    const review = page.getByRole('region', { name: 'Review your order' });
-    await expect(review.getByText('Prices or availability changed')).toBeVisible();
-    await expect(review.getByRole('button', { name: 'Confirm and pay' })).toBeDisabled();
+    const review = page.getByRole('region', { name: 'Seus NFTs' });
+    await expect(review.getByText('Preços ou disponibilidade mudaram')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Confirmar compra' })).toBeDisabled();
 
-    await review.getByRole('button', { name: 'Refresh review' }).click();
-    await expect(review.getByText('Prices or availability changed')).toBeHidden();
+    await review.getByRole('button', { name: 'Atualizar total' }).click();
+    await expect(review.getByText('Preços ou disponibilidade mudaram')).toBeHidden();
     await expect(review.locator('[data-eth="9.99"]').first()).toBeVisible();
 
-    await review.getByRole('button', { name: 'Confirm and pay' }).click();
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
     await expect(page).toHaveURL(/\/orders\/ord_/);
   });
 
   test('blocks checkout when the edition sells out', async ({ page }) => {
     await startSignedIn(page);
     await addToCart(page, STANDARD.nftId);
-    await reachReview(page);
+    await openCheckout(page);
     await waitForSocket(page);
 
     await updateEdition(page, STANDARD, { available: 0 });
-    const review = page.getByRole('region', { name: 'Review your order' });
-    await expect(review.getByRole('button', { name: 'Confirm and pay' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Confirmar compra' })).toBeDisabled();
 
     await page.goto('/cart');
     await expect(page.getByText('Esgotado. Remova o item para continuar.')).toBeVisible();
@@ -79,13 +78,15 @@ test.describe('realtime during checkout', () => {
   }) => {
     await startSignedIn(page, 'price-change');
     await addToCart(page, STANDARD.nftId);
-    await reachReview(page);
+    await openCheckout(page);
 
-    await page.getByRole('button', { name: 'Confirm and pay' }).click();
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
     await expect(
-      page.getByText('Prices or availability changed. Review the updated total and confirm again.'),
+      page.getByText(
+        'Preços ou disponibilidade mudaram. Revise o novo total e confirme novamente.',
+      ),
     ).toBeVisible();
-    await page.getByRole('button', { name: 'Confirm and pay' }).click();
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
     await expect(page).toHaveURL(/\/orders\/ord_/);
   });
 });
@@ -141,17 +142,17 @@ test.describe('pending orders', () => {
   }) => {
     await startSignedIn(page, 'slow-payment');
     await addToCart(page, STANDARD.nftId);
-    await reachReview(page);
+    await openCheckout(page);
     const orderId = await confirmOrder(page);
 
     await reloadWithMocks(page);
     await expect(
-      page.getByRole('heading', { name: 'Waiting for payment confirmation' }),
+      page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
     ).toBeVisible();
 
     await page.goto('/checkout');
-    await expect(page.getByText('You have an order being processed')).toBeVisible();
-    await page.getByRole('link', { name: `Track order ${orderId}` }).click();
+    await expect(page.getByText('Você tem um pedido em processamento')).toBeVisible();
+    await page.getByRole('link', { name: `Acompanhar pedido ${orderId}` }).click();
     await expect(page).toHaveURL(`/orders/${orderId}`);
     expect((await api<Order[]>(page, '/orders')).body).toHaveLength(1);
   });
@@ -159,7 +160,7 @@ test.describe('pending orders', () => {
   test('shows the confirmation missed while the connection was down', async ({ page }) => {
     await startSignedIn(page);
     await addToCart(page, STANDARD.nftId);
-    await reachReview(page);
+    await openCheckout(page);
     const orderId = await confirmOrder(page);
     await waitForSocket(page);
 
@@ -170,11 +171,13 @@ test.describe('pending orders', () => {
       })
       .toBe('confirmed');
     await expect(
-      page.getByRole('heading', { name: 'Waiting for payment confirmation' }),
+      page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
     ).toBeVisible();
 
     await setSocketOnline(page, true);
-    await expect(page.getByRole('heading', { name: 'Thank you for your purchase' })).toBeVisible({
+    await expect(
+      page.getByRole('heading', { name: 'Seus NFTs agora estão na sua carteira' }),
+    ).toBeVisible({
       timeout: 10_000,
     });
     expect((await api<Order[]>(page, '/orders')).body).toHaveLength(1);

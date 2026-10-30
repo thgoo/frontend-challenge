@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import type { Order } from '../src/contracts/order';
-import { addToCart, reachReview, startSignedIn } from './support/flows';
+import { addToCart, openCheckout, startSignedIn } from './support/flows';
 import { api } from './support/mock-api';
 
 async function orderCount(page: Page) {
@@ -11,26 +11,27 @@ test.describe('checkout failures', () => {
   test('keeps the cart after a declined payment and lets the user retry', async ({ page }) => {
     await startSignedIn(page, 'payment-declined');
     await addToCart(page, 'nft_002');
-    await reachReview(page);
-    await page.getByRole('button', { name: 'Confirm and pay' }).click();
+    await openCheckout(page);
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
 
     await expect(
-      page.getByRole('heading', { name: 'Waiting for payment confirmation' }),
+      page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
     ).toBeVisible();
-    const declined = page.getByRole('alert').filter({ hasText: 'Payment declined' });
-    await expect(declined).toBeVisible({ timeout: 10_000 });
-    await expect(declined).toContainText('The payment was declined by the wallet.');
+    await expect(page.getByRole('alert').filter({ hasText: 'Pagamento recusado' })).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByText('A carteira recusou o pagamento.')).toBeVisible();
 
-    await declined.getByRole('link', { name: 'Back to checkout' }).click();
-    await expect(page.getByRole('button', { name: 'Review order' })).toBeVisible();
+    await page.getByRole('link', { name: 'Voltar ao pagamento' }).click();
+    await expect(page.getByRole('button', { name: 'Confirmar compra' })).toBeVisible();
   });
 
   test('creates a single order when confirm is clicked repeatedly', async ({ page }) => {
     await startSignedIn(page);
     await addToCart(page, 'nft_002');
-    await reachReview(page);
+    await openCheckout(page);
 
-    await page.getByRole('button', { name: 'Confirm and pay' }).dblclick();
+    await page.getByRole('button', { name: 'Confirmar compra' }).dblclick();
     await expect(page).toHaveURL(/\/orders\/ord_/);
     expect(await orderCount(page)).toBe(1);
   });
@@ -39,13 +40,15 @@ test.describe('checkout failures', () => {
     test.slow();
     await startSignedIn(page, 'order-timeout');
     await addToCart(page, 'nft_002');
-    await reachReview(page);
+    await openCheckout(page);
 
-    await page.getByRole('button', { name: 'Confirm and pay' }).click();
-    await expect(page.getByRole('button', { name: 'Placing order…' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
+    await expect(page.getByRole('button', { name: 'Confirmando…' })).toBeDisabled();
 
     await expect(page).toHaveURL(/\/orders\/ord_/, { timeout: 20_000 });
-    await expect(page.getByRole('heading', { name: 'Thank you for your purchase' })).toBeVisible({
+    await expect(
+      page.getByRole('heading', { name: 'Seus NFTs agora estão na sua carteira' }),
+    ).toBeVisible({
       timeout: 10_000,
     });
     expect(await orderCount(page)).toBe(1);
