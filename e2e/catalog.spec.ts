@@ -142,16 +142,16 @@ test.describe('nft detail', () => {
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toHaveText('Violet Nomad #314');
     await expect(page).toHaveTitle(/^Violet Nomad #314 · /);
-    await expect(page.getByRole('button', { name: 'Add to cart' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^comprar/i })).toBeVisible();
   });
 
   test('handles an NFT that does not exist', async ({ page }) => {
     await openWithMocks(page, '/nfts/nft_999?scenario=default');
-    await expect(page.getByRole('heading', { name: 'NFT not found' })).toBeVisible();
-    await expect(page).toHaveTitle(/^NFT not found · /);
+    await expect(page.getByRole('heading', { name: 'NFT não encontrado' })).toBeVisible();
+    await expect(page).toHaveTitle(/^NFT não encontrado · /);
 
-    await page.getByRole('link', { name: 'Browse the marketplace' }).click();
-    await expect(page).toHaveURL('/');
+    await page.getByRole('link', { name: 'Explorar o mercado' }).click();
+    await expect(page).toHaveURL('/#mercado');
     await expect(catalog(page).getByText(/NFTs? encontrados?/)).toBeAttached();
   });
 });

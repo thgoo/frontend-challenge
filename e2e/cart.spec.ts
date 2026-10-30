@@ -29,7 +29,7 @@ test.describe('cart', () => {
     const [first, second] = await lineNames(page).allTextContents();
     const stepper = page.getByRole('group', { name: `Quantity of ${first}` });
     const subtotal = await ethOf(page, 'Subtotal');
-    await stepper.getByRole('button', { name: 'Increase quantity' }).click();
+    await stepper.getByRole('button', { name: 'Aumentar quantidade' }).click();
     await expect(stepper.getByRole('status')).toHaveText('2');
     await expect.poll(() => ethOf(page, 'Subtotal')).not.toBe(subtotal);
 
@@ -57,7 +57,7 @@ test.describe('cart', () => {
     await openWithMocks(page, '/login?scenario=default');
     await addToCart(page, 'nft_002');
     await page.goto('/cart');
-    await page.getByRole('button', { name: 'Increase quantity' }).click();
+    await page.getByRole('button', { name: 'Aumentar quantidade' }).click();
     await page.getByLabel('Coupon code').fill('WELCOME10');
     await page.getByRole('button', { name: 'Apply' }).click();
     await expect(summary(page).getByText('Discount (WELCOME10)')).toBeVisible();

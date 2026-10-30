@@ -53,13 +53,18 @@ test.describe('keyboard and focus', () => {
 
   test('adds an NFT to the cart using only the keyboard', async ({ page }) => {
     await openWithMocks(page, '/nfts/nft_002?scenario=default');
-    await page.getByRole('button', { name: 'Increase quantity' }).focus();
+    await page.getByRole('button', { name: 'Aumentar quantidade' }).focus();
     await page.keyboard.press('Enter');
-    await expect(page.getByRole('group', { name: 'Quantity' }).getByRole('status')).toHaveText('2');
+    await expect(page.getByRole('group', { name: 'Quantidade' }).getByRole('status')).toHaveText(
+      '2',
+    );
 
-    await page.getByRole('button', { name: 'Add to cart' }).focus();
+    await page.getByRole('button', { name: /^comprar/i }).focus();
     await page.keyboard.press('Enter');
-    await expect(page.getByText(/Added 2 ×/)).toBeVisible();
+    await page.waitForURL('/cart');
+    await expect(page.getByRole('group', { name: /^Quantity of / }).getByRole('status')).toHaveText(
+      '2',
+    );
   });
 });
 

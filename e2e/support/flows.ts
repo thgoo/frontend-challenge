@@ -13,10 +13,11 @@ export async function startSignedIn(page: Page, scenario = 'default', path = '/'
   await page.waitForURL((url) => url.pathname === path);
 }
 
+/** "Comprar" adds the selected edition and opens the cart. */
 export async function addToCart(page: Page, nftId: string) {
   await page.goto(`/nfts/${nftId}`);
-  await page.getByRole('button', { name: 'Add to cart' }).click();
-  await expect(page.getByText(/Added \d+ ×/)).toBeVisible();
+  await page.getByRole('button', { name: /^comprar/i }).click();
+  await page.waitForURL('/cart');
 }
 
 export async function reachReview(page: Page) {

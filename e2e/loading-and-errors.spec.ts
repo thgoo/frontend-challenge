@@ -29,7 +29,7 @@ test.describe('loading states', () => {
 
   test('shows skeletons for the NFT detail and the cart', async ({ page }) => {
     await openWithMocks(page, '/nfts/nft_002?scenario=slow');
-    await expect(page.getByRole('status').filter({ hasText: 'Loading NFT' })).toBeAttached();
+    await expect(page.getByRole('status').filter({ hasText: 'Carregando NFT' })).toBeAttached();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Sage Nomad #009',
       LOADED_TIMEOUT,
@@ -84,7 +84,7 @@ test.describe('failures and recovery', () => {
 
   test('shows the not found page for an unknown NFT instead of an error', async ({ page }) => {
     await openWithMocks(page, '/nfts/nft_404?scenario=default');
-    await expect(page.getByRole('heading', { name: 'NFT not found' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'NFT não encontrado' })).toBeVisible();
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 });
