@@ -11,6 +11,8 @@ export interface MockControl {
     patch: { priceEth?: string; available?: number },
   ): void;
   readonly sockets: {
+    /** Open client connections, so tests can wait for the socket before publishing events. */
+    connectionCount(): number;
     deliveredEvents(): { eventId: string; type: string; resourceId: string; version: number }[];
     /** Sends an already delivered event again, to exercise duplicate and stale handling. */
     redeliver(eventId: string): void;

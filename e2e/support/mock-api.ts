@@ -55,3 +55,19 @@ export async function login(page: Page, credentials: { email: string; password: 
   const result = await api(page, '/auth/login', { method: 'POST', body: credentials });
   if (result.status !== 200) throw new Error(`Login failed with ${result.status}`);
 }
+
+export async function waitForSocket(page: Page) {
+  await page.waitForFunction(() => (window.__mocks?.sockets.connectionCount() ?? 0) > 0);
+}
+
+export async function updateEdition(
+  page: Page,
+  editionRef: { nftId: string; editionId: string },
+  patch: { priceEth?: string; available?: number },
+) {
+  await page.evaluate(
+    ({ editionRef, patch }) =>
+      window.__mocks?.updateEdition(editionRef.nftId, editionRef.editionId, patch),
+    { editionRef, patch },
+  );
+}

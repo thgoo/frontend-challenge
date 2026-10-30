@@ -91,6 +91,9 @@ export function createSocketHandler() {
 }
 
 export const socketControl = {
+  connectionCount() {
+    return connections.size;
+  },
   deliveredEvents() {
     return history.map(({ event }) => ({
       eventId: event.eventId,
