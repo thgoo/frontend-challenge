@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
   addToCart,
+  openCheckout,
   signedInIndicator,
   signInThroughUi,
   signOutThroughUi,
@@ -99,6 +100,23 @@ test.describe('auth', () => {
 
     await signInThroughUi(page);
     await expect(page).toHaveURL('/profile');
+  });
+
+  test('resumes the checkout with its draft after the session times out', async ({ page }) => {
+    await page.clock.install();
+    await startSignedIn(page, 'short-session');
+    await addToCart(page, 'nft_002');
+    await openCheckout(page);
+    const note = page.getByLabel('Observação do colecionador (opcional)');
+    await note.fill('Presente de aniversário');
+
+    await page.clock.fastForward('01:01');
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
+    await expect(page).toHaveURL('/?auth=login&redirect=%2Fcheckout&reason=expired');
+
+    await signInThroughUi(page);
+    await expect(page).toHaveURL('/checkout');
+    await expect(note).toHaveValue('Presente de aniversário');
   });
 
   test('switches users without leaking private data', async ({ page }) => {

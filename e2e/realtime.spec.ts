@@ -137,9 +137,10 @@ test.describe('realtime consistency', () => {
 });
 
 test.describe('pending orders', () => {
-  test('keeps a pending order across refreshes and prevents a second purchase', async ({
+  test('keeps a pending order across refreshes until it settles, without a second purchase', async ({
     page,
   }) => {
+    await page.clock.install();
     await startSignedIn(page, 'slow-payment');
     await addToCart(page, STANDARD.nftId);
     await openCheckout(page);
@@ -154,6 +155,11 @@ test.describe('pending orders', () => {
     await expect(page.getByText('Você tem um pedido em processamento')).toBeVisible();
     await page.getByRole('link', { name: `Acompanhar pedido ${orderId}` }).click();
     await expect(page).toHaveURL(`/orders/${orderId}`);
+
+    await page.clock.fastForward('00:20');
+    await expect(
+      page.getByRole('heading', { name: 'Seus NFTs agora estão na sua carteira' }),
+    ).toBeVisible();
     expect((await api<Order[]>(page, '/orders')).body).toHaveLength(1);
   });
 

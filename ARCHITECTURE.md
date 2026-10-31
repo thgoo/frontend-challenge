@@ -187,6 +187,8 @@ caminho aberto:
 - **Regressão visual:** home, detalhe, carrinho e pagamento, nos dois viewports, com dados determinísticos,
   fontes e imagens carregadas e animações desligadas. As baselines são do Chromium em Linux (`*-linux.png`);
   em outro sistema, regenere com `--update-snapshots`.
+- **Relógio controlado:** os mocks rodam na página, então `page.clock` controla liquidação de pagamentos e
+  expiração de sessão. Os testes avançam o tempo em vez de esperar (pagamento lento de 20 s, sessão de 60 s).
 - **Timeout do pedido:** usa o timeout nativo de 10 s do XHR, que o relógio falso do Playwright não controla;
   esse teste realmente espera (`test.slow()`).
 - **Unitários (Vitest):** domínio dos mocks, contratos, ETH, i18n e frescor da cotação.

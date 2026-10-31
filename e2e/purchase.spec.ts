@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { addToCart, openCheckout, startSignedIn } from './support/flows';
 
+/** Default scenario: the payment settles 3 s after the order is placed. */
+const SETTLEMENT = 3000;
+
 test('buys an NFT from the catalog to a confirmed receipt', async ({ page }) => {
+  await page.clock.install();
   await startSignedIn(page);
   const name = 'Sage Nomad #009';
   await page
@@ -21,11 +25,10 @@ test('buys an NFT from the catalog to a confirmed receipt', async ({ page }) => 
   await expect(
     page.getByRole('heading', { name: 'Aguardando confirmação do pagamento' }),
   ).toBeVisible();
+  await page.clock.fastForward(SETTLEMENT);
   await expect(
     page.getByRole('heading', { name: 'Seus NFTs agora estão na sua carteira' }),
-  ).toBeVisible({
-    timeout: 10_000,
-  });
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: /^Ver no Etherscan/ })).toHaveAttribute(
     'href',
     /0x[0-9a-f]{64}$/,
