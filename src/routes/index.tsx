@@ -52,9 +52,13 @@ function HomePage() {
       <Hero />
       <section
         id="mercado"
-        aria-label="Mercado"
+        aria-labelledby="market-heading"
         className="grid scroll-mt-6 grid-cols-1 gap-8 lg:grid-cols-[310px_minmax(0,1fr)] lg:gap-12"
       >
+        {/* The Figma has no visible title here; the heading keeps the outline from h1 to the cards. */}
+        <h2 id="market-heading" className="sr-only">
+          Mercado
+        </h2>
         <div className="hidden content-start gap-6 lg:grid">
           <FiltersPanel query={query} onChange={changeFilters} />
           <FeaturedBanner />
