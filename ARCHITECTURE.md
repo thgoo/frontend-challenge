@@ -214,6 +214,67 @@ splitting, sessão resolvida em paralelo aos dados da rota e camada de tempo rea
 render. Baixar o app em paralelo ao MSW foi testado e piorou a pontuação (disputa de banda na simulação), por
 isso foi revertido. A auditoria roda o build completo, com mocks, imagens e fontes reais.
 
+## Diferenças em relação ao Figma
+
+O visual segue o Figma, com as medidas conferidas tela a tela em 1440 e 390 px. O que ficou diferente foi de
+propósito, e o motivo de cada caso está abaixo.
+
+### O Figma pede algo que o contrato não tem
+
+A regra foi não mostrar campo que não é salvo em lugar nenhum. Quem preenche um campo espera que ele valha
+alguma coisa.
+
+- **Checkout:** ficam nome de exibição, e-mail, rede e observação. ENS, nome do perfil, código de indicação,
+  tipo de carteira e "Usar outra carteira?" saíram.
+- **Checkout no mobile:** o Figma não mostra o formulário do comprador, mas ele continua lá, igual ao desktop.
+  Os dados são obrigatórios no pedido, e um erro de validação sem o campo na tela não teria como ser corrigido.
+- **Escolha da carteira:** a lista mostra as carteiras do usuário (apelido, endereço e provedor), e não só os
+  provedores (MetaMask, WalletConnect, Coinbase). O pedido precisa de uma carteira cadastrada. Uma lista de
+  provedores ao lado seria um segundo jeito de escolher a mesma coisa.
+- **Perfil:** sem "Remover" no avatar (não há endpoint), sem ENS e sem apelido da carteira. A bio fica, porque
+  está no contrato. Salvar os dados e trocar a senha são ações separadas, cada uma com sua validação.
+- **Carteiras:** o formulário tem apelido, endereço e tipo. Os outros campos do Figma (nome de exibição, rede,
+  ENS, e-mail, "Igual à carteira principal") não existem no contrato.
+- **Cadastro:** não tem campo de nome, como no Figma. O nome de exibição começa igual ao usuário e pode ser
+  trocado no perfil.
+
+### O Figma não cobre
+
+- **Navegação:** "Criadores" e "Aprenda" não têm página e levam às seções da home. "Mercado" fica ativo nas
+  telas de compra. Itens do rodapé sem página aparecem como texto, e não como link quebrado.
+- **Mobile e tablet:** o Figma só tem 414 e 1440 px. Abaixo de `lg`, header e rodapé dão lugar à barra
+  inferior. O coração abre os favoritos (página nova), o botão central abre as carteiras, e "Sair" fica no menu
+  do perfil.
+- **Catálogo:** "Somente disponíveis" e "Limpar filtros" foram adicionados. As redes são Ethereum, Polygon,
+  Arbitrum e Base, no lugar de Solana, porque as carteiras são EVM (endereços 0x). O selo "Raro" é um campo do
+  NFT, escolhido nos dados, e não calculado.
+- **Detalhe:** "N de M disponíveis" abaixo das edições e um aviso quando o carrinho já tem o máximo por pedido.
+  No mobile, a barra de compra mostra o total da quantidade escolhida, e não só o preço unitário.
+- **Carrinho:** um item esgotado mostra um aviso e bloqueia o checkout. A linha de desconto aparece sempre; com
+  cupom, mostra o código e a opção de remover.
+- **Recibo:** é uma página própria, e não um modal sobre o checkout, para poder ser aberto pelo link do pedido.
+
+### Acessibilidade e uso
+
+- Os pontos do carrossel não estão iguais: o ativo fica destacado e os outros com 60% de opacidade. No Figma
+  os três são iguais, e não dá para saber qual slide está na tela.
+- Campos que no Figma só têm placeholder ganharam rótulo para leitor de tela. A contagem de resultados do
+  catálogo também existe só para leitor de tela.
+- No mobile, o resumo do carrinho fica no fluxo da página, e não preso ao rodapé. Com zoom, um painel fixo de
+  ~340 px cobriria a lista. Pelo mesmo motivo, os toasts aparecem no topo.
+- A borda dos campos segue o Figma (`#3f2319`), mesmo com pouco contraste. O campo continua fácil de
+  reconhecer pelo fundo e pelo placeholder.
+
+### Inconsistências do próprio Figma
+
+- Os cards do blog têm 282 px. Com os 268 px do Figma, sobravam 56 px vazios no fim da linha.
+- O seletor de ordenação é um pouco mais largo, porque no Figma a seta fica por cima do texto.
+- Na barra inferior do mobile, o espaço entre os ícones é igual em toda a barra. O Figma usa 4 px entre os dois
+  primeiros e 16 px no resto.
+- Cada card do Figma tem a imagem num tamanho diferente (há até uma vertical, de 190×243). Aqui todos usam um
+  quadro quadrado, com a imagem recortada.
+- No detalhe, "Contrato" e "Direitos autorais" estavam com os conteúdos trocados.
+
 ## Limitações
 
 - Login social, recuperação de senha e conteúdo editorial (blog, links institucionais) não têm backend: os
