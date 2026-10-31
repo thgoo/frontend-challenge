@@ -64,7 +64,7 @@ function RootLayout() {
         Pular para o conteúdo
       </a>
       <SiteHeader />
-      <main id="main" tabIndex={-1} className={cn('outline-none', showTabBar && 'pb-28 lg:pb-0')}>
+      <main id="main" tabIndex={-1} className={cn('outline-none', showTabBar && 'pb-32 lg:pb-0')}>
         <Outlet />
       </main>
       <SiteFooter />
