@@ -269,7 +269,8 @@ alguma coisa.
 ### Acessibilidade e uso
 
 - Os pontos do carrossel não estão iguais: o ativo fica destacado e os outros com 60% de opacidade. No Figma
-  os três são iguais, e não dá para saber qual slide está na tela.
+  os três são iguais, e não dá para saber qual slide está na tela. Os pontos do carrossel e da galeria mobile
+  também ficam 24 px um do outro (no Figma, 16 e 14 px), para que cada um seja um alvo de toque de 24×24 px.
 - Campos que no Figma só têm placeholder ganharam rótulo para leitor de tela. A contagem de resultados do
   catálogo também existe só para leitor de tela.
 - No mobile, o resumo do carrinho fica no fluxo da página, e não preso ao rodapé. Com zoom, um painel fixo de

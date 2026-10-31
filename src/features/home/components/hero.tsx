@@ -31,7 +31,7 @@ function SlideDots({
           onClick={() => {
             onSelect(index);
           }}
-          className="grid h-6 w-4 place-items-center"
+          className="grid size-6 place-items-center"
         >
           <span
             className={cn(

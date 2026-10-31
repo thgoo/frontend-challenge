@@ -53,7 +53,7 @@ export function NftGallery({ nft }: { nft: Nft }) {
                 onClick={() => {
                   setSelected(index);
                 }}
-                className="flex h-6 items-center px-[3.5px]"
+                className="flex h-6 min-w-6 items-center justify-center px-[3.5px]"
               >
                 <span
                   className={cn(
