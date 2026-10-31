@@ -88,37 +88,45 @@ export function NftDetail({ nft }: { nft: Nft }) {
   };
 
   return (
-    <article className="page-container grid gap-16 pt-6 pb-56 lg:gap-24 lg:pt-8 lg:pb-0">
+    <article className="page-container grid gap-16 pb-56 lg:gap-24 lg:pt-8 lg:pb-0">
       <title>{`${nft.name} · Kurio`}</title>
       <div className="grid gap-3">
         <MarketplaceBreadcrumb />
-        <div className="grid gap-6 lg:grid-cols-[573px_minmax(0,1fr)] lg:gap-8">
-          <div className="relative">
-            <div className="absolute inset-x-3 top-3 z-10 flex justify-between lg:hidden">
+        <div className="grid lg:grid-cols-[573px_minmax(0,1fr)] lg:gap-8">
+          <div className="max-lg:-mx-6 max-lg:bg-linear-to-br max-lg:from-card max-lg:to-muted max-lg:px-7 max-lg:pt-[23px]">
+            <div className="mb-2 flex justify-between lg:hidden">
               <BackButton />
-              <FavoriteButton nftId={nft.id} nftName={nft.name} variant="icon" />
+              <FavoriteButton
+                nftId={nft.id}
+                nftName={nft.name}
+                variant="icon"
+                className="size-[35px] border border-border bg-muted text-highlight hover:bg-muted"
+              />
             </div>
             <NftGallery nft={nft} />
           </div>
 
-          <div className="grid content-start gap-5">
-            <header className="grid gap-3 border-b border-primary/30 pb-3">
-              <div className="flex items-start justify-between gap-3">
-                <h1 className="text-xl font-bold lg:text-[28px]">{nft.name}</h1>
+          {/* On mobile the details are a sheet sliding over the artwork, as in the Figma. */}
+          <div className="relative grid content-start gap-3 max-lg:-mx-6 max-lg:-mt-[30px] max-lg:rounded-t-[31px] max-lg:bg-card max-lg:px-6 max-lg:pt-8 max-lg:pb-6 lg:gap-5">
+            <header className="grid gap-3 lg:border-b lg:border-primary/30 lg:pb-3">
+              <div className="flex items-center justify-between gap-3">
+                <h1 className="text-xl leading-4 font-bold lg:text-[28px] lg:leading-[37px]">
+                  {nft.name}
+                </h1>
                 <button
                   type="button"
                   onClick={showReviews}
                   aria-label={`Avaliação ${formatRating(nft.rating.average)} de 5, ${reviewsLabel}`}
-                  className="flex shrink-0 items-center gap-1 rounded-full border border-primary px-2 py-0.5 text-sm font-medium lg:hidden"
+                  className="flex h-[27px] shrink-0 items-center gap-1 rounded-full border border-primary px-2 text-sm leading-4 font-medium lg:hidden"
                 >
                   <Star aria-hidden="true" className="size-3.5 fill-highlight text-highlight" />
                   {formatRating(nft.rating.average)}
-                  <span className="font-normal">({nft.rating.count})</span>
+                  <span className="font-normal text-muted-foreground">({nft.rating.count})</span>
                 </button>
               </div>
               <div className="hidden items-center justify-between gap-4 lg:flex">
                 {edition && (
-                  <p className="flex items-baseline gap-3 text-[22px] font-bold text-highlight">
+                  <p className="flex items-baseline gap-3 text-[22px] leading-4 font-bold text-highlight">
                     <EthAmount value={edition.priceEth} />
                     {edition.compareAtPriceEth && (
                       <s className="text-lg font-normal text-subtle">
@@ -131,16 +139,19 @@ export function NftDetail({ nft }: { nft: Nft }) {
                 <button
                   type="button"
                   onClick={showReviews}
-                  className="flex items-center gap-2 text-[15px] hover:text-highlight"
+                  className="flex items-center gap-1 text-[15px] leading-5 hover:text-highlight"
                 >
-                  <RatingStars value={nft.rating.average} />
+                  <RatingStars
+                    value={nft.rating.average}
+                    className="gap-1 text-highlight [&_svg]:size-[15px]"
+                  />
                   {reviewsLabel}
                 </button>
               </div>
             </header>
 
             <section className="grid gap-3">
-              <h2 className="text-[15px] font-bold">Sobre este NFT:</h2>
+              <h2 className="text-[15px] leading-4 font-bold max-lg:sr-only">Sobre este NFT:</h2>
               <p className="text-sm leading-6 text-muted-foreground">{nft.description}</p>
             </section>
 
@@ -148,6 +159,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
 
             <div className="hidden flex-wrap items-center justify-between gap-4 lg:flex">
               <QuantityStepper
+                size="lg"
                 label="Quantidade"
                 value={selection.quantity}
                 max={Math.max(selection.remaining, 1)}
@@ -158,16 +170,20 @@ export function NftDetail({ nft }: { nft: Nft }) {
                 <Button
                   disabled={actions.disabled}
                   onClick={actions.buy}
-                  className="h-9 w-[115px] text-sm font-bold"
+                  className="h-10 w-[130px] text-sm font-bold"
                 >
                   {actions.pending ? 'Comprando…' : 'COMPRAR'}
                 </Button>
-                <FavoriteButton nftId={nft.id} nftName={nft.name} className="h-9" />
+                <FavoriteButton
+                  nftId={nft.id}
+                  nftName={nft.name}
+                  className="h-10 w-[130px] border-primary font-medium text-highlight [&_svg]:size-5"
+                />
               </div>
             </div>
             <PurchaseLimitNotice selection={selection} />
 
-            <dl className="grid gap-3 text-[15px] text-muted-foreground">
+            <dl className="grid gap-3 text-[15px] leading-5 text-subtle">
               <div className="flex gap-1">
                 <dt>ID do token:</dt>
                 <dd>{nft.tokenId}</dd>
@@ -218,10 +234,10 @@ export function NftDetail({ nft }: { nft: Nft }) {
 
       <NftShelf title="Mais desta coleção" query={{ q: nft.collection }} excludeIds={[nft.id]} />
 
-      <div className="fixed inset-x-0 bottom-0 z-40 grid gap-4 rounded-t-[32px] bg-card px-6 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 grid gap-5 rounded-t-[40px] bg-card px-6 pt-5 pb-[max(2.25rem,env(safe-area-inset-bottom))] shadow-[0_0_20px_rgb(10_6_4/0.45)] lg:hidden">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-[15px] font-medium">Qtd.</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[15px] leading-4 font-medium text-muted-foreground">Qtd.</span>
             <QuantityStepper
               label="Quantidade"
               value={selection.quantity}
@@ -230,7 +246,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
               onChange={selection.setQuantity}
             />
           </div>
-          <p className="text-xl font-bold text-highlight">
+          <p className="text-xl leading-4 font-bold text-highlight">
             <EthAmount value={formatEth(selectedPrice(selection))} />
           </p>
         </div>
@@ -238,7 +254,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
           <Button
             disabled={actions.disabled}
             onClick={actions.buy}
-            className="h-[60px] flex-1 rounded-full bg-linear-to-r from-primary to-primary/70 text-base font-bold"
+            className="h-[60px] w-[196px] rounded-full bg-linear-to-br from-primary to-primary/80 text-base font-bold"
           >
             {actions.pending ? 'Comprando…' : 'Comprar NFT'}
           </Button>

@@ -38,6 +38,33 @@ export function NftGallery({ nft }: { nft: Nft }) {
           priority
           className="aspect-square w-full rounded-3xl"
         />
+        {images.length > 1 && (
+          <div
+            role="group"
+            aria-label="Imagens"
+            className="absolute inset-x-0 bottom-[41px] flex justify-center lg:hidden"
+          >
+            {images.map((image, index) => (
+              <button
+                key={image.alt}
+                type="button"
+                aria-label={`Mostrar imagem ${String(index + 1)} de ${String(images.length)}`}
+                aria-pressed={index === selected}
+                onClick={() => {
+                  setSelected(index);
+                }}
+                className="flex h-6 items-center px-[3.5px]"
+              >
+                <span
+                  className={cn(
+                    'h-[7px] rounded-full bg-primary transition-[width] motion-reduce:transition-none',
+                    index === selected ? 'w-7' : 'w-[7px]',
+                  )}
+                />
+              </button>
+            ))}
+          </div>
+        )}
         <Dialog>
           <DialogTrigger asChild>
             <button

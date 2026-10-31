@@ -1,7 +1,7 @@
 import { cn } from 'cn';
-import { ShoppingCart } from 'lucide-react';
 import { RadioGroup } from 'radix-ui';
 import { useId } from 'react';
+import { ShopIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import type { Nft } from '@/contracts/nft';
 import type { PurchaseActions, PurchaseSelection } from '../use-purchase';
@@ -15,15 +15,15 @@ export function EditionPicker({ nft, selection }: { nft: Nft; selection: Purchas
   const labelId = useId();
   const { edition } = selection;
   return (
-    <div className="grid gap-3">
-      <p id={labelId} className="text-[15px] font-bold">
+    <div className="grid gap-2 lg:gap-3">
+      <p id={labelId} className="text-[15px] leading-4 font-bold">
         Edição:
       </p>
       <RadioGroup.Root
         aria-labelledby={labelId}
         value={edition?.id}
         onValueChange={selection.selectEdition}
-        className="flex flex-wrap gap-1.5"
+        className="flex flex-wrap gap-3 lg:gap-1.5"
       >
         {bySupply(nft).map((option) => {
           const soldOut = option.available === 0;
@@ -34,8 +34,8 @@ export function EditionPicker({ nft, selection }: { nft: Nft; selection: Purchas
               disabled={soldOut}
               aria-label={`${option.name}${soldOut ? ', esgotada' : ''}`}
               className={cn(
-                'rounded-full border border-border px-2.5 py-1 text-sm uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
-                'data-[state=checked]:border-2 data-[state=checked]:border-primary data-[state=checked]:font-medium data-[state=checked]:text-highlight',
+                'h-7 rounded-full border border-border px-1.5 text-sm leading-4 text-muted-foreground uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+                'data-[state=checked]:border-primary data-[state=checked]:font-medium data-[state=checked]:text-highlight',
                 soldOut && 'line-through opacity-50',
               )}
             >
@@ -73,9 +73,9 @@ export function AddToCartIconButton({ actions }: { actions: PurchaseActions }) {
       aria-label="Adicionar ao carrinho"
       disabled={actions.disabled}
       onClick={actions.addToCart}
-      className="size-[60px] rounded-full bg-secondary text-primary hover:bg-accent"
+      className="size-[60px] rounded-full border border-border bg-muted text-subtle hover:bg-accent"
     >
-      <ShoppingCart aria-hidden="true" className="size-6" />
+      <ShopIcon />
     </Button>
   );
 }
