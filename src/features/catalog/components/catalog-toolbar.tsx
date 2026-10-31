@@ -1,15 +1,8 @@
 import { cn } from 'cn';
-import { useId } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { nftSortSchema, nftViewSchema, type NftListQuery } from '@/contracts/nft';
-import { SORT_LABELS, VIEW_LABELS } from '../category-labels';
+import { nftViewSchema, type NftListQuery } from '@/contracts/nft';
+import { VIEW_LABELS } from '../category-labels';
 import type { FilterPatch } from './catalog-filters';
+import { SortSelect } from './sort-select';
 
 interface ToolbarProps {
   query: NftListQuery;
@@ -17,7 +10,6 @@ interface ToolbarProps {
 }
 
 export function CatalogToolbar({ query, onChange }: ToolbarProps) {
-  const sortId = useId();
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
       <div role="group" aria-label="Visualização" className="flex gap-4 lg:gap-5">
@@ -30,10 +22,10 @@ export function CatalogToolbar({ query, onChange }: ToolbarProps) {
               onChange({ view });
             }}
             className={cn(
-              // The Figma underline stops short of the label's end.
-              'relative pb-1.5 text-sm leading-4 font-medium whitespace-nowrap lg:text-[15px]',
+              // On desktop the Figma underline stops short of the label's end.
+              'relative pb-1 text-sm leading-4 whitespace-nowrap lg:pb-1.5 lg:text-[15px] lg:font-medium',
               query.view === view
-                ? 'text-highlight after:absolute after:right-4 after:bottom-0 after:left-0 after:h-0.5 after:bg-primary'
+                ? 'font-bold text-highlight after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-primary lg:after:right-4'
                 : 'hover:text-highlight',
             )}
           >
@@ -41,29 +33,8 @@ export function CatalogToolbar({ query, onChange }: ToolbarProps) {
           </button>
         ))}
       </div>
-      <div className="flex items-center gap-1 text-[15px]">
-        <label htmlFor={sortId}>Ordenar por:</label>
-        <Select
-          value={query.sort}
-          onValueChange={(sort) => {
-            onChange({ sort: nftSortSchema.parse(sort) });
-          }}
-        >
-          <SelectTrigger
-            id={sortId}
-            className="border-none bg-transparent px-1 py-0 text-[15px] shadow-none data-[size=default]:h-auto"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {nftSortSchema.options.map((sort) => (
-              <SelectItem key={sort} value={sort}>
-                {SORT_LABELS[sort]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* On mobile the Figma has no sort row: sorting lives in the filters drawer. */}
+      <SortSelect value={query.sort} onChange={onChange} className="max-lg:hidden" />
     </div>
   );
 }

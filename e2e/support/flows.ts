@@ -29,15 +29,33 @@ export async function openCheckout(page: Page) {
 /** Edits catalog filters in the sidebar (desktop) or the drawer (mobile), closing the drawer after. */
 export async function editCatalogFilters(page: Page, edit: (panel: Locator) => Promise<void>) {
   const drawerTrigger = page.getByRole('button', { name: /^Filtros/ });
+  const sidebar = page.getByRole('region', { name: 'Filtros' });
+  await expect(drawerTrigger.or(sidebar)).toBeVisible();
   if (!(await drawerTrigger.isVisible())) {
-    await edit(page.getByRole('region', { name: 'Filtros' }));
+    await edit(sidebar);
     return;
   }
   await drawerTrigger.click();
   const drawer = page.getByRole('dialog', { name: 'Filtros' });
   await edit(drawer);
-  await page.keyboard.press('Escape');
-  await expect(drawer).toBeHidden();
+  // A select inside the drawer may still be closing and swallow the first Escape.
+  await expect(async () => {
+    await page.keyboard.press('Escape');
+    await expect(drawer).toBeHidden({ timeout: 1000 });
+  }).toPass();
+}
+
+/** Sorting sits in the toolbar on desktop and in the filters drawer on mobile, as in the Figma. */
+export async function withSortSelect(page: Page, act: (select: Locator) => Promise<void>) {
+  const inline = page.getByRole('combobox', { name: /Ordenar por/ });
+  await expect(inline.or(page.getByRole('button', { name: /^Filtros/ }))).toBeVisible();
+  if (await inline.isVisible()) {
+    await act(inline);
+    return;
+  }
+  await editCatalogFilters(page, (drawer) =>
+    act(drawer.getByRole('combobox', { name: /Ordenar por/ })),
+  );
 }
 
 /** Mobile searches from the bar above the catalog; desktop from the header search dialog. */

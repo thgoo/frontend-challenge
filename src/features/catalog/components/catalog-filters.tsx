@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { Search, SlidersHorizontal } from 'lucide-react';
 import { Slider } from 'radix-ui';
 import { useEffect, useId, useState } from 'react';
+import { FilterIcon, SearchFieldIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,7 @@ import { networkSchema } from '@/contracts/wallet';
 import { displayEthNumber, formatEth, parseEth } from '@/lib/eth';
 import { NETWORK_LABELS } from '@/lib/networks';
 import { CATEGORY_LABELS } from '../category-labels';
+import { SortSelect } from './sort-select';
 import { nftFacetsQueryOptions } from '../queries';
 
 export type FilterPatch = Partial<Omit<NftListQuery, 'page'>>;
@@ -237,10 +238,7 @@ function SearchBox({ query, onChange }: FiltersProps) {
       <label htmlFor={id} className="sr-only">
         Buscar NFTs
       </label>
-      <Search
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-subtle"
-      />
+      <SearchFieldIcon className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-subtle" />
       <input
         id={id}
         type="search"
@@ -249,7 +247,7 @@ function SearchBox({ query, onChange }: FiltersProps) {
         onChange={(event) => {
           setValue(event.target.value);
         }}
-        className="h-[45px] w-full rounded-[10px] bg-card pr-3 pl-11 text-sm font-bold placeholder:text-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        className="h-[45px] w-full rounded-[10px] bg-card pr-3 pl-[42px] text-sm font-bold placeholder:text-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       />
     </div>
   );
@@ -272,9 +270,9 @@ export function MobileCatalogBar(props: FiltersProps) {
           <button
             type="button"
             aria-label={activeCount > 0 ? `Filtros (${String(activeCount)} ativos)` : 'Filtros'}
-            className="relative grid size-[45px] place-items-center rounded-[14px] bg-linear-to-b from-primary/45 to-primary text-foreground"
+            className="relative grid size-[45px] place-items-center rounded-[14px] bg-linear-to-br from-primary/45 to-primary text-primary-foreground"
           >
-            <SlidersHorizontal aria-hidden="true" className="size-5" />
+            <FilterIcon />
             {activeCount > 0 && (
               <span
                 aria-hidden="true"
@@ -289,7 +287,8 @@ export function MobileCatalogBar(props: FiltersProps) {
           <SheetHeader>
             <SheetTitle>Filtros</SheetTitle>
           </SheetHeader>
-          <div className="px-4 pb-6">
+          <div className="grid gap-6 px-4 pb-6">
+            <SortSelect value={query.sort} onChange={props.onChange} />
             <FilterControls {...props} />
           </div>
         </SheetContent>

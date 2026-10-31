@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { editCatalogFilters, searchCatalog } from './support/flows';
+import { editCatalogFilters, searchCatalog, withSortSelect } from './support/flows';
 import { openWithMocks } from './support/mock-api';
 
 function catalog(page: Page) {
@@ -30,22 +30,30 @@ async function openCatalog(page: Page, path = '/') {
   await expect(catalog(page).getByText(/NFTs? encontrados?/)).toBeAttached();
 }
 
-function sortSelect(page: Page) {
-  return page.getByRole('combobox', { name: /Ordenar por/ });
+async function chooseSort(page: Page, option: string) {
+  await withSortSelect(page, async (select) => {
+    await select.click();
+    await page.getByRole('option', { name: option }).click();
+  });
+}
+
+async function expectSort(page: Page, label: string) {
+  await withSortSelect(page, async (select) => {
+    await expect(select).toHaveText(label);
+  });
 }
 
 test.describe('catalog', () => {
   test('keeps the scroll position when filters change', async ({ page }) => {
     await openCatalog(page);
-    await sortSelect(page).evaluate((select) => {
-      select.scrollIntoView({ block: 'center' });
+    await page.evaluate(() => {
+      window.scrollTo(0, 200);
     });
     const before = await page.evaluate(() => window.scrollY);
-    expect(before).toBeGreaterThan(0);
+    expect(before).toBe(200);
 
-    await sortSelect(page).click();
-    await page.getByRole('option', { name: 'Menor preço' }).click();
-    await expect(page).toHaveURL(/sort=price-asc/);
+    await page.getByRole('button', { name: 'Em alta' }).click();
+    await expect(page).toHaveURL(/view=trending/);
     await waitForResults(page);
 
     expect(await page.evaluate(() => window.scrollY)).toBe(before);
@@ -59,8 +67,7 @@ test.describe('catalog', () => {
       await panel.getByRole('button', { name: /^Polygon/ }).click();
       await panel.getByRole('checkbox', { name: 'Somente disponíveis' }).check();
     });
-    await sortSelect(page).click();
-    await page.getByRole('option', { name: 'Menor preço' }).click();
+    await chooseSort(page, 'Menor preço');
 
     await expect(page).toHaveURL(/categories=.*digital-art/);
     await expect(page).toHaveURL(/networks=.*polygon/);
@@ -71,7 +78,7 @@ test.describe('catalog', () => {
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
 
     await page.reload();
-    await expect(sortSelect(page)).toHaveText('Menor preço');
+    await expectSort(page, 'Menor preço');
     await editCatalogFilters(page, async (panel) => {
       await expect(panel.getByRole('button', { name: /^Arte digital/ })).toHaveAttribute(
         'aria-pressed',
@@ -134,7 +141,7 @@ test.describe('catalog', () => {
 
   test('falls back to defaults for invalid search params', async ({ page }) => {
     await openCatalog(page, '/?page=abc&sort=bogus&view=nope');
-    await expect(sortSelect(page)).toHaveText('Listados recentemente');
+    await expectSort(page, 'Listados recentemente');
     await expect(page.getByRole('button', { name: 'Todos os NFTs' })).toHaveAttribute(
       'aria-pressed',
       'true',
