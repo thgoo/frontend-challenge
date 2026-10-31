@@ -71,6 +71,10 @@ Caminho `/realtime`, transporte WebSocket. Todo evento tem identidade, recurso e
   para autenticar o socket.
 - A sessão é resolvida no **loader** da rota raiz, em paralelo com os dados da rota; os guards
   (`_authenticated`, login, cadastro) aguardam a mesma query em cache.
+- Login e cadastro são um modal sobre a página atual, como no Figma, controlado pelo parâmetro global
+  `?auth=login|register` (validado na rota raiz e carregado sob demanda). Fechar remove o parâmetro sem trocar de
+  página nem de rolagem; o catálogo ignora esses parâmetros na chave da query. Guards levam a
+  `/?auth=login&redirect=…`, e `/login` e `/register` continuam como links diretos que abrem o modal.
 - Um 401 de qualquer requisição (`onUnauthorized` no cliente HTTP) limpa os dados privados e leva ao login com
   `redirect` e `reason=expired`; depois do login o usuário volta à página onde estava. O rascunho do checkout
   fica no `sessionStorage` e sobrevive a esse ciclo.
