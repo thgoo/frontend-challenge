@@ -35,7 +35,7 @@ export function useRealtimeSync(userId: string | null, callbacks: RealtimeCallba
     socket.on(SOCKET_EVENTS.nftUpdated, (payload) => {
       const event = nftUpdatedEventSchema.safeParse(payload);
       if (!event.success || !gate.accept(event.data)) return;
-      applyNftUpdated(queryClient, event.data);
+      applyNftUpdated(queryClient, userId, event.data);
 
       const key = cartKey(userId);
       const line = queryClient

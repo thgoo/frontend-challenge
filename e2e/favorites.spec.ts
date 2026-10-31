@@ -40,10 +40,19 @@ test.describe('favorites', () => {
     await reloadWithMocks(page);
     await expect(button).toHaveAttribute('aria-pressed', 'true');
 
+    await page.goto('/favorites');
+    await expect(page.getByRole('link', { name: 'Cosmic Bloom #118' })).toBeVisible();
+    await page.goto(NFT_PATH);
+
     await toggleAndSettle(page, button);
     await expect(button).toHaveAttribute('aria-pressed', 'false');
     await reloadWithMocks(page);
     await expect(button).toHaveAttribute('aria-pressed', 'false');
+
+    await page.goto('/favorites');
+    await expect(
+      page.getByRole('heading', { name: 'Você ainda não favoritou nenhum NFT' }),
+    ).toBeVisible();
   });
 
   test('rolls back an optimistic favorite when the server fails', async ({ page }) => {

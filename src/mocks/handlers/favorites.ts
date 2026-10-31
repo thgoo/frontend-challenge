@@ -17,6 +17,14 @@ export const favoriteHandlers = [
     return auth.ok ? HttpResponse.json(favoritesOf(auth.user.id)) : auth.response;
   }),
 
+  http.get(apiPath('/favorites/nfts'), ({ cookies }) => {
+    const auth = authenticate(cookies);
+    if (!auth.ok) return auth.response;
+    const { nfts, favorites } = readDb();
+    const ids = favorites[auth.user.id] ?? [];
+    return HttpResponse.json(ids.flatMap((id) => nfts.find((nft) => nft.id === id) ?? []));
+  }),
+
   http.put<Params>(apiPath('/favorites/:nftId'), ({ params, cookies }) => {
     const auth = authenticate(cookies);
     if (!auth.ok) return auth.response;

@@ -8,7 +8,7 @@ import {
 import type { Favorites } from '@/contracts/favorites';
 import { userKey } from '@/features/auth/queries';
 import { useCurrentUserId } from '@/features/auth/use-current-user-id';
-import { fetchFavorites, setFavorite } from './api';
+import { fetchFavoriteNfts, fetchFavorites, setFavorite } from './api';
 
 export const favoritesKey = (userId: string) => [...userKey(userId), 'favorites'] as const;
 
@@ -16,6 +16,16 @@ export function favoritesQueryOptions(userId: string | null) {
   return queryOptions({
     queryKey: favoritesKey(userId ?? 'anonymous'),
     queryFn: userId ? ({ signal }) => fetchFavorites(signal) : skipToken,
+  });
+}
+
+/** Under the favorites key, so every favorite change also refreshes the list. */
+export const favoriteNftsKey = (userId: string) => [...favoritesKey(userId), 'nfts'] as const;
+
+export function favoriteNftsQueryOptions(userId: string | null) {
+  return queryOptions({
+    queryKey: favoriteNftsKey(userId ?? 'anonymous'),
+    queryFn: userId ? ({ signal }) => fetchFavoriteNfts(signal) : skipToken,
   });
 }
 

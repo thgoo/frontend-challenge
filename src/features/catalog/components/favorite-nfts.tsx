@@ -1,42 +1,30 @@
-import { useQueries } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { EmptyState, ErrorState } from '@/components/query-states';
-import { useFavorites } from '@/features/favorites/queries';
-import { nftDetailQueryOptions } from '../queries';
+import { useCurrentUserId } from '@/features/auth/use-current-user-id';
+import { favoriteNftsQueryOptions, useFavorites } from '@/features/favorites/queries';
 import { NftGrid, NftGridSkeleton } from './nft-grid';
 
 export function FavoriteNfts() {
-  const favorites = useFavorites();
-  const ids = favorites.data?.nftIds ?? [];
-  const nfts = useQueries({
-    queries: ids.map((id) => nftDetailQueryOptions(id)),
-    combine: (results) => ({
-      data: results.flatMap((result) => (result.data ? [result.data] : [])),
-      isPending: results.some((result) => result.isPending),
-      failed: results.filter((result) => result.error),
-    }),
-  });
+  const nfts = useQuery(favoriteNftsQueryOptions(useCurrentUserId()));
+  const count = useFavorites().data?.nftIds.length ?? 0;
 
-  const error = favorites.error ?? nfts.failed[0]?.error;
-  if (error) {
+  if (nfts.error) {
     return (
       <ErrorState
         title="Não foi possível carregar seus favoritos"
-        error={error}
-        onRetry={() => {
-          if (favorites.error) void favorites.refetch();
-          for (const result of nfts.failed) void result.refetch();
-        }}
+        error={nfts.error}
+        onRetry={() => void nfts.refetch()}
       />
     );
   }
-  if (favorites.isPending || nfts.isPending) {
+  if (nfts.isPending) {
     return (
       <div aria-busy="true">
         <span className="sr-only" role="status">
           Carregando favoritos
         </span>
-        <NftGridSkeleton count={Math.max(ids.length, 3)} />
+        <NftGridSkeleton count={Math.max(count, 3)} />
       </div>
     );
   }

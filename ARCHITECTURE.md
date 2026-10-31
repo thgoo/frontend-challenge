@@ -41,7 +41,7 @@ traduz (`i18n/api-errors.ts`); `message` é só para logs; `fieldErrors` traz **
 | `GET /nfts`                                                                                                 | Catálogo paginado: `q`, `view` (`all`/`new`/`trending`), `categories[]`, `networks[]`, `minPrice`, `maxPrice`, `onlyAvailable`, `sort`, `page`. |
 | `GET /nfts/facets`                                                                                          | Contagens por coleção e rede e faixa de preço, para a sidebar.                                                                                  |
 | `GET /nfts/featured` · `GET /nfts/:id` · `GET /nfts/:id/reviews`                                            | Destaques, detalhe e avaliações.                                                                                                                |
-| `GET /favorites` · `PUT/DELETE /favorites/:nftId`                                                           | Favoritos do usuário.                                                                                                                           |
+| `GET /favorites` · `GET /favorites/nfts` · `PUT/DELETE /favorites/:nftId`                                   | Ids favoritados (para os corações) e os NFTs da lista de interesse.                                                                             |
 | `GET /cart` · `POST /cart/items` · `PATCH/DELETE /cart/items/:nftId/:editionId` · `PUT/DELETE /cart/coupon` | Carrinho; toda resposta devolve o carrinho inteiro.                                                                                             |
 | `GET/PUT/DELETE /wallet-connection`                                                                         | Conexão simulada de carteira e rede.                                                                                                            |
 | `POST /quotes`                                                                                              | Cotação: snapshot de preços que trava o pedido.                                                                                                 |
@@ -297,9 +297,6 @@ alguma coisa.
 - Um pedido por vez: enquanto houver pedido pendente, o checkout fica bloqueado.
 - A cotação usa a rede de pagamento escolhida no checkout; a rede de cunhagem do NFT é só um atributo de
   catálogo.
-- A lista de favoritos busca cada NFT pelo detalhe (uma requisição por item). Com poucos favoritos o custo é
-  baixo e os detalhes ficam em cache para a navegação; com listas grandes, o certo seria um endpoint que devolva
-  os NFTs favoritados de uma vez.
 - Tablet (768 px) usa o layout mobile, porque o Figma só tem 414 e 1440 px. Funciona sem overflow (testado),
   mas não tem composição própria.
 - Em WSL, o `chrome-launcher` do Lighthouse cria perfis temporários com caminho estilo Windows na raiz do

@@ -4,6 +4,7 @@ import type { Nft, NftListResponse } from '@/contracts/nft';
 import type { Order } from '@/contracts/order';
 import { nftKeys } from '@/features/catalog/queries';
 import { orderKeys } from '@/features/checkout/queries';
+import { favoriteNftsKey } from '@/features/favorites/queries';
 
 /** Cached data may already be newer than the event (e.g. after a refetch), so versions are compared again. */
 function patchNft(nft: Nft, event: NftUpdatedEvent): Nft {
@@ -20,7 +21,11 @@ function patchNft(nft: Nft, event: NftUpdatedEvent): Nft {
   };
 }
 
-export function applyNftUpdated(queryClient: QueryClient, event: NftUpdatedEvent) {
+export function applyNftUpdated(
+  queryClient: QueryClient,
+  userId: string | null,
+  event: NftUpdatedEvent,
+) {
   queryClient.setQueryData<Nft>(
     nftKeys.detail(event.resource.id),
     (nft) => nft && patchNft(nft, event),
@@ -31,6 +36,11 @@ export function applyNftUpdated(queryClient: QueryClient, event: NftUpdatedEvent
   queryClient.setQueriesData<NftListResponse>({ queryKey: nftKeys.lists() }, (page) =>
     page ? { ...page, items: page.items.map((nft) => patchNft(nft, event)) } : page,
   );
+  if (userId) {
+    queryClient.setQueryData<Nft[]>(favoriteNftsKey(userId), (nfts) =>
+      nfts?.map((nft) => patchNft(nft, event)),
+    );
+  }
 }
 
 export function applyOrderUpdated(

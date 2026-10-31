@@ -244,6 +244,8 @@ test.describe('mock account api', () => {
     await api(page, '/favorites/nft_003', { method: 'PUT' });
     await reloadWithMocks(page);
     expect((await api(page, '/favorites')).body).toEqual({ nftIds: ['nft_003'] });
+    const favoriteNfts = await api<{ id: string }[]>(page, '/favorites/nfts');
+    expect(favoriteNfts.body.map(({ id }) => id)).toEqual(['nft_003']);
 
     await api(page, '/auth/logout', { method: 'POST' });
     await login(page, BOB);
