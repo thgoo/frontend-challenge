@@ -285,7 +285,7 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
               </Alert>
             )}
             <div aria-live="polite">
-              <PriceSummary summary={quote.data} />
+              <PriceSummary summary={quote.data} separateTotal />
             </div>
           </>
         )}

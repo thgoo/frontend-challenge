@@ -5,29 +5,31 @@ import type { ReactNode } from 'react';
 import { EthAmount } from '@/components/eth-amount';
 import { Button } from '@/components/ui/button';
 import type { Order } from '@/contracts/order';
-import { LOCALE } from '@/i18n/locale';
+import { formatShortDate } from '@/i18n/locale';
 import { EXPLORER_LABELS, NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
 import { QuoteLines } from './quote-lines';
 
-const dateFormat = new Intl.DateTimeFormat(LOCALE, { dateStyle: 'medium' });
-
 function SummaryBar({ order }: { order: Order }) {
   const items = [
     { label: 'ID da transação', value: order.txHash ? shortenAddress(order.txHash) : 'Pendente' },
-    { label: 'Data', value: dateFormat.format(new Date(order.createdAt)) },
+    { label: 'Data', value: formatShortDate(order.createdAt) },
     { label: 'Total', value: <EthAmount value={order.receipt.totalEth} /> },
     { label: 'Carteira', value: shortenAddress(order.walletAddress) },
   ];
   return (
-    <dl className="grid grid-cols-2 gap-y-3 border-y border-primary px-6 py-3 text-sm sm:grid-cols-4 sm:px-9">
+    <dl className="grid grid-cols-2 gap-y-3 border-y border-primary px-6 py-3 text-sm sm:grid-cols-[repeat(4,auto)] sm:justify-between sm:px-9">
       {items.map((item, index) => (
         <div
           key={item.label}
           className={cn('grid gap-0.5 px-3', index > 0 && 'sm:border-l sm:border-primary')}
         >
-          <dt className="font-bold text-muted-foreground">{item.label}</dt>
-          <dd className="text-muted-foreground">{item.value}</dd>
+          <dt className="leading-4 font-bold whitespace-nowrap text-muted-foreground">
+            {item.label}
+          </dt>
+          <dd className="text-[15px] leading-5 whitespace-nowrap text-muted-foreground">
+            {item.value}
+          </dd>
         </div>
       ))}
     </dl>
@@ -64,7 +66,7 @@ function OrderCard({
       <SummaryBar order={order} />
       <div className="grid gap-4 px-6 pt-6 pb-10 sm:px-11">
         <h2 className="text-[15px] font-bold">Detalhes da transação</h2>
-        <QuoteLines lines={receipt.lines} />
+        <QuoteLines lines={receipt.lines} variant="receipt" />
         <dl className="grid gap-2 border-b border-primary/30 pb-3 text-[15px]">
           <div className="flex justify-between gap-4">
             <dt>Taxa de rede</dt>

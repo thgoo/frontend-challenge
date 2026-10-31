@@ -19,6 +19,21 @@ export function formatDateTime(value: string | Date): string {
   return dateTimeFormat.format(new Date(value));
 }
 
+const shortDateFormat = new Intl.DateTimeFormat(LOCALE, {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+/** Compact date for tight layouts ("31 out. 2026"); pt-BR would add "de" between the parts. */
+export function formatShortDate(value: string | Date): string {
+  return shortDateFormat
+    .formatToParts(new Date(value))
+    .filter((part) => part.type !== 'literal')
+    .map((part) => part.value)
+    .join(' ');
+}
+
 /** Accepts amounts typed with the local decimal separator and returns the API's dotted form. */
 export function normalizeDecimalInput(value: string): string {
   return value.trim().replace(DECIMAL_SEPARATOR, '.');

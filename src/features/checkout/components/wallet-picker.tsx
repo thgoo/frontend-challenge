@@ -43,7 +43,7 @@ export function WalletPicker({ wallets, value, onChange, error }: WalletPickerPr
             <RadioGroup.Item
               key={wallet.id}
               value={wallet.id}
-              className="group flex items-center gap-4 rounded-xl border border-transparent bg-card p-4 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=checked]:border-primary"
+              className="group flex items-center gap-4 rounded-[15px] border border-transparent bg-card p-4 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=checked]:border-primary lg:h-[45px] lg:gap-2.5 lg:rounded-[3px] lg:border-border lg:bg-transparent lg:px-3 lg:py-0"
             >
               <span
                 aria-hidden="true"
@@ -51,13 +51,15 @@ export function WalletPicker({ wallets, value, onChange, error }: WalletPickerPr
               >
                 <span className="size-2 rounded-full bg-primary opacity-0 group-data-[state=checked]:opacity-100" />
               </span>
-              <span className="grid gap-1">
-                <span className="font-bold">{wallet.label}</span>
-                <span className="font-mono text-sm text-muted-foreground">
-                  {shortenAddress(wallet.address)}
+              {/* Desktop compacts each wallet into one 45px row, as in the Figma. */}
+              <span className="grid min-w-0 gap-1 lg:flex lg:items-baseline lg:gap-3">
+                <span className="font-bold whitespace-nowrap lg:text-[15px] lg:font-normal">
+                  {wallet.label}
                 </span>
-                <span className="text-sm text-muted-foreground">
-                  {WALLET_PROVIDER_LABELS[wallet.provider]}
+                <span className="text-sm text-muted-foreground lg:truncate lg:text-[13px]">
+                  <span className="font-mono">{shortenAddress(wallet.address)}</span>
+                  <span className="max-lg:hidden"> · </span>
+                  <span className="max-lg:block">{WALLET_PROVIDER_LABELS[wallet.provider]}</span>
                 </span>
               </span>
             </RadioGroup.Item>
