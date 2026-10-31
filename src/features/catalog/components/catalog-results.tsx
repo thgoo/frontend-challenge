@@ -39,6 +39,7 @@ export function CatalogResults({ query }: { query: NftListQuery }) {
           <Link
             to="/"
             search={(prev) => ({ ...prev, page: 1 })}
+            hash="mercado"
             className="text-highlight underline"
           >
             Voltar para a primeira página

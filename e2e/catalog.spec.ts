@@ -35,6 +35,20 @@ function sortSelect(page: Page) {
 }
 
 test.describe('catalog', () => {
+  test('keeps the scroll position when filters change', async ({ page }) => {
+    await openCatalog(page);
+    await sortSelect(page).evaluate((select) => select.scrollIntoView({ block: 'center' }));
+    const before = await page.evaluate(() => window.scrollY);
+    expect(before).toBeGreaterThan(0);
+
+    await sortSelect(page).click();
+    await page.getByRole('option', { name: 'Menor preço' }).click();
+    await expect(page).toHaveURL(/sort=price-asc/);
+    await waitForResults(page);
+
+    expect(await page.evaluate(() => window.scrollY)).toBe(before);
+  });
+
   test('combines filters and sort, and keeps them after a refresh', async ({ page }) => {
     await openCatalog(page);
 

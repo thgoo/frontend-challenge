@@ -37,7 +37,7 @@ function HomePage() {
   const navigate = Route.useNavigate();
   const changeFilters = useCallback(
     (patch: FilterPatch) => {
-      void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) });
+      void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }), resetScroll: false });
     },
     [navigate],
   );
