@@ -73,7 +73,7 @@ function CartPage() {
             <aside
               aria-labelledby="summary-heading"
               aria-busy={isFetching}
-              className="grid content-start gap-6 rounded-t-[32px] bg-card p-6 lg:rounded-none lg:bg-transparent lg:p-0"
+              className="grid grid-cols-1 content-start gap-6 rounded-t-[32px] bg-card p-6 lg:rounded-none lg:bg-transparent lg:p-0"
             >
               <h2
                 id="summary-heading"
