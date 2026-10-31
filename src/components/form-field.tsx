@@ -31,10 +31,13 @@ export function Field({ label, required, hideLabel, error, hint, id, children }:
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor={controlId} className={hideLabel ? 'sr-only' : 'text-[15px] font-normal'}>
+      <Label
+        htmlFor={controlId}
+        className={hideLabel ? 'sr-only' : 'gap-0.5 text-[15px] font-normal'}
+      >
         {label}
         {required && (
-          <span aria-hidden="true" className="text-destructive">
+          <span aria-hidden="true" className="text-[22px] leading-none text-destructive">
             *
           </span>
         )}

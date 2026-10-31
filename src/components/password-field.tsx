@@ -1,3 +1,4 @@
+import { cn } from 'cn';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
 import { Field } from '@/components/form-field';
@@ -15,6 +16,7 @@ export function PasswordField({
   error,
   hint,
   hideLabel,
+  className,
   ...inputProps
 }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
@@ -26,7 +28,7 @@ export function PasswordField({
             {...control}
             {...inputProps}
             type={visible ? 'text' : 'password'}
-            className="pr-11"
+            className={cn('pr-11', className)}
           />
           <button
             type="button"
@@ -37,10 +39,11 @@ export function PasswordField({
             }}
             className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded text-subtle hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
+            {/* As in the Figma, the icon shows the current state: crossed out while hidden. */}
             {visible ? (
-              <EyeOff aria-hidden="true" className="size-5" />
-            ) : (
               <Eye aria-hidden="true" className="size-5" />
+            ) : (
+              <EyeOff aria-hidden="true" className="size-5" />
             )}
           </button>
         </div>
