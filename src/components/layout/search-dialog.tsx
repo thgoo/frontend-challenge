@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Search } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
+import { SearchIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -25,8 +25,8 @@ export function SearchDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Buscar NFTs">
-          <Search aria-hidden="true" className="size-6" />
+        <Button variant="ghost" size="icon-xs" aria-label="Buscar NFTs">
+          <SearchIcon className="size-5" />
         </Button>
       </DialogTrigger>
       <DialogContent>

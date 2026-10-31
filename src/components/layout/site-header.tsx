@@ -1,6 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from 'cn';
-import { LogIn, ShoppingCart } from 'lucide-react';
+import { CartIcon, SignInIcon } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,12 +27,21 @@ const NAV_ITEMS = [
   { label: 'Aprenda', hash: 'aprenda', isActive: () => false },
 ] as const;
 
-export function CartBadge({ count }: { count: number }) {
+export function CartBadge({
+  count,
+  className = '-top-1.5 -right-2',
+}: {
+  count: number;
+  className?: string;
+}) {
   if (count === 0) return null;
   return (
     <span
       aria-hidden="true"
-      className="absolute -top-1.5 -right-2 grid size-4 place-items-center rounded-full border-2 border-background bg-primary text-[10px] font-medium text-primary-foreground"
+      className={cn(
+        'absolute grid size-4 place-items-center rounded-full border-2 border-background bg-primary text-[10px] font-medium text-primary-foreground',
+        className,
+      )}
     >
       {count}
     </span>
@@ -42,9 +51,9 @@ export function CartBadge({ count }: { count: number }) {
 function CartLink() {
   const count = useCartItemCount();
   return (
-    <Link to="/cart" aria-label={cartLabel(count)} className="relative rounded-md p-1">
-      <ShoppingCart aria-hidden="true" className="size-6" />
-      <CartBadge count={count} />
+    <Link to="/cart" aria-label={cartLabel(count)} className="relative rounded-md">
+      <CartIcon />
+      <CartBadge count={count} className="top-0 left-[15px]" />
     </Link>
   );
 }
@@ -55,9 +64,9 @@ function AccountMenu() {
 
   if (!session) {
     return (
-      <Button asChild className="h-[35px] px-3 text-base font-medium">
+      <Button asChild className="h-[35px] gap-1 px-[9px] text-base font-medium has-[>svg]:px-[9px]">
         <Link to="." search={withAuthDialog('login')} resetScroll={false}>
-          <LogIn aria-hidden="true" className="size-5" />
+          <SignInIcon className="size-5" />
           Entrar
         </Link>
       </Button>
