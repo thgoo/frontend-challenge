@@ -10,9 +10,9 @@ import {
 } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { lazy, Suspense } from 'react';
-import { MobileTabBar } from '@/components/layout/mobile-tab-bar';
-import { SiteFooter } from '@/components/layout/site-footer';
-import { SiteHeader } from '@/components/layout/site-header';
+import { MobileTabBar } from '@/app/layout/mobile-tab-bar';
+import { SiteFooter } from '@/app/layout/site-footer';
+import { SiteHeader } from '@/app/layout/site-header';
 import { ErrorState } from '@/components/query-states';
 import { Toaster } from '@/components/toaster';
 import { authSearchSchema } from '@/features/auth/auth-search';

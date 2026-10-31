@@ -7,7 +7,7 @@ Visão das decisões técnicas, dos contratos e das limitações da solução. S
 
 ```
 src/
-  app/          bootstrap do React, router, QueryClient
+  app/          bootstrap do React, router, QueryClient e o shell (header, rodapé, barra inferior)
   routes/       rotas file-based (TanStack Router); só composição e guards
   features/     uma pasta por domínio: api.ts, queries.ts, hooks e componentes
                 (auth, catalog, cart, checkout, account, favorites, realtime, home, newsletter)
@@ -25,6 +25,8 @@ e2e/            Playwright: specs, helpers e baselines visuais
 - **Mocks sem atalhos no app.** Componentes, hooks e o cliente Axios não conhecem os mocks: falam HTTP e
   Socket.IO. O domínio dos mocks (`mocks/domain`) é puro e testado; os handlers só traduzem HTTP.
 - **Rotas finas.** Rotas fazem composição, `head`, guards e prefetch; a lógica vive nas features.
+- **Dependências numa direção só:** `app` e `routes` usam `features`, que usam `components`, `lib` e
+  `contracts`. A UI compartilhada não conhece nenhuma feature.
 
 ## Contratos REST
 

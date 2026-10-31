@@ -101,10 +101,7 @@ export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet 
                     field.onChange(walletProviderSchema.parse(value));
                   }}
                 >
-                  <SelectTrigger
-                    {...fieldControl}
-                    className="h-10 w-full rounded-sm border-border"
-                  >
+                  <SelectTrigger {...fieldControl} className="h-10 w-full rounded-sm border-border">
                     <SelectValue placeholder="Selecione uma carteira" />
                   </SelectTrigger>
                   <SelectContent>

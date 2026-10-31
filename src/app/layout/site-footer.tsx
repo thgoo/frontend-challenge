@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { NewsletterForm } from '@/features/newsletter/components/newsletter-form';
-import { SOCIAL_NETWORKS } from './social-networks';
+import { SOCIAL_NETWORKS } from '@/components/layout/social-networks';
 
 const HIGHLIGHTS = [
   {
@@ -54,7 +54,7 @@ const COLUMNS: { title: string; items: { label: string; to?: string }[] }[] = [
   },
 ];
 
-export function WalletProviders() {
+function WalletProviders() {
   return (
     <p className="inline-flex rounded-md border border-[#55321f] bg-surface-dark py-1.5 pr-2 pl-2 text-[9px] leading-3 font-bold tracking-[0.1px] whitespace-pre text-highlight">
       {'METAMASK  •  WALLETCONNECT  •  COINBASE'}
