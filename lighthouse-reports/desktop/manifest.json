@@ -2,73 +2,73 @@
   {
     "url": "http://localhost:4173/",
     "isRepresentativeRun": false,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_02.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_02.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_00_53.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_00_53.report.json",
     "summary": {
       "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   },
   {
     "url": "http://localhost:4173/",
     "isRepresentativeRun": false,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_14.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_14.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_01_06.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_01_06.report.json",
     "summary": {
       "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   },
   {
     "url": "http://localhost:4173/nfts/nft_001",
     "isRepresentativeRun": false,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_27_39.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_27_39.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_31.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_31.report.json",
     "summary": {
-      "performance": 0.97,
+      "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   },
   {
     "url": "http://localhost:4173/nfts/nft_001",
     "isRepresentativeRun": false,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_27_51.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_27_51.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_43.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_43.report.json",
     "summary": {
-      "performance": 0.97,
+      "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   },
   {
     "url": "http://localhost:4173/",
     "isRepresentativeRun": true,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_27.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_30_22_27_27.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_01_18.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost--2026_10_31_15_01_18.report.json",
     "summary": {
       "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   },
   {
     "url": "http://localhost:4173/nfts/nft_001",
     "isRepresentativeRun": true,
-    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_28_03.report.html",
-    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_30_22_28_03.report.json",
+    "htmlPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_55.report.html",
+    "jsonPath": "/home/thiaugpr/projects/frontend-challenge/lighthouse-reports/desktop/localhost-nfts_nft_001-2026_10_31_15_01_55.report.json",
     "summary": {
-      "performance": 0.97,
+      "performance": 0.98,
       "accessibility": 1,
       "best-practices": 1,
-      "seo": 0.92
+      "seo": 1
     }
   }
 ]

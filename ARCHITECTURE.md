@@ -203,10 +203,10 @@ Medianas de 3 execuções por página e perfil ([SUMMARY](lighthouse-reports/SUM
 
 | Perfil  | Página  | Performance | Accessibility | Best Practices | SEO | LCP    | TBT    | CLS |
 | ------- | ------- | ----------- | ------------- | -------------- | --- | ------ | ------ | --- |
-| Desktop | Início  | 98          | 100           | 100            | 92  | 1,11 s | 0 ms   | 0   |
-| Desktop | Detalhe | 97          | 100           | 100            | 92  | 1,14 s | 0 ms   | 0   |
-| Mobile  | Início  | 85          | 98            | 100            | 92  | 3,89 s | 118 ms | 0   |
-| Mobile  | Detalhe | 82          | 100           | 100            | 92  | 4,09 s | 175 ms | 0   |
+| Desktop | Início  | 98          | 100           | 100            | 100 | 1,10 s | 0 ms   | 0   |
+| Desktop | Detalhe | 98          | 100           | 100            | 100 | 1,07 s | 0 ms   | 0   |
+| Mobile  | Início  | 84          | 100           | 100            | 100 | 3,95 s | 119 ms | 0   |
+| Mobile  | Detalhe | 83          | 100           | 100            | 100 | 3,89 s | 177 ms | 0   |
 
 Desktop atinge todas as metas. No mobile, só Performance fica abaixo de 90, e a causa é a camada de mocks no
 caminho crítico, que um backend real não teria:
@@ -215,7 +215,7 @@ caminho crítico, que um backend real não teria:
   do app, por causa da interceptação do WebSocket;
 - cada requisição simulada tem 150–350 ms de latência proposital no cenário padrão;
 - sob o perfil mobile (4G lento simulado e CPU 4× mais lenta), essa cadeia empurra o FCP para ~2,3 s e o LCP
-  (a imagem do primeiro card ou a principal do detalhe) para ~3,9–4,1 s.
+  (a imagem do primeiro card ou a principal do detalhe) para ~3,9 s.
 
 O que já foi feito: imagens AVIF/WebP com `srcset`/`sizes` (8–48 KB), `fetchpriority` na imagem de LCP e
 lazy-loading no resto, fonte servida localmente (o navegador baixa só o subset latin, ~33 KB), CSS carregado em paralelo ao MSW, rotas com code
