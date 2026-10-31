@@ -110,6 +110,9 @@ Caminho `/realtime`, transporte WebSocket. Todo evento tem identidade, recurso e
 - "Confirmar compra" conecta a carteira (se necessário) e envia o pedido com `Idempotency-Key` única por
   cotação. Repetir a mesma chave devolve o mesmo pedido; mesma chave com outro corpo responde
   `IDEMPOTENCY_CONFLICT`.
+- A conexão da carteira é simulada no servidor: pode ser recusada (cenário `wallet-rejected`) ou cair a
+  qualquer momento (`__mocks.disconnectWallets()`). Um pedido com a carteira desconectada responde
+  `WALLET_DISCONNECTED`; o cliente esquece a conexão em cache e a próxima confirmação conecta de novo.
 - O servidor revalida a cotação contra preços e estoque atuais (`QUOTE_OUTDATED`), reserva o estoque e cria o
   pedido como `pending`. A liquidação ocorre após alguns segundos (agendada e também verificada a cada leitura,
   o que a torna resistente a refresh): `confirmed` remove do carrinho só o que foi comprado; `declined` devolve

@@ -65,6 +65,7 @@ No console do navegador, `window.__mocks` controla o backend simulado (o mesmo u
 __mocks.scenarios; // lista de cenários
 __mocks.reset('slow'); // troca de cenário e reinicia os dados
 __mocks.expireSessions(); // expira todas as sessões
+__mocks.disconnectWallets(); // a extensão da carteira desconecta o site
 __mocks.updateEdition('nft_002', 'ed_002_1', { priceEth: '9.99' }); // muda preço: REST + evento nft.updated
 __mocks.updateEdition('nft_002', 'ed_002_1', { available: 0 }); // esgota a edição
 __mocks.sockets.setOnline(false); // derruba o Socket.IO (true reconecta)
@@ -104,6 +105,7 @@ Para regenerar as baselines visuais: `npx playwright test e2e/visual.spec.ts --u
 | Timeout com idempotência         | `?scenario=order-timeout`: após ~10 s a nova tentativa recupera o mesmo pedido.                                       |
 | Queda do Socket.IO               | Pedido pendente (`?scenario=slow-payment`), `__mocks.sockets.setOnline(false)`, depois `true`.                        |
 | Carteira recusada                | `?scenario=wallet-rejected` e confirme a compra.                                                                      |
+| Carteira desconectada            | Após uma compra (a carteira fica conectada), abra outro pagamento, rode `__mocks.disconnectWallets()` e confirme.     |
 | Cadastro com conflito            | Cadastre `alice@example.com` ou o usuário `bob`.                                                                      |
 | Cupom inválido/expirado          | `NOPE` ou `SUMMER20` no carrinho.                                                                                     |
 

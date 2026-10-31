@@ -4,6 +4,8 @@ export interface MockControl {
   readonly scenario: string;
   reset(scenario?: string): Promise<void>;
   expireSessions(): void;
+  /** Drops every wallet connection, like a user disconnecting the site in the wallet extension. */
+  disconnectWallets(): void;
   /** Changes the catalog like a backend would: REST reflects it and `nft.updated` is emitted. */
   updateEdition(
     nftId: string,

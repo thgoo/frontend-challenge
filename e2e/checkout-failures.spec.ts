@@ -26,6 +26,36 @@ test.describe('checkout failures', () => {
     await expect(page.getByRole('button', { name: 'Confirmar compra' })).toBeVisible();
   });
 
+  test('explains a rejected wallet connection and keeps the cart', async ({ page }) => {
+    await startSignedIn(page, 'wallet-rejected');
+    await addToCart(page, 'nft_002');
+    await openCheckout(page);
+
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
+    await expect(page.getByRole('alert')).toContainText('recusou a conexão');
+    await expect(page).toHaveURL('/checkout');
+    expect(await orderCount(page)).toBe(0);
+  });
+
+  test('reconnects after the wallet disconnects during checkout', async ({ page }) => {
+    await startSignedIn(page);
+    await addToCart(page, 'nft_002');
+    await api(page, '/wallet-connection', {
+      method: 'PUT',
+      body: { walletId: 'wal_alice_1', network: 'ethereum' },
+    });
+    await openCheckout(page);
+    await page.evaluate(() => window.__mocks?.disconnectWallets());
+
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
+    await expect(page.getByRole('alert')).toContainText('Sua carteira foi desconectada');
+    expect(await orderCount(page)).toBe(0);
+
+    await page.getByRole('button', { name: 'Confirmar compra' }).click();
+    await expect(page).toHaveURL(/\/orders\/ord_/);
+    expect(await orderCount(page)).toBe(1);
+  });
+
   test('creates a single order when confirm is clicked repeatedly', async ({ page }) => {
     await startSignedIn(page);
     await addToCart(page, 'nft_002');

@@ -27,6 +27,12 @@ function expireSessions() {
   });
 }
 
+function disconnectWallets() {
+  transaction(({ db }) => {
+    db.walletConnections = {};
+  });
+}
+
 export const mockControl: MockControl = {
   scenarios: SCENARIOS.map(({ name, description }) => ({ name, description })),
   get scenario() {
@@ -34,6 +40,7 @@ export const mockControl: MockControl = {
   },
   reset,
   expireSessions,
+  disconnectWallets,
   updateEdition(nftId, editionId, patch) {
     const updated = transaction((tx) => updateEdition(tx, { nftId, editionId }, patch));
     if (!updated) throw new Error(`Unknown edition "${nftId}/${editionId}"`);

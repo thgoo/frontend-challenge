@@ -8,7 +8,7 @@ import {
 import { userKey } from '@/features/auth/queries';
 import { useCurrentUserId } from '@/features/auth/use-current-user-id';
 import type { Network } from '@/contracts/wallet';
-import { ApiRequestError } from '@/lib/api-error';
+import { ApiRequestError, hasErrorCode } from '@/lib/api-error';
 import {
   connectWallet,
   createQuote,
@@ -95,6 +95,12 @@ export function usePlaceOrder() {
       if (!userId) return;
       queryClient.setQueryData(orderKeys.detail(userId, order.id), order);
       void queryClient.invalidateQueries({ queryKey: orderKeys.all(userId), exact: true });
+    },
+    onError: (error) => {
+      // The wallet dropped the connection, so the next confirmation must connect again.
+      if (userId && hasErrorCode(error, 'WALLET_DISCONNECTED')) {
+        queryClient.setQueryData(walletConnectionKey(userId), null);
+      }
     },
   });
 }
