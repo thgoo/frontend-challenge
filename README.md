@@ -4,7 +4,7 @@ Solução do [desafio de frontend](CHALLENGE.md): catálogo, detalhe, carrinho, 
 tempo real, sobre um backend simulado com MSW (REST + Socket.IO). Decisões, contratos e limitações estão em
 [ARCHITECTURE.md](ARCHITECTURE.md).
 
-- **Demo:** _(publicação pendente)_
+- **Demo:** https://kurio-nft-marketplace-eight.vercel.app (Vercel, com os mocks e o tempo real ativos)
 - **Stack:** Vite 8, React 19, TypeScript 6, TanStack Router e Query, Axios, Zod 4, React Hook Form,
   Tailwind 4 + shadcn/ui, MSW 2 + `@mswjs/socket.io-binding`, socket.io-client, Playwright e Lighthouse CI.
 
