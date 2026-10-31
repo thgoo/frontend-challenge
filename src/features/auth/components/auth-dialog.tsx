@@ -28,8 +28,8 @@ const COPY = {
 
 function SocialButtons() {
   return (
-    <div className="grid gap-3">
-      <p className="flex items-center gap-3 text-sm before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border lg:-mx-20">
+    <div className="grid gap-3 max-lg:[&>button+button]:mt-1">
+      <p className="flex items-center gap-3 text-[13px] before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border lg:-mx-20">
         Ou continue com
       </p>
       {SOCIAL_PROVIDERS.map((provider) => (
@@ -104,8 +104,8 @@ export default function AuthDialog() {
           }}
           className="fixed inset-0 z-50 overflow-y-auto bg-background outline-none lg:inset-auto lg:top-1/2 lg:left-1/2 lg:max-h-[calc(100dvh-2rem)] lg:min-h-[600px] lg:w-[500px] lg:-translate-1/2 lg:border-b-[10px] lg:border-primary lg:bg-card"
         >
-          <div className="grid min-h-full place-items-center px-6 py-12 lg:block lg:min-h-0 lg:px-20 lg:pt-14 lg:pb-12">
-            <div className="grid w-full gap-6">
+          <div className="px-7 pt-20 pb-6 lg:px-20 lg:pt-14 lg:pb-12">
+            <div className="grid w-full gap-10 lg:gap-6">
               <DialogPrimitive.Close
                 aria-label="Fechar"
                 className="absolute top-4 right-4 hidden size-8 place-items-center rounded text-primary hover:bg-accent lg:grid"
@@ -115,12 +115,14 @@ export default function AuthDialog() {
               <Link
                 to="/"
                 aria-label="Kurio, voltar ao início"
-                className="justify-self-center text-[32px] font-bold tracking-[0.1em] lg:hidden"
+                className="justify-self-center py-[47px] text-[32px] leading-[42px] font-bold tracking-[0.1em] lg:hidden"
               >
                 KURIO
               </Link>
               <DialogPrimitive.Title className="text-center text-xl font-bold lg:sr-only">
-                <span className="lg:hidden">{COPY[mode].mobileTitle}</span>
+                <span className={cn('lg:hidden', mode === 'register' && 'text-lg')}>
+                  {COPY[mode].mobileTitle}
+                </span>
                 <span className="max-lg:hidden">{COPY[mode].title}</span>
               </DialogPrimitive.Title>
               <nav aria-label="Acesso" className="hidden justify-center text-xl lg:flex">

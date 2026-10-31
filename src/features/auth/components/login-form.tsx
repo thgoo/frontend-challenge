@@ -11,7 +11,7 @@ import { applyServerErrors } from '@/lib/forms';
 import { useLogin } from '../queries';
 import { AUTH_INPUT } from './auth-styles';
 
-const SUBMIT_CLASS = 'h-[60px] rounded-xl text-base font-bold lg:h-[45px] lg:rounded-sm';
+const SUBMIT_CLASS = 'h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-sm';
 
 export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const login = useLogin();
@@ -68,7 +68,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       >
         Esqueceu a senha?
       </button>
-      <Button type="submit" disabled={login.isPending} className={`mt-3 ${SUBMIT_CLASS}`}>
+      <Button type="submit" disabled={login.isPending} className={`mt-7 lg:mt-3 ${SUBMIT_CLASS}`}>
         {login.isPending ? 'Entrando…' : 'Entrar'}
       </Button>
     </form>

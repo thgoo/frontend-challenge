@@ -89,7 +89,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       <Button
         type="submit"
         disabled={registerAccount.isPending}
-        className="mt-3 h-[60px] rounded-xl text-base font-bold lg:h-[45px] lg:rounded-sm"
+        className="mt-7 h-[60px] rounded-[10px] text-base font-bold lg:mt-3 lg:h-[45px] lg:rounded-sm"
       >
         {registerAccount.isPending ? (
           'Criando conta…'
