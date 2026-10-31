@@ -73,7 +73,7 @@ export function Hero() {
           <div className="grid gap-8">
             <div className="grid gap-1">
               <p className="text-sm font-medium tracking-[0.1em]">Bem-vindo à Kurio</p>
-              <h1 className="text-[43px] leading-[70px] font-bold tracking-wide whitespace-pre-line">
+              <h1 className="text-[43px] leading-[70px] font-bold whitespace-pre-line">
                 {'SEJA DONO DO FUTURO\nDA ARTE DIGITAL'}
               </h1>
               <p className="max-w-md text-sm leading-6 text-muted-foreground">

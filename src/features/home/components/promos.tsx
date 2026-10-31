@@ -30,24 +30,33 @@ export function Promos() {
       {PROMOS.map((promo) => (
         <article
           key={promo.title}
-          className="grid overflow-hidden rounded-lg bg-card sm:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
+          className="relative grid overflow-hidden rounded-lg bg-card sm:h-[250px] sm:grid-cols-[292px_minmax(0,1fr)]"
         >
           <NftImage
             image={artworkImage(promo.artwork)}
             alt=""
             sizes="(min-width: 1024px) 292px, 50vw"
-            className="h-48 w-full rounded-[18px] sm:h-full sm:min-h-48"
+            className="h-48 w-full rounded-[18px] sm:h-full"
           />
-          <div className="grid content-center gap-3 p-6 sm:justify-items-end sm:text-right">
+          {/* Decorative arcs from the Figma, clipped by the card. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-[142px] -left-[191px] size-64 rounded-full border-2 border-primary max-sm:hidden"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-[134px] -left-[199px] size-64 rounded-full border border-primary max-sm:hidden"
+          />
+          <div className="flex flex-col gap-2 p-6 sm:items-end sm:pt-[37px] sm:pr-[30px] sm:pb-[46px] sm:pl-0 sm:text-right">
             <h3 className="text-lg leading-6 font-bold whitespace-pre-line">{promo.title}</h3>
             <p className="text-sm leading-6 text-muted-foreground">{promo.text}</p>
             <Link
               to="/"
               search={promo.search}
               hash="mercado"
-              className="mt-2 flex h-10 items-center gap-2 rounded-md bg-primary px-6 text-sm font-bold text-primary-foreground hover:bg-primary/90"
+              className="mt-auto flex h-10 w-[140px] items-center justify-center gap-0.5 rounded-md bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
-              Explorar <ArrowRight aria-hidden="true" className="size-4" />
+              Explorar <ArrowRight aria-hidden="true" className="size-[18px]" />
             </Link>
           </div>
         </article>

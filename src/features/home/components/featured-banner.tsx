@@ -18,7 +18,7 @@ export function FeaturedBanner() {
         <h2 id="spotlight-heading" className="text-2xl font-bold text-highlight">
           NFT EM DESTAQUE
         </h2>
-        <p className="text-[22px] leading-4 font-bold">OFERTA LIMITADA</p>
+        <p className="text-center text-[22px] leading-4 font-bold">OFERTA LIMITADA</p>
       </div>
       <Link to="/nfts/$nftId" params={{ nftId: nft.id }} className="overflow-hidden rounded-[22px]">
         <NftImage image={nft.images[0]} alt={nft.name} sizes="310px" className="h-[368px] w-full" />
