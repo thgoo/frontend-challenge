@@ -13,8 +13,11 @@ test.describe('mock api', () => {
     await devtools.send('ServiceWorker.enable');
     await devtools.send('ServiceWorker.stopAllWorkers');
     // The restarted worker no longer knows this tab, so requests reach the (absent) network API.
-    // Stopping is asynchronous: wait until requests really stop being mocked.
-    await expect.poll(async () => (await api(page, '/nfts/nft_001')).status).not.toBe(200);
+    // Stopping is asynchronous: wait until requests really stop being mocked. A request caught
+    // mid-restart may never settle, so each attempt is bounded.
+    await expect
+      .poll(async () => (await api(page, '/nfts/nft_001', { timeoutMs: 1000 })).status)
+      .not.toBe(200);
 
     const reactivated = await page.evaluate(async () => {
       const confirmation = new Promise<boolean>((resolve) => {
