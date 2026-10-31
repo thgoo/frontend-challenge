@@ -63,7 +63,7 @@ function CartPage() {
                   ))}
                 </div>
               ) : (
-                <ul className="grid gap-3">
+                <ul className="grid gap-5 lg:gap-3">
                   {cart.lines.map((line) => (
                     <CartLineItem key={`${line.nftId}:${line.editionId}`} line={line} />
                   ))}
@@ -73,11 +73,11 @@ function CartPage() {
             <aside
               aria-labelledby="summary-heading"
               aria-busy={isFetching}
-              className="grid grid-cols-1 content-start gap-6 rounded-t-[32px] bg-card p-6 lg:rounded-none lg:bg-transparent lg:p-0"
+              className="grid grid-cols-1 content-start gap-3 rounded-t-[40px] bg-card px-6 pt-6 pb-9 max-lg:-mx-6 lg:gap-6 lg:rounded-none lg:bg-transparent lg:p-0"
             >
               <h2
                 id="summary-heading"
-                className="hidden border-b border-primary/30 pb-3 text-lg font-bold lg:block"
+                className="hidden border-b border-primary/30 pb-3 text-lg leading-4 font-bold lg:block"
               >
                 Resumo da carteira
               </h2>
@@ -104,11 +104,11 @@ function CartPage() {
 }
 
 const CHECKOUT_BUTTON =
-  'h-[60px] w-full rounded-full bg-linear-to-r from-primary to-primary/70 text-base font-bold lg:h-10 lg:rounded-md lg:bg-primary lg:bg-none';
+  'h-[60px] w-full rounded-full bg-linear-to-r from-primary to-primary/80 text-base font-bold lg:h-10 lg:rounded-[3px] lg:bg-primary lg:bg-none lg:text-[15px]';
 
 function CheckoutAction({ blocked }: { blocked: boolean }) {
   return (
-    <div className="grid gap-4 text-center">
+    <div className="grid gap-3 text-center max-lg:mt-3">
       {blocked ? (
         <>
           <Button disabled className={CHECKOUT_BUTTON}>
@@ -126,7 +126,7 @@ function CheckoutAction({ blocked }: { blocked: boolean }) {
       <Link
         to="/"
         hash="mercado"
-        className="hidden text-base text-highlight hover:underline lg:block"
+        className="hidden text-[15px] text-highlight hover:underline lg:block"
       >
         Continuar explorando
       </Link>

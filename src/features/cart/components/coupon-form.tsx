@@ -53,23 +53,23 @@ export function CouponForm({ coupon }: { coupon: Coupon | null }) {
 
   return (
     <form noValidate onSubmit={(event) => void submit(event)} className="grid gap-2">
-      <label htmlFor={id} className="text-[13px] font-bold">
+      <label htmlFor={id} className="text-sm leading-4 font-bold max-lg:sr-only">
         Código promocional
       </label>
-      <div className="flex rounded-full border border-border lg:rounded-md lg:border-primary">
+      <div className="flex h-[50px] rounded-full border border-border bg-card shadow-[0_0_20px_rgb(10_6_4/0.45)] lg:h-10 lg:rounded-[3px] lg:border-primary lg:bg-transparent lg:shadow-none">
         <input
           id={id}
           autoComplete="off"
           placeholder="Digite o código promocional..."
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="h-11 min-w-0 flex-1 rounded-l-full bg-transparent px-4 text-sm uppercase placeholder:text-subtle placeholder:normal-case focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none lg:h-10 lg:rounded-l-md lg:px-3"
+          className="min-w-0 flex-1 rounded-l-full bg-transparent px-4 text-[13px] uppercase placeholder:text-subtle placeholder:normal-case focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none lg:rounded-l-[3px] lg:px-2 lg:text-xs"
           {...register('code')}
         />
         <button
           type="submit"
           disabled={apply.isPending}
-          className="rounded-full bg-linear-to-r from-primary to-primary/70 px-5 text-base font-bold text-primary-foreground disabled:opacity-50 lg:rounded-none lg:rounded-r-md lg:bg-primary lg:bg-none"
+          className="w-[97px] shrink-0 rounded-full bg-linear-to-r from-primary/54 to-primary text-[15px] font-bold text-foreground disabled:opacity-50 lg:w-[102px] lg:rounded-none lg:rounded-r-[3px] lg:bg-primary lg:bg-none lg:text-primary-foreground"
         >
           Aplicar
         </button>

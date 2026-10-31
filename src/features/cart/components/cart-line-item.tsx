@@ -41,18 +41,18 @@ export function CartLineItem({ line }: { line: CartLine }) {
         <Link
           to="/nfts/$nftId"
           params={{ nftId: line.nftId }}
-          className="truncate text-[15px] font-bold hover:text-highlight"
+          className="truncate text-[15px] leading-4 font-bold hover:text-highlight lg:text-base"
         >
           {line.nftName}
         </Link>
-        <span className="hidden text-sm text-muted-foreground lg:block">
+        <span className="hidden text-sm leading-4 text-subtle lg:block">
           ID do token: {line.tokenId}
         </span>
       </div>
       <span className="text-sm text-muted-foreground [grid-area:edition] lg:hidden">
         Edição: {line.editionName}
       </span>
-      <p className="hidden text-base font-bold text-highlight [grid-area:price] lg:block">
+      <p className="hidden text-base font-bold text-muted-foreground [grid-area:price] lg:block">
         <span className="sr-only">Preço unitário: </span>
         <EthAmount value={line.unitPriceEth} />
       </p>

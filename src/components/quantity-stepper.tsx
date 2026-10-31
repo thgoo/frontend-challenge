@@ -7,7 +7,7 @@ interface QuantityStepperProps {
   onChange: (value: number) => void;
   label: string;
   disabled?: boolean;
-  /** Figma sizes: `lg` desktop NFT detail, `md` mobile buy bar, `sm` cart rows. */
+  /** Figma sizes: `lg` desktop NFT detail, `md` mobile buy bar, `sm` cart rows (dark circles on mobile). */
   size?: 'lg' | 'md' | 'sm';
 }
 
@@ -17,7 +17,12 @@ const STEP_BUTTON =
 const SIZES = {
   lg: { button: 'h-[50px] w-[33px]', icon: 'size-4', value: 'text-xl' },
   md: { button: 'h-[30px] w-5', icon: 'size-3', value: 'text-lg font-medium' },
-  sm: { button: 'size-[22px]', icon: 'size-3', value: 'text-base' },
+  sm: {
+    button:
+      'size-6 border-border bg-muted text-foreground shadow-none hover:bg-accent lg:h-[30px] lg:w-5 lg:border-background lg:bg-primary lg:text-primary-foreground lg:shadow-[0_0_20px_rgb(10_6_4/0.45)] lg:hover:bg-primary/90',
+    icon: 'size-3',
+    value: 'text-base lg:text-[17px]',
+  },
 };
 
 export function QuantityStepper(props: QuantityStepperProps) {
