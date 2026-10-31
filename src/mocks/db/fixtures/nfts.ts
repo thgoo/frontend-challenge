@@ -63,7 +63,7 @@ const SHOWCASE = [
     price: 1190,
     compareAt: null,
     trending: false,
-    rare: false,
+    rare: true,
   },
   {
     name: 'Sage Nomad',
