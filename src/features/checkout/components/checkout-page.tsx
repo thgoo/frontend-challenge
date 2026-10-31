@@ -184,7 +184,7 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
                   >
                     <SelectTrigger
                       {...fieldControl}
-                      className="h-10 w-full rounded-sm border-primary/40"
+                      className="h-10 w-full rounded-sm border-border"
                     >
                       <SelectValue placeholder="Selecione uma rede" />
                     </SelectTrigger>

@@ -103,7 +103,7 @@ export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet 
                 >
                   <SelectTrigger
                     {...fieldControl}
-                    className="h-10 w-full rounded-sm border-primary/40"
+                    className="h-10 w-full rounded-sm border-border"
                   >
                     <SelectValue placeholder="Selecione uma carteira" />
                   </SelectTrigger>
