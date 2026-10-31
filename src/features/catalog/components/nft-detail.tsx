@@ -3,32 +3,22 @@ import { Star } from 'lucide-react';
 import { Tabs } from 'radix-ui';
 import { useRef, useState } from 'react';
 import { EthAmount } from '@/components/eth-amount';
+import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
 import { BackButton } from '@/components/layout/mobile-page-header';
-import { QuantityStepper } from '@/components/quantity-stepper';
 import { RatingStars } from '@/components/rating-stars';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Edition, Nft } from '@/contracts/nft';
-import {
-  AddToCartIconButton,
-  EditionPicker,
-  PurchaseLimitNotice,
-} from '@/features/cart/components/purchase-controls';
-import {
-  selectedPrice,
-  usePurchaseActions,
-  usePurchaseSelection,
-} from '@/features/cart/use-purchase';
+import { EditionPicker, PurchaseLimitNotice } from '@/features/cart/components/purchase-controls';
+import { usePurchaseActions, usePurchaseSelection } from '@/features/cart/use-purchase';
 import { FavoriteButton } from '@/features/favorites/components/favorite-button';
 import { formatRating } from '@/i18n/locale';
-import { formatEth } from '@/lib/eth';
 import { NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
 import { NftGallery } from './nft-gallery';
+import { DesktopPurchase, MobileBuyBar } from './nft-purchase';
 import { NftReviews } from './nft-reviews';
 import { NftShelf } from './nft-shelf';
 import { ShareLinks } from './share-links';
-import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
 
 type DetailTab = 'details' | 'reviews';
 
@@ -74,14 +64,65 @@ function DetailsText({ nft, edition }: { nft: Nft; edition: Edition | undefined 
   );
 }
 
+function DetailHeader({
+  nft,
+  edition,
+  onShowReviews,
+}: {
+  nft: Nft;
+  edition: Edition | undefined;
+  onShowReviews: () => void;
+}) {
+  const reviewsLabel = `${String(nft.rating.count)} avaliações de colecionadores`;
+  return (
+    <header className="grid gap-3 lg:border-b lg:border-primary/30 lg:pb-3">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl leading-4 font-bold lg:text-[28px] lg:leading-[37px]">{nft.name}</h1>
+        <button
+          type="button"
+          onClick={onShowReviews}
+          aria-label={`Avaliação ${formatRating(nft.rating.average)} de 5, ${reviewsLabel}`}
+          className="flex h-[27px] shrink-0 items-center gap-1 rounded-full border border-primary px-2 text-sm leading-4 font-medium lg:hidden"
+        >
+          <Star aria-hidden="true" className="size-3.5 fill-highlight text-highlight" />
+          {formatRating(nft.rating.average)}
+          <span className="font-normal text-muted-foreground">({nft.rating.count})</span>
+        </button>
+      </div>
+      <div className="hidden items-center justify-between gap-4 lg:flex">
+        {edition && (
+          <p className="flex items-baseline gap-3 text-[22px] leading-4 font-bold text-highlight">
+            <EthAmount value={edition.priceEth} />
+            {edition.compareAtPriceEth && (
+              <s className="text-lg font-normal text-subtle">
+                <span className="sr-only">Preço anterior: </span>
+                <EthAmount value={edition.compareAtPriceEth} />
+              </s>
+            )}
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={onShowReviews}
+          className="flex items-center gap-1 text-[15px] leading-5 hover:text-highlight"
+        >
+          <RatingStars
+            value={nft.rating.average}
+            className="gap-1 text-highlight [&_svg]:size-[15px]"
+          />
+          {reviewsLabel}
+        </button>
+      </div>
+    </header>
+  );
+}
+
 export function NftDetail({ nft }: { nft: Nft }) {
   const selection = usePurchaseSelection(nft);
   const actions = usePurchaseActions(nft, selection);
   const [tab, setTab] = useState<DetailTab>('details');
   const tabsRef = useRef<HTMLDivElement>(null);
   const { edition } = selection;
-  const reviewsLabel = `${String(nft.rating.count)} avaliações de colecionadores`;
-
   const showReviews = () => {
     setTab('reviews');
     tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -108,47 +149,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
 
           {/* On mobile the details are a sheet sliding over the artwork, as in the Figma. */}
           <div className="relative grid content-start gap-3 max-lg:-mx-6 max-lg:-mt-[30px] max-lg:rounded-t-[31px] max-lg:bg-card max-lg:px-6 max-lg:pt-8 max-lg:pb-6 lg:gap-5">
-            <header className="grid gap-3 lg:border-b lg:border-primary/30 lg:pb-3">
-              <div className="flex items-center justify-between gap-3">
-                <h1 className="text-xl leading-4 font-bold lg:text-[28px] lg:leading-[37px]">
-                  {nft.name}
-                </h1>
-                <button
-                  type="button"
-                  onClick={showReviews}
-                  aria-label={`Avaliação ${formatRating(nft.rating.average)} de 5, ${reviewsLabel}`}
-                  className="flex h-[27px] shrink-0 items-center gap-1 rounded-full border border-primary px-2 text-sm leading-4 font-medium lg:hidden"
-                >
-                  <Star aria-hidden="true" className="size-3.5 fill-highlight text-highlight" />
-                  {formatRating(nft.rating.average)}
-                  <span className="font-normal text-muted-foreground">({nft.rating.count})</span>
-                </button>
-              </div>
-              <div className="hidden items-center justify-between gap-4 lg:flex">
-                {edition && (
-                  <p className="flex items-baseline gap-3 text-[22px] leading-4 font-bold text-highlight">
-                    <EthAmount value={edition.priceEth} />
-                    {edition.compareAtPriceEth && (
-                      <s className="text-lg font-normal text-subtle">
-                        <span className="sr-only">Preço anterior: </span>
-                        <EthAmount value={edition.compareAtPriceEth} />
-                      </s>
-                    )}
-                  </p>
-                )}
-                <button
-                  type="button"
-                  onClick={showReviews}
-                  className="flex items-center gap-1 text-[15px] leading-5 hover:text-highlight"
-                >
-                  <RatingStars
-                    value={nft.rating.average}
-                    className="gap-1 text-highlight [&_svg]:size-[15px]"
-                  />
-                  {reviewsLabel}
-                </button>
-              </div>
-            </header>
+            <DetailHeader nft={nft} edition={edition} onShowReviews={showReviews} />
 
             <section className="grid gap-3">
               <h2 className="text-[15px] leading-4 font-bold max-lg:sr-only">Sobre este NFT:</h2>
@@ -157,30 +158,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
 
             <EditionPicker nft={nft} selection={selection} />
 
-            <div className="hidden flex-wrap items-center justify-between gap-4 lg:flex">
-              <QuantityStepper
-                size="lg"
-                label="Quantidade"
-                value={selection.quantity}
-                max={Math.max(selection.remaining, 1)}
-                disabled={selection.remaining === 0}
-                onChange={selection.setQuantity}
-              />
-              <div className="flex gap-2">
-                <Button
-                  disabled={actions.disabled}
-                  onClick={actions.buy}
-                  className="h-10 w-[130px] text-sm font-bold"
-                >
-                  {actions.pending ? 'Comprando…' : 'COMPRAR'}
-                </Button>
-                <FavoriteButton
-                  nftId={nft.id}
-                  nftName={nft.name}
-                  className="h-10 w-[130px] border-primary font-medium text-highlight [&_svg]:size-5"
-                />
-              </div>
-            </div>
+            <DesktopPurchase nft={nft} selection={selection} actions={actions} />
             <PurchaseLimitNotice selection={selection} />
 
             <dl className="grid gap-3 text-[15px] leading-5 text-subtle">
@@ -234,33 +212,7 @@ export function NftDetail({ nft }: { nft: Nft }) {
 
       <NftShelf title="Mais desta coleção" query={{ q: nft.collection }} excludeIds={[nft.id]} />
 
-      <div className="fixed inset-x-0 bottom-0 z-40 grid gap-5 rounded-t-[40px] bg-card px-6 pt-5 pb-[max(2.25rem,env(safe-area-inset-bottom))] shadow-[0_0_20px_rgb(10_6_4/0.45)] lg:hidden">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-[15px] leading-4 font-medium text-muted-foreground">Qtd.</span>
-            <QuantityStepper
-              label="Quantidade"
-              value={selection.quantity}
-              max={Math.max(selection.remaining, 1)}
-              disabled={selection.remaining === 0}
-              onChange={selection.setQuantity}
-            />
-          </div>
-          <p className="text-xl leading-4 font-bold text-highlight">
-            <EthAmount value={formatEth(selectedPrice(selection))} />
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button
-            disabled={actions.disabled}
-            onClick={actions.buy}
-            className="h-[60px] w-[196px] rounded-full bg-linear-to-br from-primary to-primary/80 text-base font-bold"
-          >
-            {actions.pending ? 'Comprando…' : 'Comprar NFT'}
-          </Button>
-          <AddToCartIconButton actions={actions} />
-        </div>
-      </div>
+      <MobileBuyBar selection={selection} actions={actions} />
     </article>
   );
 }
