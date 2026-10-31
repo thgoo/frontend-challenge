@@ -63,7 +63,7 @@ export function PasswordForm() {
       <Button
         type="submit"
         disabled={change.isPending}
-        className="h-10 justify-self-start px-6 font-bold"
+        className="h-10 justify-self-start rounded-[3px] px-6 font-bold"
       >
         {change.isPending ? 'Alterando…' : 'Alterar senha'}
       </Button>

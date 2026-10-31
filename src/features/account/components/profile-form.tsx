@@ -63,7 +63,7 @@ export function ProfileForm({ user }: { user: User }) {
       <Button
         type="submit"
         disabled={!isDirty || update.isPending}
-        className="h-10 w-[131px] justify-self-start font-bold"
+        className="h-10 w-[131px] justify-self-start rounded-[3px] font-bold"
       >
         {update.isPending ? 'Salvando…' : 'Salvar'}
       </Button>

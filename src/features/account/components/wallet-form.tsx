@@ -123,7 +123,7 @@ export function WalletForm({ role, wallet }: { role: WalletRole; wallet: Wallet 
       <Button
         type="submit"
         disabled={!isDirty || save.isPending}
-        className="h-10 justify-self-start px-4 font-bold"
+        className="h-10 w-[152px] justify-self-start rounded-[3px] font-bold"
       >
         {save.isPending ? 'Salvando…' : 'Salvar carteira'}
       </Button>
