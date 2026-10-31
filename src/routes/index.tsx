@@ -47,7 +47,7 @@ function HomePage() {
   );
 
   return (
-    <div className="page-container grid gap-6 pt-10 lg:gap-24 lg:pt-8">
+    <div className="page-container grid gap-4 pt-10 lg:gap-24 lg:pt-8">
       <MobileCatalogBar query={query} onChange={changeFilters} />
       <Hero />
       <section
@@ -59,7 +59,7 @@ function HomePage() {
           <FiltersPanel query={query} onChange={changeFilters} />
           <FeaturedBanner />
         </div>
-        <div className="grid content-start gap-8">
+        <div className="grid content-start gap-4 lg:gap-8">
           <CatalogToolbar query={query} onChange={changeFilters} />
           <CatalogResults query={query} />
         </div>

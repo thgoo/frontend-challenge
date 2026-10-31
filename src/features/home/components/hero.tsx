@@ -65,6 +65,7 @@ export function Hero() {
   const { data: featured = [] } = useQuery(featuredNftsQueryOptions);
   const [current, setCurrent] = useState(0);
   const nft = featured[current];
+  const next = featured.at((current + 1) % Math.max(featured.length, 1));
 
   return (
     <section aria-label="Destaques">
@@ -99,31 +100,49 @@ export function Hero() {
         <HeroArtwork nft={nft} className="size-[450px] rounded-3xl" />
       </div>
 
-      <div className="relative overflow-hidden rounded-[30px] bg-linear-to-br from-surface-dark to-card p-4 lg:hidden">
-        <div className="flex gap-2">
-          <div className="grid flex-1 content-start gap-2">
-            <p className="text-xs font-medium">Bem-vindo à Kurio</p>
-            <h1 className="text-lg leading-7 font-bold whitespace-pre-line">
-              {'SEJA DONO DA\nCULTURA DIGITAL'}
-            </h1>
-            <p className="text-xs leading-5 text-muted-foreground">
-              Descubra NFTs selecionados de criadores do mundo todo.
-            </p>
+      <div className="relative overflow-hidden rounded-[30px] bg-linear-to-br from-primary/20 to-primary/10 px-4 pt-[5px] pb-1.5 lg:hidden">
+        <span
+          aria-hidden="true"
+          className="absolute -top-[31px] -left-20 size-62 rounded-full bg-linear-to-br from-[#dd9a5f]/43 to-primary/4"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute -top-2.5 left-[73px] size-62 rounded-full bg-linear-to-br from-[#dd9a5f]/37 to-primary/0"
+        />
+        <div className="relative flex gap-2">
+          <div className="grid w-[188px] shrink-0 content-start">
+            <div className="grid gap-1.5">
+              <p className="text-xs leading-4 font-medium">Bem-vindo à Kurio</p>
+              <h1 className="text-lg leading-[29px] font-bold whitespace-pre-line">
+                {'SEJA DONO DA\nCULTURA DIGITAL'}
+              </h1>
+              <p className="text-xs leading-[18px] text-muted-foreground">
+                Descubra NFTs selecionados de criadores do mundo todo.
+              </p>
+            </div>
             <Link
               to="/"
               hash="mercado"
-              className="flex items-center gap-2 text-xs font-bold text-highlight"
+              className="flex h-4 items-center gap-2 text-xs font-bold text-highlight"
             >
               EXPLORAR <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </div>
-          <HeroArtwork nft={nft} className="size-[138px] shrink-0 rounded-2xl" />
+          <div className="relative mt-1.5 h-[146px] flex-1">
+            <HeroArtwork nft={nft} className="absolute top-0 right-0 size-[138px] rounded-2xl" />
+            {next && next !== nft && (
+              <HeroArtwork
+                nft={next}
+                className="absolute top-[88px] left-[14px] size-[58px] rounded-2xl"
+              />
+            )}
+          </div>
         </div>
         <SlideDots
           slides={featured}
           current={current}
           onSelect={setCurrent}
-          className="mt-1 justify-center"
+          className="relative mt-1 justify-center"
         />
       </div>
     </section>
