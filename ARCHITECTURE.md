@@ -221,7 +221,9 @@ O que já foi feito: imagens AVIF/WebP com `srcset`/`sizes` (8–48 KB), `fetchp
 lazy-loading no resto, fonte servida localmente (o navegador baixa só o subset latin, ~33 KB), CSS carregado em paralelo ao MSW, rotas com code
 splitting, sessão resolvida em paralelo aos dados da rota e camada de tempo real carregada após o primeiro
 render. Baixar o app em paralelo ao MSW foi testado e piorou a pontuação (disputa de banda na simulação), por
-isso foi revertido. A auditoria roda o build completo, com mocks, imagens e fontes reais.
+isso foi revertido. Também foram medidos, sem ganho: iniciar o banco simulado em paralelo ao registro do
+service worker e desligar o JIT do Zod (o TBT piorou). A auditoria roda o build completo, com mocks, imagens e
+fontes reais.
 
 ## Diferenças em relação ao Figma
 
@@ -295,5 +297,12 @@ alguma coisa.
 - Um pedido por vez: enquanto houver pedido pendente, o checkout fica bloqueado.
 - A cotação usa a rede de pagamento escolhida no checkout; a rede de cunhagem do NFT é só um atributo de
   catálogo.
+- A lista de favoritos busca cada NFT pelo detalhe (uma requisição por item). Com poucos favoritos o custo é
+  baixo e os detalhes ficam em cache para a navegação; com listas grandes, o certo seria um endpoint que devolva
+  os NFTs favoritados de uma vez.
+- Tablet (768 px) usa o layout mobile, porque o Figma só tem 414 e 1440 px. Funciona sem overflow (testado),
+  mas não tem composição própria.
+- A regressão visual tolera 1% de pixels diferentes, para absorver variações de renderização de fontes e
+  imagens. Mudanças pequenas, como a troca de um ícone, podem passar sem falhar o teste.
 - Em WSL, o `chrome-launcher` do Lighthouse cria perfis temporários com caminho estilo Windows na raiz do
   projeto (ignorados no git).
