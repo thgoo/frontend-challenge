@@ -144,6 +144,10 @@ Caminho `/realtime`, transporte WebSocket. Todo evento tem identidade, recurso e
   `__mocks.sockets.connectionCount()`.
 - **Persistência:** o banco simulado vive no `localStorage` (versão de schema; dados antigos são descartados).
   Cada aba tem seu próprio service worker controlando a mesma origem.
+- **Worker reiniciado:** em aba de fundo o navegador espaça o keepalive do MSW e encerra o service worker ocioso;
+  ao reiniciar, ele esquece quais abas ativaram os mocks e deixa as requisições irem para a rede. Ao voltar para
+  a aba, `src/mocks/browser.ts` reenvia `MOCK_ACTIVATE` e só então libera o refetch on focus do TanStack Query
+  (via `focusManager`).
 
 ## Internacionalização
 
