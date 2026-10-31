@@ -44,33 +44,38 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
   const soldOut = !nft.editions.some((candidate) => candidate.available > 0);
 
   return (
-    <article className="group relative grid gap-3">
-      <div className="relative grid aspect-[258/300] place-items-center bg-card p-1 max-lg:aspect-[175/200] max-lg:rounded-[20px] max-lg:p-0">
+    <article className="group relative grid gap-3 max-lg:gap-2">
+      <div className="relative grid aspect-[258/300] place-items-center bg-card p-1 max-lg:aspect-[175/200] max-lg:rounded-[20px] max-lg:bg-linear-to-br max-lg:from-card max-lg:to-muted max-lg:px-1 max-lg:py-0">
         <NftImage
           image={nft.images[0]}
           sizes={CARD_IMAGE_SIZES}
           priority={priority}
-          className="aspect-square w-full rounded-[15px] max-lg:aspect-auto max-lg:h-full max-lg:rounded-[20px]"
+          className="aspect-square w-full rounded-[15px] max-lg:rounded-2xl"
         />
         {nft.rare && (
-          <span className="absolute top-3.5 left-0 flex h-[29px] w-20 items-center bg-primary pl-[15px] text-sm font-bold text-primary-foreground max-lg:top-4 max-lg:h-8 max-lg:w-[68px] max-lg:pl-2">
+          <span className="absolute top-3.5 left-0 flex h-[29px] w-20 items-center bg-primary pl-[15px] text-sm font-bold text-primary-foreground max-lg:top-4 max-lg:h-8 max-lg:w-[68px] max-lg:pl-2 max-lg:text-[13px] max-lg:font-medium">
             RARO
           </span>
         )}
         {soldOut && (
-          <span className="absolute top-2 right-2 rounded bg-background/90 px-2 py-1 text-xs font-bold lg:top-3 lg:right-3">
+          <span className="absolute bottom-5 left-3 rounded bg-background/90 px-2 py-1 text-xs font-bold lg:top-3 lg:right-3 lg:bottom-auto lg:left-auto">
             Esgotado
           </span>
         )}
-        <div className="absolute right-2 bottom-2 z-10 flex gap-2 motion-reduce:transition-none lg:right-auto lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:opacity-0 lg:transition-opacity lg:group-focus-within:opacity-100 lg:group-hover:opacity-100">
+        <div className="absolute top-3 right-[11px] z-10 flex gap-2 motion-reduce:transition-none lg:top-auto lg:right-auto lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:opacity-0 lg:transition-opacity lg:group-focus-within:opacity-100 lg:group-hover:opacity-100">
           <span className="max-lg:hidden">
             <QuickAddButton nft={nft} />
           </span>
-          <FavoriteButton nftId={nft.id} nftName={nft.name} variant="icon" />
+          <FavoriteButton
+            nftId={nft.id}
+            nftName={nft.name}
+            variant="icon"
+            className="max-lg:size-7 max-lg:border max-lg:border-border max-lg:bg-muted max-lg:text-highlight max-lg:[&_svg]:size-3.5"
+          />
         </div>
       </div>
-      <div className="grid gap-1.5 lg:gap-3">
-        <h3 className="truncate text-base leading-4">
+      <div className="grid max-lg:pl-2 lg:gap-3">
+        <h3 className="truncate text-base leading-4 max-lg:text-[15px] max-lg:leading-5">
           <Link
             to="/nfts/$nftId"
             params={{ nftId: nft.id }}
@@ -79,7 +84,7 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
             {nft.name}
           </Link>
         </h3>
-        <p className="flex flex-wrap items-baseline gap-x-3 text-base font-bold text-highlight lg:text-lg lg:leading-4">
+        <p className="flex flex-wrap items-baseline gap-x-3 text-base leading-4 font-bold text-highlight lg:text-lg">
           <EthAmount value={edition.priceEth} />
           {edition.compareAtPriceEth && (
             <s className="font-normal text-subtle">
