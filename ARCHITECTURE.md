@@ -187,8 +187,8 @@ caminho aberto:
   cenário; latência, falhas, tempo de liquidação e eventos são controlados pelos cenários e por
   `window.__mocks`. Relatório HTML e traces das falhas (`retain-on-failure`).
 - **Regressão visual:** home, detalhe, carrinho e pagamento, nos dois viewports, com dados determinísticos,
-  fontes e imagens carregadas e animações desligadas. As baselines são do Chromium em Linux (`*-linux.png`);
-  em outro sistema, regenere com `--update-snapshots`.
+  fontes e imagens carregadas e animações desligadas. A comparação é exata (sem tolerância de pixels). As
+  baselines são do Chromium em Linux (`*-linux.png`); em outro sistema, regenere com `--update-snapshots`.
 - **Relógio controlado:** os mocks rodam na página, então `page.clock` controla liquidação de pagamentos e
   expiração de sessão. Os testes avançam o tempo em vez de esperar (pagamento lento de 20 s, sessão de 60 s).
 - **Timeout do pedido:** usa o timeout nativo de 10 s do XHR, que o relógio falso do Playwright não controla;
@@ -302,7 +302,5 @@ alguma coisa.
   os NFTs favoritados de uma vez.
 - Tablet (768 px) usa o layout mobile, porque o Figma só tem 414 e 1440 px. Funciona sem overflow (testado),
   mas não tem composição própria.
-- A regressão visual tolera 1% de pixels diferentes, para absorver variações de renderização de fontes e
-  imagens. Mudanças pequenas, como a troca de um ícone, podem passar sem falhar o teste.
 - Em WSL, o `chrome-launcher` do Lighthouse cria perfis temporários com caminho estilo Windows na raiz do
   projeto (ignorados no git).
