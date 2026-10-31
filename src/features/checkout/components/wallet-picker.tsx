@@ -17,10 +17,15 @@ export function WalletPicker({ wallets, value, onChange, error }: WalletPickerPr
   return (
     <section aria-labelledby={headingId} className="grid gap-3">
       <div className="flex items-center justify-between gap-4">
-        <h2 id={headingId} className="text-[17px] font-bold">
-          Carteira e rede
+        {/* The Figma names this list "Carteira conectada" on mobile. */}
+        <h2 id={headingId} className="text-base font-bold lg:text-[17px]">
+          <span className="lg:hidden">Carteira conectada</span>
+          <span className="max-lg:hidden">Carteira e rede</span>
         </h2>
-        <Link to="/wallets" className="text-[15px] font-bold text-highlight hover:underline">
+        <Link
+          to="/wallets"
+          className="text-sm font-bold text-highlight hover:underline lg:text-[15px]"
+        >
           Trocar carteira
         </Link>
       </div>
