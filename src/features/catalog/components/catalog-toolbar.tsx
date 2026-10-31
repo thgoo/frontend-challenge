@@ -30,10 +30,11 @@ export function CatalogToolbar({ query, onChange }: ToolbarProps) {
               onChange({ view });
             }}
             className={cn(
-              'border-b-2 pb-1 text-sm whitespace-nowrap lg:text-[15px] lg:font-medium',
+              // The Figma underline stops short of the label's end.
+              'relative pb-1.5 text-sm font-medium whitespace-nowrap lg:text-[15px]',
               query.view === view
-                ? 'border-primary font-bold text-highlight'
-                : 'border-transparent hover:text-highlight',
+                ? 'text-highlight after:absolute after:right-4 after:bottom-0 after:left-0 after:h-0.5 after:bg-primary'
+                : 'hover:text-highlight',
             )}
           >
             {VIEW_LABELS[view]}
