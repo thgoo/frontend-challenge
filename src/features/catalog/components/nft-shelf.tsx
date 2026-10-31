@@ -33,7 +33,7 @@ export function NftShelf({ title, query, excludeIds = [] }: NftShelfProps) {
       <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:gap-7">
         {items.map((item) => (
           <li key={item.id}>
-            <NftCard nft={item} />
+            <NftCard nft={item} compact />
           </li>
         ))}
       </ul>

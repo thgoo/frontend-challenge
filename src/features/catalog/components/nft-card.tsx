@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { EthAmount } from '@/components/eth-amount';
@@ -39,7 +40,14 @@ function QuickAddButton({ nft }: { nft: Nft }) {
   );
 }
 
-export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolean }) {
+interface NftCardProps {
+  nft: Nft;
+  priority?: boolean;
+  /** Suggestion shelves use smaller text than the catalog grid, as in the Figma. */
+  compact?: boolean;
+}
+
+export function NftCard({ nft, priority = false, compact = false }: NftCardProps) {
   const edition = cheapestEdition(nft);
   const soldOut = !nft.editions.some((candidate) => candidate.available > 0);
 
@@ -75,7 +83,12 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
         </div>
       </div>
       <div className="grid max-lg:pl-2 lg:gap-3">
-        <h3 className="truncate text-base leading-4 max-lg:text-[15px] max-lg:leading-5">
+        <h3
+          className={cn(
+            'truncate text-base leading-4 max-lg:text-[15px] max-lg:leading-5',
+            compact && 'lg:text-[15px]',
+          )}
+        >
           <Link
             to="/nfts/$nftId"
             params={{ nftId: nft.id }}
@@ -84,7 +97,12 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
             {nft.name}
           </Link>
         </h3>
-        <p className="flex flex-wrap items-baseline gap-x-3 text-base leading-4 font-bold text-highlight lg:text-lg">
+        <p
+          className={cn(
+            'flex flex-wrap items-baseline gap-x-3 text-base leading-4 font-bold text-highlight',
+            !compact && 'lg:text-lg',
+          )}
+        >
           <EthAmount value={edition.priceEth} />
           {edition.compareAtPriceEth && (
             <s className="font-normal text-subtle">
