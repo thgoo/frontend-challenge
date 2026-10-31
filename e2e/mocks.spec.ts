@@ -2,6 +2,33 @@ import { expect, test } from '@playwright/test';
 import { ALICE as alice, api, openWithMocks as open, reloadWithMocks } from './support/mock-api';
 
 test.describe('mock api', () => {
+  test('re-activates mocking when returning to the tab after the worker was stopped', async ({
+    page,
+  }) => {
+    await open(page, '/?scenario=default');
+    const devtools = await page.context().newCDPSession(page);
+    await devtools.send('ServiceWorker.enable');
+    await devtools.send('ServiceWorker.stopAllWorkers');
+    // The restarted worker no longer knows this tab, so requests reach the (absent) network API.
+    expect((await api(page, '/nfts/nft_001')).status).not.toBe(200);
+
+    const reactivated = await page.evaluate(async () => {
+      const confirmation = new Promise<boolean>((resolve) => {
+        navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
+          if ((event.data as { type?: string } | null)?.type === 'MOCKING_ENABLED') resolve(true);
+        });
+        setTimeout(() => {
+          resolve(false);
+        }, 2000);
+      });
+      document.dispatchEvent(new Event('visibilitychange', { bubbles: true }));
+      return confirmation;
+    });
+
+    expect(reactivated).toBe(true);
+    expect((await api(page, '/nfts/nft_001')).status).toBe(200);
+  });
+
   test('lists, filters and fetches NFTs', async ({ page }) => {
     await open(page, '/login?scenario=default');
     const list = await api(page, '/nfts?categories=digital-art&sort=price-asc&page=1');
