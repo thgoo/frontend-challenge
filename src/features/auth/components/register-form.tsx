@@ -10,6 +10,7 @@ import { registerInputSchema } from '@/contracts/auth';
 import { FIELD_ERRORS } from '@/contracts/field-errors';
 import { applyServerErrors } from '@/lib/forms';
 import { useRegister } from '../queries';
+import { AUTH_INPUT } from './auth-styles';
 
 const registerFormSchema = registerInputSchema
   .extend({ confirmPassword: z.string() })
@@ -47,6 +48,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
         </Alert>
       )}
       <FormField
+        className={AUTH_INPUT}
         label="Nome de usuário"
         hideLabel
         autoComplete="username"
@@ -56,6 +58,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
         {...register('username')}
       />
       <FormField
+        className={AUTH_INPUT}
         label="E-mail"
         hideLabel
         type="email"
@@ -65,6 +68,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
         {...register('email')}
       />
       <PasswordField
+        className={AUTH_INPUT}
         label="Senha"
         hideLabel
         autoComplete="new-password"
@@ -74,6 +78,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
         {...register('password')}
       />
       <PasswordField
+        className={AUTH_INPUT}
         label="Confirmar senha"
         hideLabel
         autoComplete="new-password"
@@ -86,7 +91,14 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
         disabled={registerAccount.isPending}
         className="mt-3 h-[60px] rounded-xl text-base font-bold lg:h-[45px] lg:rounded-sm"
       >
-        {registerAccount.isPending ? 'Criando conta…' : 'Criar conta'}
+        {registerAccount.isPending ? (
+          'Criando conta…'
+        ) : (
+          <>
+            <span className="lg:hidden">Criar perfil</span>
+            <span className="max-lg:hidden">Criar conta</span>
+          </>
+        )}
       </Button>
     </form>
   );

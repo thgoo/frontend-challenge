@@ -16,13 +16,15 @@ const SOCIAL_PROVIDERS = ['Google', 'Facebook'] as const;
 const COPY = {
   login: {
     title: 'Entrar',
+    mobileTitle: 'Entrar',
     subtitle: 'Entre para gerenciar sua carteira, coleção e perfil de criador.',
   },
   register: {
     title: 'Criar conta',
+    mobileTitle: 'Criar perfil de colecionador',
     subtitle: 'Crie seu perfil de colecionador e conecte uma carteira quando quiser.',
   },
-} satisfies Record<AuthMode, { title: string; subtitle: string }>;
+} satisfies Record<AuthMode, { title: string; mobileTitle: string; subtitle: string }>;
 
 function SocialButtons() {
   return (
@@ -37,7 +39,7 @@ function SocialButtons() {
           onClick={() => {
             toast.info(`Entrar com ${provider} não está disponível nesta demonstração.`);
           }}
-          className="flex h-10 items-center justify-center gap-2 rounded-sm border border-border text-sm font-medium hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className="flex h-10 items-center justify-center gap-2 rounded-sm border border-border text-[13px] font-medium text-muted-foreground hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
           <img src={`/icons/${provider.toLowerCase()}.svg`} alt="" width={20} height={20} />
           Continuar com {provider}
@@ -82,7 +84,7 @@ export default function AuthDialog() {
     else close();
   };
   const tabClass = (active: boolean) =>
-    cn('px-2', active ? 'text-highlight' : 'text-foreground hover:text-highlight');
+    cn('px-2 font-medium', active ? 'text-highlight' : 'text-foreground hover:text-highlight');
 
   return (
     <Dialog
@@ -94,7 +96,14 @@ export default function AuthDialog() {
       <DialogPortal>
         {/* The Figma shows the live page behind the card, without a dimmed backdrop. */}
         <DialogOverlay className="bg-transparent" />
-        <DialogPrimitive.Content className="fixed inset-0 z-50 overflow-y-auto bg-background outline-none lg:inset-auto lg:top-1/2 lg:left-1/2 lg:max-h-[calc(100dvh-2rem)] lg:w-[500px] lg:-translate-1/2 lg:border-b-[10px] lg:border-primary lg:bg-card">
+        <DialogPrimitive.Content
+          // Start in the first field (the close button comes first in the DOM).
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            (event.currentTarget as HTMLElement | null)?.querySelector('input')?.focus();
+          }}
+          className="fixed inset-0 z-50 overflow-y-auto bg-background outline-none lg:inset-auto lg:top-1/2 lg:left-1/2 lg:max-h-[calc(100dvh-2rem)] lg:min-h-[600px] lg:w-[500px] lg:-translate-1/2 lg:border-b-[10px] lg:border-primary lg:bg-card"
+        >
           <div className="grid min-h-full place-items-center px-6 py-12 lg:block lg:min-h-0 lg:px-20 lg:pt-14 lg:pb-12">
             <div className="grid w-full gap-6">
               <DialogPrimitive.Close
@@ -106,12 +115,13 @@ export default function AuthDialog() {
               <Link
                 to="/"
                 aria-label="Kurio, voltar ao início"
-                className="justify-self-center text-3xl font-bold tracking-wide lg:hidden"
+                className="justify-self-center text-[32px] font-bold tracking-[0.1em] lg:hidden"
               >
                 KURIO
               </Link>
               <DialogPrimitive.Title className="text-center text-xl font-bold lg:sr-only">
-                {COPY[mode].title}
+                <span className="lg:hidden">{COPY[mode].mobileTitle}</span>
+                <span className="max-lg:hidden">{COPY[mode].title}</span>
               </DialogPrimitive.Title>
               <nav aria-label="Acesso" className="hidden justify-center text-xl lg:flex">
                 <ModeLink
@@ -124,7 +134,7 @@ export default function AuthDialog() {
                   Criar conta
                 </ModeLink>
               </nav>
-              <DialogPrimitive.Description className="hidden text-center text-sm lg:block">
+              <DialogPrimitive.Description className="hidden text-center text-[13px] lg:block">
                 {COPY[mode].subtitle}
               </DialogPrimitive.Description>
               {mode === 'login' && search.reason === 'expired' && (
@@ -147,7 +157,7 @@ export default function AuthDialog() {
                   </ModeLink>
                 ) : (
                   <ModeLink mode="login" className="hover:text-highlight">
-                    Já tem uma conta? Entrar
+                    Já tem uma conta? Entre
                   </ModeLink>
                 )}
               </p>

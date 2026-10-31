@@ -13,7 +13,8 @@ const CAROL = { email: 'carol@example.com', password: 'Password123' };
 test.describe('auth', () => {
   test('registers with validation, signs out and signs back in', async ({ page }) => {
     await openWithMocks(page, '/register?scenario=default');
-    const create = page.getByRole('button', { name: 'Criar conta', exact: true });
+    // Mobile says "Criar perfil", desktop "Criar conta", as in the Figma.
+    const create = page.getByRole('button', { name: /^Criar (conta|perfil)$/ });
     const username = page.getByLabel('Nome de usuário');
     const email = page.getByLabel('E-mail', { exact: true });
     const password = page.getByLabel('Senha', { exact: true });
@@ -64,7 +65,9 @@ test.describe('auth', () => {
       .getByRole('link', { name: 'Criar conta', exact: true })
       .or(page.getByRole('link', { name: 'Novo na Kurio? Crie uma conta' }))
       .click();
-    await expect(page.getByRole('dialog', { name: 'Criar conta' })).toBeVisible();
+    await expect(
+      page.getByRole('dialog', { name: /^Criar (conta|perfil de colecionador)$/ }),
+    ).toBeVisible();
     await expect(page).toHaveURL('/?sort=price-asc&auth=register');
 
     await page.keyboard.press('Escape');

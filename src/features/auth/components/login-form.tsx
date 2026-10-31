@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { loginInputSchema, type LoginInput } from '@/contracts/auth';
 import { applyServerErrors } from '@/lib/forms';
 import { useLogin } from '../queries';
+import { AUTH_INPUT } from './auth-styles';
 
 const SUBMIT_CLASS = 'h-[60px] rounded-xl text-base font-bold lg:h-[45px] lg:rounded-sm';
 
@@ -40,6 +41,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         </Alert>
       )}
       <FormField
+        className={AUTH_INPUT}
         label="E-mail"
         hideLabel
         type="email"
@@ -49,6 +51,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         {...register('email')}
       />
       <PasswordField
+        className={AUTH_INPUT}
         label="Senha"
         hideLabel
         autoComplete="current-password"
