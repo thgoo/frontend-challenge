@@ -1,11 +1,11 @@
 import { useQueries } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { EmptyState, ErrorState } from '@/components/query-states';
-import { NftGrid, NftGridSkeleton } from '@/features/catalog/components/nft-grid';
-import { nftDetailQueryOptions } from '@/features/catalog/queries';
-import { useFavorites } from '../queries';
+import { useFavorites } from '@/features/favorites/queries';
+import { nftDetailQueryOptions } from '../queries';
+import { NftGrid, NftGridSkeleton } from './nft-grid';
 
-export function FavoritesList() {
+export function FavoriteNfts() {
   const favorites = useFavorites();
   const ids = favorites.data?.nftIds ?? [];
   const nfts = useQueries({
