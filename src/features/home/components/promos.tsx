@@ -30,7 +30,7 @@ export function Promos() {
       {PROMOS.map((promo) => (
         <article
           key={promo.title}
-          className="relative grid overflow-hidden rounded-lg bg-card sm:h-[250px] sm:grid-cols-[292px_minmax(0,1fr)]"
+          className="relative grid overflow-hidden rounded-lg bg-card sm:min-h-[250px] sm:grid-cols-[minmax(0,292fr)_minmax(0,294fr)] xl:h-[250px]"
         >
           <NftImage
             image={artworkImage(promo.artwork)}

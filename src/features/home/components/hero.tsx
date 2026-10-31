@@ -69,7 +69,7 @@ export function Hero() {
 
   return (
     <section aria-label="Destaques">
-      <div className="hidden grid-cols-[600px_450px] justify-between gap-10 pl-10 lg:grid">
+      <div className="hidden grid-cols-[minmax(0,600px)_minmax(0,450px)] justify-between gap-10 pl-10 lg:grid">
         <div className="grid content-center gap-11">
           <div className="grid gap-8">
             <div className="grid gap-1">
@@ -97,7 +97,7 @@ export function Hero() {
             className="justify-self-end"
           />
         </div>
-        <HeroArtwork nft={nft} className="size-[450px] rounded-3xl" />
+        <HeroArtwork nft={nft} className="block aspect-square w-full rounded-3xl" />
       </div>
 
       <div className="relative overflow-hidden rounded-[30px] bg-linear-to-br from-primary/20 to-primary/10 px-4 pt-[5px] pb-1.5 lg:hidden">
@@ -110,7 +110,7 @@ export function Hero() {
           className="absolute -top-2.5 left-[73px] size-62 rounded-full bg-linear-to-br from-[#dd9a5f]/37 to-primary/0"
         />
         <div className="relative flex gap-2">
-          <div className="grid w-[188px] shrink-0 content-start">
+          <div className="grid min-w-0 flex-[0_1_188px] content-start">
             <div className="grid gap-1.5">
               <p className="text-xs leading-4 font-medium">Bem-vindo à Kurio</p>
               <h1 className="text-lg leading-[29px] font-bold whitespace-pre-line">
@@ -128,8 +128,11 @@ export function Hero() {
               EXPLORAR <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </div>
-          <div className="relative mt-1.5 h-[146px] flex-1">
-            <HeroArtwork nft={nft} className="absolute top-0 right-0 size-[138px] rounded-2xl" />
+          <div className="relative mt-1.5 h-[146px] min-w-[104px] flex-1">
+            <HeroArtwork
+              nft={nft}
+              className="absolute top-0 right-0 aspect-square w-full max-w-[138px] rounded-2xl"
+            />
             {next && next !== nft && (
               <HeroArtwork
                 nft={next}

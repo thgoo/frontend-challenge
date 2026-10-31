@@ -40,7 +40,7 @@ export function Journal() {
           Histórias, guias e insights para colecionadores sobre o universo da propriedade digital.
         </p>
       </header>
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {POSTS.map((post) => (
           <li key={post.title}>
             <article className="grid h-full overflow-hidden rounded-lg bg-card">

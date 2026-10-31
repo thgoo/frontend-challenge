@@ -62,14 +62,14 @@ export function WalletProviders() {
   );
 }
 
-/** Column starts of the Figma footer, shared by the contact band and the link columns. */
-const FOOTER_COLUMNS = 'grid grid-cols-[repeat(3,211px)_minmax(0,1fr)] gap-x-[92px]';
+/** Figma column starts at 1440, scaled down proportionally on narrower desktops. */
+const FOOTER_COLUMNS = 'grid grid-cols-[repeat(3,minmax(0,211fr))_minmax(0,227fr)] gap-x-[8.1%]';
 
 /** Desktop only, as in the Figma; mobile screens end with their own action bars. */
 export function SiteFooter() {
   return (
     <footer className="page-container hidden pt-24 pb-6 lg:block">
-      <div className="grid grid-cols-[repeat(3,266px)_minmax(0,1fr)] bg-card py-8 pr-3.5 pl-8">
+      <div className="grid grid-cols-[repeat(3,minmax(0,266fr))_minmax(0,356fr)] bg-card py-8 pr-3.5 pl-8">
         {HIGHLIGHTS.map((item) => (
           <section
             key={item.title}
@@ -125,7 +125,7 @@ export function SiteFooter() {
         <div className="grid content-start gap-8">
           <div>
             <h2 className="mb-5 text-lg leading-4 font-bold">Redes sociais</h2>
-            <ul className="flex gap-2.5" aria-label="Redes sociais">
+            <ul className="flex flex-wrap gap-2.5" aria-label="Redes sociais">
               {SOCIAL_NETWORKS.map(({ name, viewBox, paths }) => (
                 <li
                   key={name}
