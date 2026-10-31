@@ -7,15 +7,16 @@ interface QuantityStepperProps {
   onChange: (value: number) => void;
   label: string;
   disabled?: boolean;
-  /** `sm` is the compact stepper used in cart rows. */
-  size?: 'md' | 'sm';
+  /** Figma sizes: `lg` desktop NFT detail, `md` mobile buy bar, `sm` cart rows. */
+  size?: 'lg' | 'md' | 'sm';
 }
 
 const STEP_BUTTON =
-  'grid place-items-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:opacity-40';
+  'grid place-items-center rounded-full border border-background bg-primary text-primary-foreground shadow-[0_0_20px_rgb(10_6_4/0.45)] hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:opacity-40';
 
 const SIZES = {
-  md: { button: 'size-[30px]', icon: 'size-4', value: 'text-xl' },
+  lg: { button: 'h-[50px] w-[33px]', icon: 'size-4', value: 'text-xl' },
+  md: { button: 'h-[30px] w-5', icon: 'size-3', value: 'text-lg font-medium' },
   sm: { button: 'size-[22px]', icon: 'size-3', value: 'text-base' },
 };
 
