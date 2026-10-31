@@ -52,9 +52,30 @@ test.describe('auth', () => {
     await expect(signedInIndicator(page, 'carol')).toBeVisible();
   });
 
+  test('opens sign-in over the current page and closes back to it', async ({ page }) => {
+    await openWithMocks(page, '/?scenario=default&sort=price-asc');
+    await page.getByRole('link', { name: 'Entrar', exact: true }).click();
+
+    const signIn = page.getByRole('dialog', { name: 'Entrar' });
+    await expect(signIn).toBeVisible();
+    await expect(page).toHaveURL('/?sort=price-asc&auth=login');
+
+    await page
+      .getByRole('link', { name: 'Criar conta', exact: true })
+      .or(page.getByRole('link', { name: 'Novo na Kurio? Crie uma conta' }))
+      .click();
+    await expect(page.getByRole('dialog', { name: 'Criar conta' })).toBeVisible();
+    await expect(page).toHaveURL('/?sort=price-asc&auth=register');
+
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(page).toHaveURL('/?sort=price-asc');
+  });
+
   test('sends guests to login and back to the protected page', async ({ page }) => {
     await openWithMocks(page, '/profile?scenario=default');
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fprofile/);
+    await expect(page).toHaveURL('/?auth=login&redirect=%2Fprofile');
+    await expect(page.getByRole('dialog', { name: 'Entrar' })).toBeVisible();
 
     await signInThroughUi(page);
     await expect(page).toHaveURL('/profile');
@@ -69,7 +90,7 @@ test.describe('auth', () => {
     await page.getByLabel('Bio').fill('Updated after a long break.');
     await page.getByRole('button', { name: 'Salvar', exact: true }).click();
 
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fprofile&reason=expired/);
+    await expect(page).toHaveURL('/?auth=login&redirect=%2Fprofile&reason=expired');
     await expect(page.getByRole('status').filter({ hasText: 'Sua sessão expirou' })).toBeVisible();
     await expect(signedInIndicator(page)).toBeHidden();
 

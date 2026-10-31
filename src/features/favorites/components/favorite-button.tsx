@@ -1,8 +1,9 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { withAuthDialog } from '@/features/auth/auth-search';
 import { useSession } from '@/features/auth/queries';
 import { useFavorites, useToggleFavorite } from '../queries';
 
@@ -22,14 +23,13 @@ export function FavoriteButton({
 }: FavoriteButtonProps) {
   const session = useSession();
   const navigate = useNavigate();
-  const currentHref = useRouterState({ select: (state) => state.location.href });
   const { data } = useFavorites();
   const toggle = useToggleFavorite();
   const isFavorite = data?.nftIds.includes(nftId) ?? false;
 
   const onClick = () => {
     if (!session) {
-      void navigate({ to: '/login', search: { redirect: currentHref } });
+      void navigate({ to: '.', search: withAuthDialog('login'), resetScroll: false });
       return;
     }
     toggle.mutate(

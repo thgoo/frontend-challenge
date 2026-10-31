@@ -22,7 +22,8 @@ test.describe('favorites', () => {
   test('asks guests to sign in and returns them to the NFT', async ({ page }) => {
     await openWithMocks(page, `${NFT_PATH}?scenario=default`);
     await favoriteButton(page).click();
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fnfts%2Fnft_004/);
+    await expect(page).toHaveURL(`${NFT_PATH}?auth=login`);
+    await expect(page.getByRole('dialog', { name: 'Entrar' })).toBeVisible();
 
     await signInThroughUi(page);
     await expect(page).toHaveURL(NFT_PATH);

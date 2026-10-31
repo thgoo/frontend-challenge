@@ -15,6 +15,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { ErrorState } from '@/components/query-states';
 import { Toaster } from '@/components/toaster';
+import { authSearchSchema } from '@/features/auth/auth-search';
 import { ensureSession } from '@/features/auth/queries';
 
 export interface RouterContext {
@@ -30,8 +31,10 @@ declare module '@tanstack/react-router' {
 
 const Devtools = import.meta.env.DEV ? lazy(() => import('@/app/devtools')) : () => null;
 const RealtimeSync = lazy(() => import('@/features/realtime/realtime-sync'));
+const AuthDialog = lazy(() => import('@/features/auth/components/auth-dialog'));
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  validateSearch: authSearchSchema,
   /**
    * A loader, not beforeLoad: loaders of all matches run in parallel, so the session request no
    * longer delays route chunks and catalog requests. Guards await the same cached query.
@@ -49,6 +52,7 @@ function RootLayout() {
   const showTabBar = useMatches({
     select: (matches) => !matches.some((match) => match.staticData.hideMobileTabBar),
   });
+  const authOpen = Route.useSearch({ select: (search) => search.auth !== undefined });
 
   return (
     <>
@@ -67,6 +71,7 @@ function RootLayout() {
       {showTabBar && <MobileTabBar />}
       <Toaster />
       <Suspense>
+        {authOpen && <AuthDialog />}
         <RealtimeSync />
         <Devtools />
       </Suspense>

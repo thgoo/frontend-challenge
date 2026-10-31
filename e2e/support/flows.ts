@@ -10,7 +10,7 @@ export async function signInThroughUi(page: Page, credentials = ALICE) {
 export async function startSignedIn(page: Page, scenario = 'default', path = '/') {
   await openWithMocks(page, `/login?scenario=${scenario}&redirect=${encodeURIComponent(path)}`);
   await signInThroughUi(page);
-  await page.waitForURL((url) => url.pathname === path);
+  await page.waitForURL((url) => url.pathname === path && !url.searchParams.has('auth'));
 }
 
 /** "Comprar" adds the selected edition and opens the cart. */

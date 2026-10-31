@@ -27,14 +27,16 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
   });
   const { errors } = formState;
 
-  const submit = handleSubmit(({ confirmPassword: _confirm, ...input }) => {
+  // Awaited instead of mutate callbacks: signing in closes the dialog, unmounting this form.
+  const submit = handleSubmit(async ({ confirmPassword: _confirm, ...input }) => {
     setFormError(null);
-    registerAccount.mutate(input, {
-      onSuccess,
-      onError: (error) => {
-        setFormError(applyServerErrors(error, setError));
-      },
-    });
+    try {
+      await registerAccount.mutateAsync(input);
+    } catch (error) {
+      setFormError(applyServerErrors(error, setError));
+      return;
+    }
+    onSuccess();
   });
 
   return (

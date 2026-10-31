@@ -20,14 +20,16 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   });
   const { errors } = formState;
 
-  const submit = handleSubmit((input) => {
+  // Awaited instead of mutate callbacks: signing in closes the dialog, unmounting this form.
+  const submit = handleSubmit(async (input) => {
     setFormError(null);
-    login.mutate(input, {
-      onSuccess,
-      onError: (error) => {
-        setFormError(applyServerErrors(error, setError));
-      },
-    });
+    try {
+      await login.mutateAsync(input);
+    } catch (error) {
+      setFormError(applyServerErrors(error, setError));
+      return;
+    }
+    onSuccess();
   });
 
   return (

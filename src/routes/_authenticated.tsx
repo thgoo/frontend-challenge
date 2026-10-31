@@ -4,7 +4,9 @@ import { ensureSession } from '@/features/auth/queries';
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
     const session = await ensureSession(context.queryClient);
-    if (!session) throw redirect({ to: '/login', search: { redirect: location.href } });
+    if (!session) {
+      throw redirect({ to: '/', search: { auth: 'login', redirect: location.href } });
+    }
     return { session };
   },
 });

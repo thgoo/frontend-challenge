@@ -1,44 +1,7 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { authSearchSchema } from '@/features/auth/auth-search';
-import { AuthCard } from '@/features/auth/components/auth-card';
-import { LoginForm } from '@/features/auth/components/login-form';
-import { safeRedirect } from '@/features/auth/safe-redirect';
-import { ensureSession } from '@/features/auth/queries';
+import { createFileRoute } from '@tanstack/react-router';
+import { redirectToAuthDialog } from '@/features/auth/auth-entry';
 
+/** Deep link kept for bookmarks and old links: sign-in is a dialog over the home page. */
 export const Route = createFileRoute('/login')({
-  validateSearch: authSearchSchema,
-  staticData: { hideMobileTabBar: true },
-  beforeLoad: async ({ context, search }) => {
-    const session = await ensureSession(context.queryClient);
-    if (session) throw redirect({ href: safeRedirect(search.redirect) });
-  },
-  head: () => ({ meta: [{ title: 'Entrar · Kurio' }] }),
-  component: LoginPage,
+  beforeLoad: ({ context, search }) => redirectToAuthDialog(context.queryClient, search, 'login'),
 });
-
-function LoginPage() {
-  const search = Route.useSearch();
-  const navigate = useNavigate();
-
-  return (
-    <AuthCard
-      mode="login"
-      search={search}
-      subtitle="Entre para gerenciar sua carteira, coleção e perfil de criador."
-      notice={
-        search.reason === 'expired' && (
-          <Alert role="status">
-            <AlertDescription>
-              Sua sessão expirou. Entre novamente para continuar de onde parou.
-            </AlertDescription>
-          </Alert>
-        )
-      }
-    >
-      <LoginForm
-        onSuccess={() => void navigate({ href: safeRedirect(search.redirect), replace: true })}
-      />
-    </AuthCard>
-  );
-}

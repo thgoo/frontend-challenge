@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { withAuthDialog } from '@/features/auth/auth-search';
 import { useSession } from '@/features/auth/queries';
 import { useSignOut } from '@/features/auth/use-sign-out';
 import { useCartItemCount } from '@/features/cart/queries';
@@ -55,7 +56,7 @@ function AccountMenu() {
   if (!session) {
     return (
       <Button asChild className="h-[35px] px-3 text-base font-medium">
-        <Link to="/login">
+        <Link to="." search={withAuthDialog('login')} resetScroll={false}>
           <LogIn aria-hidden="true" className="size-5" />
           Entrar
         </Link>

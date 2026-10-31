@@ -9,8 +9,8 @@ export function watchSessionExpiry(queryClient: QueryClient, router: RegisteredR
     if (!queryClient.getQueryData(sessionKey)) return;
     replaceSession(queryClient, null);
     void router.navigate({
-      to: '/login',
-      search: { redirect: router.state.location.href, reason: 'expired' },
+      to: '/',
+      search: { auth: 'login', redirect: router.state.location.href, reason: 'expired' },
     });
   });
 }

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Heart, Home, ScanLine, ShoppingCart, User } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { withAuthDialog } from '@/features/auth/auth-search';
 import { useSession } from '@/features/auth/queries';
 import { useCartItemCount } from '@/features/cart/queries';
 import { cartLabel } from './cart-count';
@@ -55,12 +56,21 @@ export function MobileTabBar() {
           </Tab>
         </li>
         <li>
-          <Tab
-            to={session ? '/profile' : '/login'}
-            label={session ? `Perfil de ${session.user.name}` : 'Entrar'}
-          >
-            <User aria-hidden="true" className="size-6" />
-          </Tab>
+          {session ? (
+            <Tab to="/profile" label={`Perfil de ${session.user.name}`}>
+              <User aria-hidden="true" className="size-6" />
+            </Tab>
+          ) : (
+            <Link
+              to="."
+              search={withAuthDialog('login')}
+              resetScroll={false}
+              aria-label="Entrar"
+              className={TAB_CLASS}
+            >
+              <User aria-hidden="true" className="size-6" />
+            </Link>
+          )}
         </li>
       </ul>
     </nav>
