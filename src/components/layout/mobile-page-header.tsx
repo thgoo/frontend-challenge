@@ -13,7 +13,7 @@ export function BackButton({ fallback = '/' }: { fallback?: string }) {
         if (canGoBack) router.history.back();
         else void navigate({ to: fallback });
       }}
-      className="grid size-9 place-items-center rounded-full bg-secondary/80 text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      className="grid size-[35px] place-items-center rounded-full border border-border bg-muted text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
       <ChevronLeft aria-hidden="true" className="size-5" />
     </button>
