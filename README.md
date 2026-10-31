@@ -111,9 +111,10 @@ Para regenerar as baselines visuais: `npx playwright test e2e/visual.spec.ts --u
 
 ## Testes e auditoria
 
-- **E2E:** 72 casos × 2 viewports (desktop 1440 e mobile 390), cobrindo os 12 fluxos do desafio e a regressão
-  visual de início, detalhe, carrinho e pagamento (`e2e/visual.spec.ts-snapshots`). Cada teste parte de um
-  cenário reiniciado; REST passa pelos handlers MSW e o tempo real pelo `socket.io-client`.
+- **E2E:** 82 casos por viewport (desktop 1440 e mobile 390; alguns só valem para um deles), cobrindo os 12
+  fluxos do desafio, a regressão visual de início, detalhe, carrinho e pagamento
+  (`e2e/visual.spec.ts-snapshots`) e a ausência de overflow horizontal em 320, 768, 1024 e 1152 px. Cada
+  teste parte de um cenário reiniciado; REST passa pelos handlers MSW e o tempo real pelo `socket.io-client`.
 - **Unitários:** domínio dos mocks (catálogo, carrinho, pedidos), contratos, ETH em `bigint`, i18n e frescor da cotação.
 - **Lighthouse:** relatórios HTML/JSON em `lighthouse-reports/`, medianas em
   [`lighthouse-reports/SUMMARY.md`](lighthouse-reports/SUMMARY.md) e análise em ARCHITECTURE.md.

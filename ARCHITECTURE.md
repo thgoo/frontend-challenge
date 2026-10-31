@@ -178,7 +178,7 @@ caminho aberto:
 - O vermelho de erro do Figma (`#ed1b2e`) tem 4,0–4,4:1 sobre os fundos escuros: texto de erro usa o Coral do
   próprio Figma (`#f0805f`, 7,3:1) e o vermelho fica para ícones.
 - Skeletons e spinners respeitam `prefers-reduced-motion`; o carrossel não tem autoplay.
-- Sem overflow horizontal em 390 px (verificado); painéis fixos no mobile são baixos para não esconder conteúdo
+- Sem overflow horizontal de 320 a 1440 px (testado); painéis fixos no mobile são baixos para não esconder conteúdo
   com zoom, e os toasts ficam no topo para não cobrir ações.
 
 ## Testes
@@ -193,6 +193,8 @@ caminho aberto:
   expiração de sessão. Os testes avançam o tempo em vez de esperar (pagamento lento de 20 s, sessão de 60 s).
 - **Timeout do pedido:** usa o timeout nativo de 10 s do XHR, que o relógio falso do Playwright não controla;
   esse teste realmente espera (`test.slow()`).
+- **Responsividade:** todas as telas são verificadas sem overflow horizontal em 320 (zoom de 400%), 768, 1024
+  e 1152 px (1440 com zoom de 125%).
 - **Unitários (Vitest):** domínio dos mocks, contratos, ETH, i18n e frescor da cotação.
 
 ## Performance
