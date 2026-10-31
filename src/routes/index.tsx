@@ -1,6 +1,10 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { catalogSearchSchema, DEFAULT_CATALOG_SEARCH } from '@/features/catalog/catalog-search';
+import {
+  catalogQuery,
+  catalogSearchSchema,
+  DEFAULT_CATALOG_SEARCH,
+} from '@/features/catalog/catalog-search';
 import {
   FiltersPanel,
   MobileCatalogBar,
@@ -22,7 +26,7 @@ import { noop } from '@/lib/noop';
 export const Route = createFileRoute('/')({
   validateSearch: catalogSearchSchema,
   search: { middlewares: [stripSearchParams(DEFAULT_CATALOG_SEARCH)] },
-  loaderDeps: ({ search }) => search,
+  loaderDeps: ({ search }) => catalogQuery(search),
   loader: ({ context: { queryClient }, deps }) => {
     queryClient.query(featuredNftsQueryOptions).catch(noop);
     queryClient.query(nftFacetsQueryOptions).catch(noop);
@@ -33,7 +37,7 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
-  const query = Route.useSearch();
+  const query = Route.useSearch({ select: catalogQuery, structuralSharing: true });
   const navigate = Route.useNavigate();
   const changeFilters = useCallback(
     (patch: FilterPatch) => {
