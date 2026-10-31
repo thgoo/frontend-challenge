@@ -21,7 +21,7 @@ function SlideDots({
 }) {
   if (slides.length < 2) return null;
   return (
-    <div role="group" aria-label="Destaques" className={cn('flex gap-2', className)}>
+    <div role="group" aria-label="Destaques" className={cn('flex', className)}>
       {slides.map((nft, index) => (
         <button
           key={nft.id}
@@ -31,12 +31,12 @@ function SlideDots({
           onClick={() => {
             onSelect(index);
           }}
-          className="grid size-6 place-items-center"
+          className="grid h-6 w-4 place-items-center"
         >
           <span
             className={cn(
               'size-2 rounded-full bg-primary transition-opacity motion-reduce:transition-none',
-              index !== current && 'opacity-40',
+              index !== current && 'opacity-60',
             )}
           />
         </button>
@@ -84,7 +84,7 @@ export function Hero() {
             <Link
               to="/"
               hash="mercado"
-              className="w-fit rounded-md bg-primary px-9 py-2.5 text-base font-bold text-primary-foreground hover:bg-primary/90"
+              className="flex h-10 w-fit items-center rounded-md bg-primary px-8 text-base font-bold text-primary-foreground hover:bg-primary/90"
             >
               EXPLORAR
             </Link>
