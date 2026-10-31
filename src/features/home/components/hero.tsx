@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
-import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import { ArrowRightIcon } from '@/components/icons';
 import { NftImage } from '@/components/nft-image';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Nft } from '@/contracts/nft';
@@ -125,7 +125,7 @@ export function Hero() {
               hash="mercado"
               className="flex h-4 items-center gap-2 text-xs font-bold text-highlight"
             >
-              EXPLORAR <ArrowRight aria-hidden="true" className="size-4" />
+              EXPLORAR <ArrowRightIcon className="size-4" />
             </Link>
           </div>
           <div className="relative mt-1.5 h-[146px] min-w-[104px] flex-1">

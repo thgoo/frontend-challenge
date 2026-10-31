@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { Heart, LogOut, User, Wallet } from 'lucide-react';
+import { HeartLineIcon, LocationIcon, LogoutIcon, ProfileIcon } from '@/components/icons';
 import type { ReactNode } from 'react';
 import { useSignOut } from '@/features/auth/use-sign-out';
 
 const ITEMS = [
-  { to: '/profile', label: 'Dados do perfil', Icon: User },
-  { to: '/wallets', label: 'Carteiras', Icon: Wallet },
-  { to: '/favorites', label: 'Lista de interesse', Icon: Heart },
+  { to: '/profile', label: 'Dados do perfil', Icon: ProfileIcon },
+  { to: '/wallets', label: 'Carteiras', Icon: LocationIcon },
+  { to: '/favorites', label: 'Lista de interesse', Icon: HeartLineIcon },
 ] as const;
 
 const ITEM_CLASS =
@@ -35,7 +35,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
               onClick={() => void signOut()}
               className={`${ITEM_CLASS} w-full font-bold disabled:opacity-50`}
             >
-              <LogOut aria-hidden="true" className="size-5" />
+              <LogoutIcon className="size-5" />
               Sair
             </button>
           </li>

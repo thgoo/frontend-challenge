@@ -259,6 +259,9 @@ alguma coisa.
   No mobile, a barra de compra mostra o total da quantidade escolhida, e não só o preço unitário.
 - **Carrinho:** um item esgotado mostra um aviso e bloqueia o checkout. A linha de desconto aparece sempre; com
   cupom, mostra o código e a opção de remover.
+- **Ícones:** os do Figma (Iconly) ficam em `components/icons.tsx`, gerados a partir dos vetores do arquivo.
+  Onde o Figma não desenha um ícone (mostrar senha, fechar, alertas, + e −), o Lucide cobre com traço
+  parecido.
 - **Recibo:** é uma página própria, e não um modal sobre o checkout, para poder ser aberto pelo link do pedido.
 
 ### Acessibilidade e uso

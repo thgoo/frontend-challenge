@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
-import { Star } from 'lucide-react';
 import { Tabs } from 'radix-ui';
 import { useRef, useState } from 'react';
 import { EthAmount } from '@/components/eth-amount';
+import { StarIcon } from '@/components/icons';
 import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
 import { BackButton } from '@/components/layout/mobile-page-header';
 import { RatingStars } from '@/components/rating-stars';
@@ -84,7 +84,7 @@ function DetailHeader({
           aria-label={`Avaliação ${formatRating(nft.rating.average)} de 5, ${reviewsLabel}`}
           className="flex h-[27px] shrink-0 items-center gap-1 rounded-full border border-primary px-2 text-sm leading-4 font-medium lg:hidden"
         >
-          <Star aria-hidden="true" className="size-3.5 fill-highlight text-highlight" />
+          <StarIcon className="size-3.5 text-highlight" />
           {formatRating(nft.rating.average)}
           <span className="font-normal text-muted-foreground">({nft.rating.count})</span>
         </button>

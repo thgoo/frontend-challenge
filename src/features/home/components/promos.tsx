@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRightIcon } from '@/components/icons';
 import { NftImage } from '@/components/nft-image';
 import type { NftListQuery } from '@/contracts/nft';
 import { artworkImage } from '@/lib/artwork';
@@ -56,7 +56,7 @@ export function Promos() {
               hash="mercado"
               className="mt-auto flex h-10 w-[140px] items-center justify-center gap-0.5 rounded-md bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
-              Explorar <ArrowRight aria-hidden="true" className="size-[18px]" />
+              Explorar <ArrowRightIcon className="size-[18px]" />
             </Link>
           </div>
         </article>

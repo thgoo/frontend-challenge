@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons';
 
 const PAGE_CLASS =
   'grid size-[35px] place-items-center rounded border border-border text-lg leading-4 hover:border-primary';
@@ -20,7 +20,7 @@ export function Pagination({ page, totalPages }: { page: number; totalPages: num
           aria-label="Página anterior"
           className={PAGE_CLASS}
         >
-          <ChevronLeft aria-hidden="true" className="size-4" />
+          <ChevronLeftIcon className="size-4" />
         </Link>
       )}
       {pages.map((number) => (
@@ -49,7 +49,7 @@ export function Pagination({ page, totalPages }: { page: number; totalPages: num
           aria-label="Próxima página"
           className={PAGE_CLASS}
         >
-          <ChevronRight aria-hidden="true" className="size-4" />
+          <ChevronRightIcon className="size-4" />
         </Link>
       )}
     </nav>

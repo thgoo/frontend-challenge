@@ -1,5 +1,6 @@
 import { cn } from 'cn';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye } from 'lucide-react';
+import { HideIcon } from '@/components/icons';
 import { useState, type ComponentProps } from 'react';
 import { Field } from '@/components/form-field';
 import { Input } from '@/components/ui/input';
@@ -43,7 +44,7 @@ export function PasswordField({
             {visible ? (
               <Eye aria-hidden="true" className="size-5" />
             ) : (
-              <EyeOff aria-hidden="true" className="size-5" />
+              <HideIcon className="size-5" />
             )}
           </button>
         </div>

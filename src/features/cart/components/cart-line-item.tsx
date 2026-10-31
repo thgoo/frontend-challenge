@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { DeleteIcon } from '@/components/icons';
 import { toast } from 'sonner';
 import { EthAmount } from '@/components/eth-amount';
 import { NftImage } from '@/components/nft-image';
@@ -81,7 +82,7 @@ export function CartLineItem({ line }: { line: CartLine }) {
         }}
         className="mt-2 grid size-9 place-items-center justify-self-end rounded-md text-highlight [grid-area:remove] hover:bg-accent disabled:opacity-50 lg:mt-0"
       >
-        <Trash2 aria-hidden="true" className="size-5" />
+        <DeleteIcon className="size-5" />
       </button>
       {exceedsAvailability(line) && (
         <p

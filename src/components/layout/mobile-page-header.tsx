@@ -1,5 +1,5 @@
 import { useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeftIcon } from '@/components/icons';
 
 export function BackButton({ fallback = '/' }: { fallback?: string }) {
   const router = useRouter();
@@ -15,7 +15,7 @@ export function BackButton({ fallback = '/' }: { fallback?: string }) {
       }}
       className="grid size-[35px] place-items-center rounded-full border border-border bg-muted text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
-      <ChevronLeft aria-hidden="true" className="size-5" />
+      <ChevronLeftIcon className="size-5" />
     </button>
   );
 }
