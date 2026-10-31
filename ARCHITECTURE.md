@@ -301,3 +301,19 @@ alguma coisa.
   mas não tem composição própria.
 - Em WSL, o `chrome-launcher` do Lighthouse cria perfis temporários com caminho estilo Windows na raiz do
   projeto (ignorados no git).
+
+## Próximos passos
+
+O que eu faria com mais tempo, em ordem de impacto:
+
+1. **Backend real no lugar dos mocks.** Os contratos Zod já são a fronteira: um servidor que respeite os mesmos
+   schemas entra sem mudar a UI. Com ele, o cookie de sessão passa a ser `HttpOnly` e o Socket.IO autentica no
+   handshake, sem ler `document.cookie`.
+2. **Performance mobile acima de 90.** Hoje o app espera o MSW subir antes de começar. Os caminhos são dividir
+   o chunk dos mocks (carregar fixtures e domínio sob demanda) e, com backend real, simplesmente tirar o MSW do
+   build de produção.
+3. **Layout próprio para tablet.** Entre 768 e 1023 px, usar duas colunas no detalhe e no checkout, em vez do
+   layout mobile esticado.
+4. **Vários pedidos ao mesmo tempo.** Hoje um pedido pendente bloqueia o checkout. Com um backend real, faria
+   sentido permitir compras paralelas, cada uma com sua chave de idempotência.
+5. **Regressão visual em mais telas.** Login, perfil, carteiras e recibo, além das quatro pedidas.
