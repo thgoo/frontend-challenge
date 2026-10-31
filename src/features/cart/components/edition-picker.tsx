@@ -1,10 +1,8 @@
 import { cn } from 'cn';
 import { RadioGroup } from 'radix-ui';
 import { useId } from 'react';
-import { ShopIcon } from '@/components/icons';
-import { Button } from '@/components/ui/button';
 import type { Nft } from '@/contracts/nft';
-import type { PurchaseActions, PurchaseSelection } from '../use-purchase';
+import type { PurchaseSelection } from '../use-purchase';
 
 /** Rarest first, as the Figma lists the chips. */
 function bySupply(nft: Nft) {
@@ -52,30 +50,5 @@ export function EditionPicker({ nft, selection }: { nft: Nft; selection: Purchas
         </p>
       )}
     </div>
-  );
-}
-
-export function PurchaseLimitNotice({ selection }: { selection: PurchaseSelection }) {
-  if (selection.remaining > 0 || !selection.edition || selection.edition.available === 0) {
-    return null;
-  }
-  return (
-    <p role="status" className="text-sm text-muted-foreground">
-      Você já tem o máximo permitido desta edição no carrinho.
-    </p>
-  );
-}
-
-export function AddToCartIconButton({ actions }: { actions: PurchaseActions }) {
-  return (
-    <Button
-      variant="ghost"
-      aria-label="Adicionar ao carrinho"
-      disabled={actions.disabled}
-      onClick={actions.addToCart}
-      className="size-[60px] rounded-full border border-border bg-muted text-subtle hover:bg-accent"
-    >
-      <ShopIcon />
-    </Button>
   );
 }

@@ -1,11 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { ErrorState } from '@/components/query-states';
-import {
-  NftDetail,
-  NftDetailSkeleton,
-  NftNotFound,
-} from '@/features/catalog/components/nft-detail';
+import { NftDetail, NftDetailSkeleton } from '@/features/catalog/components/nft-detail';
+import { NftNotFound } from '@/features/catalog/components/nft-not-found';
 import { nftDetailQueryOptions } from '@/features/catalog/queries';
 import { hasErrorCode } from '@/lib/api-error';
 import { noop } from '@/lib/noop';

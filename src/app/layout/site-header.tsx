@@ -17,6 +17,7 @@ import { useSignOut } from '@/features/auth/use-sign-out';
 import { useCartItemCount } from '@/features/cart/queries';
 import { cartLabel } from './cart-count';
 import { SearchDialog } from './search-dialog';
+import { CartBadge } from './cart-badge';
 
 const COMMERCE_PATHS = /^\/(nfts|cart|checkout|orders)\b/;
 
@@ -26,27 +27,6 @@ const NAV_ITEMS = [
   { label: 'Criadores', hash: 'criadores', isActive: () => false },
   { label: 'Aprenda', hash: 'aprenda', isActive: () => false },
 ] as const;
-
-export function CartBadge({
-  count,
-  className = '-top-1.5 -right-2',
-}: {
-  count: number;
-  className?: string;
-}) {
-  if (count === 0) return null;
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        'absolute grid size-4 place-items-center rounded-full border-2 border-background bg-primary text-[10px] font-medium text-primary-foreground',
-        className,
-      )}
-    >
-      {count}
-    </span>
-  );
-}
 
 function CartLink() {
   const count = useCartItemCount();

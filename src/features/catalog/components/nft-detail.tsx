@@ -1,21 +1,22 @@
-import { Link } from '@tanstack/react-router';
 import { Tabs } from 'radix-ui';
 import { useRef, useState } from 'react';
 import { EthAmount } from '@/components/eth-amount';
 import { StarIcon } from '@/components/icons';
 import { MarketplaceBreadcrumb } from '@/components/layout/breadcrumb';
-import { BackButton } from '@/components/layout/mobile-page-header';
+import { BackButton } from '@/components/layout/back-button';
 import { RatingStars } from '@/components/rating-stars';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Edition, Nft } from '@/contracts/nft';
-import { EditionPicker, PurchaseLimitNotice } from '@/features/cart/components/purchase-controls';
+import { EditionPicker } from '@/features/cart/components/edition-picker';
+import { PurchaseLimitNotice } from '@/features/cart/components/purchase-limit-notice';
 import { usePurchaseActions, usePurchaseSelection } from '@/features/cart/use-purchase';
 import { FavoriteButton } from '@/features/favorites/components/favorite-button';
 import { formatRating } from '@/i18n/locale';
 import { NETWORK_LABELS } from '@/lib/networks';
 import { shortenAddress } from '@/lib/wallets';
 import { NftGallery } from './nft-gallery';
-import { DesktopPurchase, MobileBuyBar } from './nft-purchase';
+import { DesktopPurchase } from './desktop-purchase';
+import { MobileBuyBar } from './mobile-buy-bar';
 import { NftReviews } from './nft-reviews';
 import { NftShelf } from './nft-shelf';
 import { ShareLinks } from './share-links';
@@ -232,18 +233,5 @@ export function NftDetailSkeleton() {
         <Skeleton className="h-10 w-full" />
       </div>
     </div>
-  );
-}
-
-export function NftNotFound() {
-  return (
-    <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
-      <title>NFT não encontrado · Kurio</title>
-      <h1 className="text-[28px] font-bold">NFT não encontrado</h1>
-      <p className="text-muted-foreground">Este NFT não existe ou foi removido.</p>
-      <Link to="/" hash="mercado" className="text-highlight underline underline-offset-4">
-        Explorar o mercado
-      </Link>
-    </section>
   );
 }

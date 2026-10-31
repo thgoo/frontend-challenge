@@ -5,7 +5,7 @@ import { withAuthDialog } from '@/features/auth/auth-search';
 import { useSession } from '@/features/auth/queries';
 import { useCartItemCount } from '@/features/cart/queries';
 import { cartLabel } from './cart-count';
-import { CartBadge } from './site-header';
+import { CartBadge } from './cart-badge';
 
 const TAB_CLASS =
   'grid size-10 place-items-center text-muted-foreground data-[status=active]:text-highlight';
