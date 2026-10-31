@@ -31,7 +31,7 @@ export function NewsletterForm() {
       <label htmlFor={id} className="sr-only">
         E-mail para receber lançamentos
       </label>
-      <div className="flex">
+      <div className="flex rounded-md bg-surface-dark shadow-[0_0_20px_rgb(10_6_4/0.45)]">
         <input
           id={id}
           type="email"
@@ -39,13 +39,13 @@ export function NewsletterForm() {
           placeholder="digite seu e-mail..."
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="h-10 min-w-0 flex-1 rounded-l-md bg-muted px-3 text-sm placeholder:text-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className="h-10 min-w-0 flex-1 rounded-l-md bg-transparent px-3 text-sm placeholder:text-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           {...register('email')}
         />
         <button
           type="submit"
           disabled={signup.isPending}
-          className="h-10 rounded-r-md bg-primary px-4 text-base font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          className="h-10 w-[85px] shrink-0 rounded-r-md bg-primary text-lg font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           Enviar
         </button>

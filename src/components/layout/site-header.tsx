@@ -121,7 +121,7 @@ export function SiteHeader() {
   return (
     <header className="page-container hidden pt-6 lg:block">
       <div className="flex items-start justify-between border-b border-primary/30">
-        <Link to="/" className="w-40 pt-2 text-sm font-bold tracking-wide">
+        <Link to="/" className="w-40 pt-2 text-sm font-bold tracking-[0.1em]">
           KURIO
         </Link>
         <nav aria-label="Principal">
@@ -135,7 +135,7 @@ export function SiteHeader() {
                     hash={item.hash}
                     aria-current={active ? 'page' : undefined}
                     className={cn(
-                      'block border-b-[3px] pb-6 text-base',
+                      'block border-b-[3px] pb-[21px] text-base leading-[21px]',
                       active
                         ? 'border-primary font-bold text-highlight'
                         : 'border-transparent hover:text-highlight',
