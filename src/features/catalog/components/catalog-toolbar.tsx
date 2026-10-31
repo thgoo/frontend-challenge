@@ -12,7 +12,11 @@ interface ToolbarProps {
 export function CatalogToolbar({ query, onChange }: ToolbarProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-      <div role="group" aria-label="Visualização" className="flex gap-4 lg:gap-5">
+      <div
+        role="group"
+        aria-label="Visualização"
+        className="flex flex-wrap gap-x-4 gap-y-2 lg:gap-5"
+      >
         {nftViewSchema.options.map((view) => (
           <button
             key={view}

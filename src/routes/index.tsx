@@ -47,19 +47,19 @@ function HomePage() {
   );
 
   return (
-    <div className="page-container grid gap-4 pt-10 lg:gap-24 lg:pt-8">
+    <div className="page-container grid grid-cols-1 gap-4 pt-10 lg:gap-24 lg:pt-8">
       <MobileCatalogBar query={query} onChange={changeFilters} />
       <Hero />
       <section
         id="mercado"
         aria-label="Mercado"
-        className="grid scroll-mt-6 gap-8 lg:grid-cols-[310px_minmax(0,1fr)] lg:gap-12"
+        className="grid scroll-mt-6 grid-cols-1 gap-8 lg:grid-cols-[310px_minmax(0,1fr)] lg:gap-12"
       >
         <div className="hidden content-start gap-6 lg:grid">
           <FiltersPanel query={query} onChange={changeFilters} />
           <FeaturedBanner />
         </div>
-        <div className="grid content-start gap-4 lg:gap-8">
+        <div className="grid grid-cols-1 content-start gap-4 lg:gap-8">
           <CatalogToolbar query={query} onChange={changeFilters} />
           <CatalogResults query={query} />
         </div>

@@ -52,7 +52,7 @@ export function CouponForm({ coupon }: { coupon: Coupon | null }) {
   });
 
   return (
-    <form noValidate onSubmit={(event) => void submit(event)} className="grid gap-2">
+    <form noValidate onSubmit={(event) => void submit(event)} className="grid grid-cols-1 gap-2">
       <label htmlFor={id} className="text-sm leading-4 font-bold max-lg:sr-only">
         Código promocional
       </label>

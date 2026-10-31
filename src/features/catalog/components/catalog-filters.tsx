@@ -234,7 +234,7 @@ function SearchBox({ query, onChange }: FiltersProps) {
   }, [value, query.q, onChange]);
 
   return (
-    <div role="search" className="relative flex-1">
+    <div role="search" className="relative min-w-0 flex-1">
       <label htmlFor={id} className="sr-only">
         Buscar NFTs
       </label>

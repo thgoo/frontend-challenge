@@ -14,9 +14,9 @@ const TAB_CLASS =
 const NOTCH_PATH =
   'M151.7 0C137.94 0 125.72 8.2 119.87 20.65C112.11 37.17 95.31 48.62 75.85 48.62C56.39 48.62 39.59 37.18 31.83 20.65C25.98 8.2 13.75 0 0 0V94.95H151.7Z';
 
-/** Icon centers relative to the bar center, as in the 414px Figma frame. */
+/** Icon centers relative to the bar center, as in the 414px Figma frame; narrower screens scale them in. */
 function at(offset: number): CSSProperties {
-  return { left: `calc(50% + ${String(offset)}px)` };
+  return { left: `calc(50% + min(1px, 100vw / 414) * ${String(offset)})` };
 }
 
 function Tab({ to, label, children }: { to: string; label: string; children: ReactNode }) {
