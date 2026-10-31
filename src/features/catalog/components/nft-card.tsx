@@ -53,7 +53,7 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
           className="aspect-square w-full rounded-[15px] max-lg:aspect-auto max-lg:h-full max-lg:rounded-[20px]"
         />
         {nft.rare && (
-          <span className="absolute top-0 left-0 bg-primary px-3 py-1 text-sm font-bold text-primary-foreground">
+          <span className="absolute top-3.5 left-0 flex h-[29px] w-20 items-center bg-primary pl-[15px] text-sm font-bold text-primary-foreground max-lg:top-4 max-lg:h-8 max-lg:w-[68px] max-lg:pl-2">
             RARO
           </span>
         )}
