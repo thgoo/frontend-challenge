@@ -88,7 +88,7 @@ export type NftView = z.infer<typeof nftViewSchema>;
 export const nftSortSchema = z.enum(['newest', 'price-asc', 'price-desc', 'name-asc']);
 export type NftSort = z.infer<typeof nftSortSchema>;
 
-export const NFT_PAGE_SIZE = 12;
+export const NFT_PAGE_SIZE = 9;
 
 /** Doubles as the catalog route search schema, so the URL and the API share one shape. */
 export const nftListQuerySchema = z.object({

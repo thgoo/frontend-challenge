@@ -36,7 +36,7 @@ test.describe('mock api', () => {
     await open(page, `${QUIET_PAGE}?scenario=default`);
     const list = await api(page, '/nfts?categories=digital-art&sort=price-asc&page=1');
     expect(list.status).toBe(200);
-    expect(list.body).toMatchObject({ page: 1, pageSize: 12 });
+    expect(list.body).toMatchObject({ page: 1, pageSize: 9 });
 
     expect((await api(page, '/nfts/nft_001')).status).toBe(200);
     expect(await api(page, '/nfts/nft_999')).toMatchObject({

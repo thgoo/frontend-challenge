@@ -19,7 +19,7 @@ export function CatalogResults({ query }: { query: NftListQuery }) {
         <span className="sr-only" role="status">
           Carregando NFTs
         </span>
-        <NftGridSkeleton count={NFT_PAGE_SIZE / 2} />
+        <NftGridSkeleton count={NFT_PAGE_SIZE} />
       </div>
     );
   }
