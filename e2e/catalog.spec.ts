@@ -37,7 +37,9 @@ function sortSelect(page: Page) {
 test.describe('catalog', () => {
   test('keeps the scroll position when filters change', async ({ page }) => {
     await openCatalog(page);
-    await sortSelect(page).evaluate((select) => select.scrollIntoView({ block: 'center' }));
+    await sortSelect(page).evaluate((select) => {
+      select.scrollIntoView({ block: 'center' });
+    });
     const before = await page.evaluate(() => window.scrollY);
     expect(before).toBeGreaterThan(0);
 
