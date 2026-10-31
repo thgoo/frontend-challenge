@@ -1,58 +1,28 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Field, FormField } from '@/components/form-field';
 import { EmptyState, ErrorState } from '@/components/query-states';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
 import type { Cart } from '@/contracts/cart';
-import { networkSchema, type Wallet } from '@/contracts/wallet';
+import type { Wallet } from '@/contracts/wallet';
 import { useWallets } from '@/features/account/queries';
 import { useSession } from '@/features/auth/queries';
 import { useCurrentUserId } from '@/features/auth/use-current-user-id';
 import { CouponForm } from '@/features/cart/components/coupon-form';
 import { PriceSummary, PriceSummarySkeleton } from '@/features/cart/components/price-summary';
 import { cartKey, useCart } from '@/features/cart/queries';
-import { errorMessage } from '@/i18n/api-errors';
-import { hasErrorCode } from '@/lib/api-error';
-import { NETWORK_LABELS } from '@/lib/networks';
 import { checkoutDetailsSchema, checkoutDraft, type CheckoutDetails } from '../checkout-details';
-import {
-  ordersQueryOptions,
-  quoteQueryOptions,
-  useConnectWallet,
-  useIsWalletConnected,
-  usePlaceOrder,
-} from '../queries';
+import { ordersQueryOptions, quoteQueryOptions, usePlaceOrder } from '../queries';
 import { isQuoteStale } from '../quote-freshness';
-import { useIdempotencyKey } from '../use-idempotency-key';
+import { useCheckoutSubmit } from '../use-checkout-submit';
+import { CollectorFields } from './collector-fields';
 import { QuoteLines } from './quote-lines';
 import { WalletPicker } from './wallet-picker';
-
-interface Notice {
-  message: string;
-  linkToCart?: boolean;
-}
-
-function noticeFor(error: unknown): Notice {
-  return {
-    message: errorMessage(error),
-    linkToCart: hasErrorCode(error, 'AVAILABILITY_CONFLICT', 'COUPON_EXPIRED', 'COUPON_INVALID'),
-  };
-}
 
 const CONFIRM_BUTTON =
   'h-[60px] w-full rounded-full bg-linear-to-r from-primary to-primary/70 text-base font-bold lg:h-[45px] lg:rounded-md lg:bg-primary lg:bg-none';
@@ -60,17 +30,15 @@ const CONFIRM_BUTTON =
 interface CheckoutFormProps {
   cart: Cart;
   wallets: readonly Wallet[];
-  /** Owned by the page: the form may unmount (cart emptied by settlement) while the order is in flight. */
   placeOrder: ReturnType<typeof usePlaceOrder>;
 }
 
 function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
   const session = useSession();
   const userId = useCurrentUserId();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const primary = wallets.find((wallet) => wallet.role === 'primary') ?? wallets[0];
-  const { register, handleSubmit, control, formState } = useForm<CheckoutDetails>({
+  const form = useForm<CheckoutDetails>({
     resolver: zodResolver(checkoutDetailsSchema),
     defaultValues: {
       fullName: session?.user.name ?? '',
@@ -81,7 +49,7 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
       ...checkoutDraft.read(),
     },
   });
-  const { errors } = formState;
+  const { control, handleSubmit, formState } = form;
   const values = useWatch({ control });
   const [walletId, network] = useWatch({ control, name: ['walletId', 'network'] });
   useEffect(() => {
@@ -89,65 +57,24 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
   }, [values]);
 
   const quote = useQuery(quoteQueryOptions(userId, network));
-  const idempotencyKey = useIdempotencyKey(quote.data?.id);
-  const connect = useConnectWallet();
-  const connected = useIsWalletConnected(walletId, network);
-  const [notice, setNotice] = useState<Notice | null>(null);
   const [showCoupon, setShowCoupon] = useState(false);
-
   const stale = quote.data ? isQuoteStale(quote.data, cart) : false;
-  const placing = connect.isPending || placeOrder.isPending;
-  const selectedWallet = wallets.find((wallet) => wallet.id === walletId);
 
   /** Both at once, so the quote is marked as fetching (and confirmation blocked) right away. */
   const refreshQuote = () =>
     Promise.all([queryClient.invalidateQueries({ queryKey: cartKey(userId) }), quote.refetch()]);
 
-  const submit = handleSubmit(async ({ walletId: wallet, network: chain, ...buyer }) => {
-    if (!quote.data || quote.isFetching || stale) return;
-    setNotice(null);
-    if (!connected) {
-      try {
-        await connect.mutateAsync({ walletId: wallet, network: chain });
-      } catch (error) {
-        setNotice(noticeFor(error));
-        return;
-      }
-    }
-    placeOrder.mutate(
-      {
-        input: {
-          quoteId: quote.data.id,
-          walletId: wallet,
-          network: chain,
-          buyer: { ...buyer, note: buyer.note || undefined },
-        },
-        idempotencyKey,
-      },
-      {
-        onSuccess: (order) => {
-          checkoutDraft.clear();
-          void navigate({ to: '/orders/$orderId', params: { orderId: order.id } });
-        },
-        onError: (error) => {
-          if (hasErrorCode(error, 'QUOTE_OUTDATED')) {
-            void refreshQuote();
-            setNotice({
-              message:
-                'Preços ou disponibilidade mudaram. Revise o novo total e confirme novamente.',
-            });
-            return;
-          }
-          setNotice(noticeFor(error));
-        },
-      },
-    );
+  const { submit, notice, placing } = useCheckoutSubmit({
+    quote: quote.data,
+    canConfirm: !quote.isFetching && !stale,
+    placeOrder,
+    onQuoteOutdated: () => void refreshQuote(),
   });
 
   return (
     <form
       noValidate
-      onSubmit={(event) => void submit(event)}
+      onSubmit={(event) => void handleSubmit(submit)(event)}
       className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-x-8 lg:gap-y-6"
     >
       <section
@@ -157,73 +84,11 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
         <h2 id="collector-heading" className="text-[17px] font-bold">
           Perfil do colecionador
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-x-6">
-          <FormField
-            label="Nome de exibição"
-            required
-            autoComplete="name"
-            error={errors.fullName?.message}
-            {...register('fullName')}
-          />
-          <Field label="Nome de usuário">
-            {(control) => (
-              <Input {...control} readOnly value={session ? `@${session.user.username}` : ''} />
-            )}
-          </Field>
-          <Controller
-            control={control}
-            name="network"
-            render={({ field }) => (
-              <Field label="Rede" required>
-                {(fieldControl) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(networkSchema.parse(value));
-                    }}
-                  >
-                    <SelectTrigger
-                      {...fieldControl}
-                      className="h-10 w-full rounded-sm border-border"
-                    >
-                      <SelectValue placeholder="Selecione uma rede" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {networkSchema.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {NETWORK_LABELS[option]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              </Field>
-            )}
-          />
-          <FormField
-            label="E-mail"
-            required
-            type="email"
-            autoComplete="email"
-            error={errors.email?.message}
-            {...register('email')}
-          />
-          <Field label="Endereço da carteira">
-            {(control) => (
-              <Input
-                {...control}
-                readOnly
-                value={selectedWallet?.address ?? ''}
-                className="font-mono"
-              />
-            )}
-          </Field>
-          <div className="sm:col-span-2 sm:max-w-[350px]">
-            <Field label="Observação do colecionador (opcional)" error={errors.note?.message}>
-              {(control) => <Textarea {...control} rows={5} {...register('note')} />}
-            </Field>
-          </div>
-        </div>
+        <CollectorFields
+          form={form}
+          username={session?.user.username}
+          walletAddress={wallets.find((wallet) => wallet.id === walletId)?.address}
+        />
       </section>
 
       <section
@@ -300,7 +165,7 @@ function CheckoutForm({ cart, wallets, placeOrder }: CheckoutFormProps) {
               wallets={wallets}
               value={field.value}
               onChange={field.onChange}
-              error={errors.walletId?.message}
+              error={formState.errors.walletId?.message}
             />
           )}
         />

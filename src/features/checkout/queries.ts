@@ -51,11 +51,6 @@ export function useWalletConnection() {
   return useQuery(walletConnectionQueryOptions(useCurrentUserId()));
 }
 
-export function useIsWalletConnected(walletId: string, network: Network) {
-  const { data: connection } = useWalletConnection();
-  return connection?.walletId === walletId && connection.network === network;
-}
-
 export function useConnectWallet() {
   const queryClient = useQueryClient();
   const userId = useCurrentUserId();
