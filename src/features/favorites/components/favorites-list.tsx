@@ -13,15 +13,20 @@ export function FavoritesList() {
     combine: (results) => ({
       data: results.flatMap((result) => (result.data ? [result.data] : [])),
       isPending: results.some((result) => result.isPending),
+      failed: results.filter((result) => result.error),
     }),
   });
 
-  if (favorites.error) {
+  const error = favorites.error ?? nfts.failed[0]?.error;
+  if (error) {
     return (
       <ErrorState
         title="Não foi possível carregar seus favoritos"
-        error={favorites.error}
-        onRetry={() => void favorites.refetch()}
+        error={error}
+        onRetry={() => {
+          if (favorites.error) void favorites.refetch();
+          for (const result of nfts.failed) void result.refetch();
+        }}
       />
     );
   }
