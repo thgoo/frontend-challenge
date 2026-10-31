@@ -17,7 +17,7 @@ function ProfilePage() {
 
   return (
     <AccountLayout>
-      <h1 className="text-[17px] font-bold">Perfil do colecionador</h1>
+      <h1 className="text-base font-bold">Perfil do colecionador</h1>
       {error && !user ? (
         <ErrorState
           title="Não foi possível carregar seu perfil"
@@ -33,7 +33,7 @@ function ProfilePage() {
             <ProfileForm key={user.id} user={user} />
           </section>
           <section aria-labelledby="password-heading" className="grid gap-6">
-            <h2 id="password-heading" className="text-[17px] font-bold">
+            <h2 id="password-heading" className="text-base font-medium">
               Alterar senha
             </h2>
             <PasswordForm />
