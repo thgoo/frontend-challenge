@@ -31,7 +31,7 @@ export function CatalogToolbar({ query, onChange }: ToolbarProps) {
             }}
             className={cn(
               // The Figma underline stops short of the label's end.
-              'relative pb-1.5 text-sm font-medium whitespace-nowrap lg:text-[15px]',
+              'relative pb-1.5 text-sm leading-4 font-medium whitespace-nowrap lg:text-[15px]',
               query.view === view
                 ? 'text-highlight after:absolute after:right-4 after:bottom-0 after:left-0 after:h-0.5 after:bg-primary'
                 : 'hover:text-highlight',
@@ -51,7 +51,7 @@ export function CatalogToolbar({ query, onChange }: ToolbarProps) {
         >
           <SelectTrigger
             id={sortId}
-            className="h-auto border-none bg-transparent px-1 py-0 text-[15px] shadow-none"
+            className="border-none bg-transparent px-1 py-0 text-[15px] shadow-none data-[size=default]:h-auto"
           >
             <SelectValue />
           </SelectTrigger>

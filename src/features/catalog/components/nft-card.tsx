@@ -69,7 +69,7 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
           <FavoriteButton nftId={nft.id} nftName={nft.name} variant="icon" />
         </div>
       </div>
-      <div className="grid gap-1.5">
+      <div className="grid gap-1.5 lg:gap-3">
         <h3 className="truncate text-base leading-4">
           <Link
             to="/nfts/$nftId"
@@ -79,7 +79,7 @@ export function NftCard({ nft, priority = false }: { nft: Nft; priority?: boolea
             {nft.name}
           </Link>
         </h3>
-        <p className="flex flex-wrap items-baseline gap-x-3 text-base font-bold text-highlight lg:text-lg">
+        <p className="flex flex-wrap items-baseline gap-x-3 text-base font-bold text-highlight lg:text-lg lg:leading-4">
           <EthAmount value={edition.priceEth} />
           {edition.compareAtPriceEth && (
             <s className="font-normal text-subtle">

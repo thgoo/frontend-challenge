@@ -3,7 +3,7 @@ import { cn } from 'cn';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PAGE_CLASS =
-  'grid size-[35px] place-items-center rounded border border-border text-sm hover:border-primary';
+  'grid size-[35px] place-items-center rounded border border-border text-lg leading-4 hover:border-primary';
 
 export function Pagination({ page, totalPages }: { page: number; totalPages: number }) {
   if (totalPages <= 1) return null;
