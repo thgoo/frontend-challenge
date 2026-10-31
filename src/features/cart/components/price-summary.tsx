@@ -21,7 +21,7 @@ interface PriceSummaryProps {
 
 export function PriceSummary({ summary, estimatedFee = false }: PriceSummaryProps) {
   return (
-    <dl className="grid gap-4 text-[15px]">
+    <dl className="grid gap-3 text-[15px]">
       <Row label="Subtotal">
         <EthAmount value={summary.subtotalEth} />
       </Row>

@@ -11,7 +11,7 @@ export function QuoteLines({ lines }: { lines: readonly QuoteLine[] }) {
           key={`${line.nftId}:${line.editionId}`}
           className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-3 bg-card p-1 pr-4"
         >
-          <NftImage image={line.image} alt="" sizes="56px" className="size-14 rounded-md" />
+          <NftImage image={line.image} alt="" sizes="56px" className="size-14 rounded-lg" />
           <div className="grid min-w-0">
             <span className="truncate text-[15px] font-bold">{line.nftName}</span>
             <span className="truncate text-sm text-muted-foreground">

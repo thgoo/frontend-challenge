@@ -29,13 +29,13 @@ export function CartLineItem({ line }: { line: CartLine }) {
 
   return (
     <li
-      className={`overflow-hidden rounded-xl bg-card pr-3 lg:rounded-none lg:pr-4 ${LINE_LAYOUT}`}
+      className={`overflow-hidden rounded-[14px] bg-card pr-3 lg:rounded-none lg:pr-4 ${LINE_LAYOUT}`}
     >
       <NftImage
         image={line.image}
         alt=""
         sizes="100px"
-        className="size-full min-h-[100px] [grid-area:img] lg:size-[70px] lg:min-h-0"
+        className="size-full min-h-[100px] rounded-[14px] [grid-area:img] lg:size-[70px] lg:min-h-0 lg:rounded-md"
       />
       <div className="grid min-w-0 gap-1 pt-3 [grid-area:name] lg:pt-0">
         <Link
