@@ -16,3 +16,5 @@ dist
 
 # chrome-launcher under WSL creates its temporary profiles with Windows-style relative paths
 /C:*
+.vercel
+.env*.local
